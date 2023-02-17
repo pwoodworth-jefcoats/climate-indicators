@@ -1,7 +1,7 @@
 # Pelagic ocean and climate indicators
 This repository includes the code used to create the pelagic ocean and
-climate indicators.  The repository's associated Project includes the
-steps taken to produce final figures and text.
+climate indicators.  The repository's 'Indicators step-by-step' project 
+includes the steps taken to produce final figures and text.
 
 
 ### Disclaimer

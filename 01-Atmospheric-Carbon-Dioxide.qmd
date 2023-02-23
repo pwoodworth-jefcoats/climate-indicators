@@ -1,0 +1,170 @@
+---
+title: "Atmospheric_Carbon_Dioxide"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Atmospheric Concentration of Carbon Dioxide at Mauna Loa
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2022
+
+# Set path to variable: Atmospheric_CO2
+# This is where the data are and where the plots will go
+Dir <- here("Atmospheric_CO2")
+```
+
+```{r}
+#| include: false
+### Load data
+# Monthly CO2 concentration
+atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 56)
+
+# Annual Growth Rates
+ann_gr <- read_csv(file = paste(Dir, '/co2_gr_mlo_', RptYr, '.csv', sep = ""), skip = 61)
+
+# Annual concentrations, so that we're not providing a potentially different value
+ann_co2 <- read_csv(file = paste(Dir, '/co2_annmean_mlo_', RptYr, '.csv', sep = ""), skip = 59)
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# Pull out the ANNUAL values we need for the report
+ann_mean_idx <- which(ann_co2$year == RptYr) 
+ann_mean <- ann_co2$mean[ann_mean_idx] 
+max_ann_mean <- max(ann_co2$mean) 
+
+if (ann_mean != max_ann_mean) {
+  print('The highest annual value was prior to the report year.')
+}
+
+# Pull out the MONTHLY values we need for the report & plots
+yr_of_int <- which(atm_co2$year == RptYr)
+prev_yrs <- which(atm_co2$year < RptYr)
+all_yrs <- which(atm_co2$year <= RptYr)
+monthly_max_RptYr <- max(atm_co2$average[yr_of_int])
+monthly_max_PrevYrs <- max(atm_co2$average[prev_yrs])
+
+if (monthly_max_PrevYrs > monthly_max_RptYr) {
+  print('The highest monthly value was prior to the report year.')
+}
+
+# Confirm current text has changed for some reason
+pass_350 <- which(ann_co2$mean >= 350)
+pass_400 <- which(ann_co2$mean >= 400)
+
+if (ann_co2$year[pass_350[1]] != 1988) {
+  print('Reevaluate the year that annual mean CO2 passed 350 ppm.')
+}
+
+if (ann_co2$year[pass_400[1]] != 2015) {
+  print('Reevaluate the year that annual mean CO2 passed 400 ppm.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Create a vector that repeats the annual mean 12 times (although there are other ways to plot this piece)
+ann_mean_x12 <- rep(ann_mean,12)
+
+# Create axes limit values, to make things simpler
+CO2_xlim <- c(min(atm_co2$`decimal date`[all_yrs]), max(atm_co2$`decimal date`[all_yrs]))
+CO2_ylim <- c(300, 430)
+
+# Create color palette for easy reference 
+oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
+secondary <- nmfspalette::nmfs_palette("secondary")(4) # 4 = seasonally adj
+coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+pal <- c(oceans[3], oceans[1], secondary[4], coral[3])
+
+# Plot
+pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+plot(atm_co2$`decimal date`[all_yrs], atm_co2$deseasonalized[all_yrs], type = "l", lwd = 2, col = secondary[4], 
+     xlim = CO2_xlim, ylim = CO2_ylim, xlab = "Year", ylab = "Parts per Million (ppm)", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(atm_co2$`decimal date`[all_yrs], atm_co2$average[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = CO2_xlim, ylim = CO2_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(atm_co2$`decimal date`[yr_of_int], atm_co2$average[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = CO2_xlim, ylim = CO2_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(atm_co2$`decimal date`[yr_of_int], ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = CO2_xlim, ylim = CO2_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = seq(1960, 2020, 5), tck = 0.025)
+axis((2), at = seq(300, 430, 10), tck = 0.025, las = 1)
+axis((3), at = seq(1960, 2020, 5), tck = 0.025, labels = FALSE)
+axis((4), at = seq(300, 430, 10), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1958 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  "Seasonally adjusted value", 
+                  paste("Annual average, ", RptYr, sep = "")), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+
+
+pdf(paste(Dir, '/AtmosphericCO2growth_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+plot(ann_gr$year, ann_gr$`ann inc`, type = "l", lwd = 2, col = secondary[4], 
+     xlim = c(min(ann_gr$year), RptYr), ylim = c(0, 3.5),
+     xlab = "Year", ylab = "Parts per Million (ppm)", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = seq(1960, 2020, 5), tck = 0.025)
+axis((2), at = seq(0, 3.5, 0.5), tck = 0.025, las = 1)
+axis((3), at = seq(1960, 2020, 5), tck = 0.025, labels = FALSE)
+axis((4), at = seq(0, 3.5, 0.5), tck = 0.025, labels = FALSE)
+dev.off()
+
+```
+
+Rationale: Atmospheric carbon dioxide is a measure of what human activity has already done to affect the climate system through greenhouse gas emissions. It provides quantitative information in a simplified, standardized format that decision makers can easily understand. This indicator demonstrates that the concentration (and, in turn, warming influence) of greenhouse gases in the atmosphere has increased substantially over the last several decades.  
+
+Status: Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ is increasing more quickly over time. In `r RptYr`, the annual mean concentration of CO~2~ was `r ann_mean` ppm.  This is the highest annual value recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` ppm. In 1959, the first year full of the time series, the atmospheric concentration of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
+
+Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The observed increase in monthly average carbon dioxide concentration is primarily due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the atmosphere for a very long time, and emissions from any location mix throughout the atmosphere in approximately one year. The annual variations at Mauna Loa, Hawaiʻi are due to the seasonal imbalance between the photosynthesis and respiration of terrestrial plants. During the summer growing season, photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In the winter (outside the growing season), respiration exceeds photosynthesis, and CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern hemisphere because of its larger land mass. Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations starting in December 2022 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  
+
+Timeframe: Annual, monthly.  
+
+Region/Location: Mauna Loa, Hawaiʻi, but representative of global atmospheric carbon dioxide concentration.  
+
+Measurement Platform: *In-situ* station.  
+
+Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
+
+Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2023a).  
+
+Graphics produced in part using Stawitz 2022.
+
+## Additional Information
+
+The following .csv files were downloaded from <https://gml.noaa.gov/ccgg/trends/data.html>:
+
+ - Mauna Loa CO2 monthly mean data (co2_mm_mlo.csv)
+ - Mauna Loa CO2 annual mean data  (co2_annmean_mlo.csv)
+ - Mauna Loa CO2 annual mean growth rates  (co2_gr_mlo.csv)
+ 
+These files were manually appended with the report year (i.e., `r RptYr`).  Information from these data was used to lend detail and context to the indicator status.

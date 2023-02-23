@@ -1,0 +1,20 @@
+---
+title: "References"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## References
+This list includes the full references for all the sources in the pelagic ocean and climate indicators, by indicator.
+
+### Global
+Stawitz C (2022). nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+
+### Atmospheric Carbon Dioxide
+Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551
+
+NOAA (2023a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 17 February 2023.
+
+Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565

@@ -1,6 +1,26 @@
 # Pelagic ocean and climate indicators
 This repository includes the code used to create the pelagic ocean and
-climate indicators. 
+climate indicators. Each indicator has its own Quarto (.qmd) file which
+includes the following:
+
+- Information on accessing the data used for the indicator
+- Information on any data wrangling done outside the Quarto file
+- Code used to wrangle data and calculate indicator properties
+- Code used to generate indicator figures.  Note, though, that most
+figures are polished in Adobe Illustrator prior to insertion in the
+final report.
+- Text that will be copy-and-pasted into the SAFE report document
+  - To the extent possible, this text is formatted to match the SAFE report 
+  document.  It's not pretty here, but it simplifies things down the line.
+  - Mathematical values related to the indicator (e.g., annual maximum) are
+  coded into the text to reduce the risk for failing to update a value.
+
+There's also a `References.qmd` file that includes updated references used 
+across all indicators.  `SAFE-Reference-Doc.docx` serves as the style 
+template for Quarto.
+
+## Questions?  Comments?  Corrections?
+Please open an issue or email Phoebe.Woodworth-Jefcoats@noaa.gov
 
 ---
 

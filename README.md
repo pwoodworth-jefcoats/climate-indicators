@@ -9,7 +9,7 @@ includes the following:
 - Code used to generate indicator figures.  Note, though, that most
 figures are polished in Adobe Illustrator prior to insertion in the
 final report.
-- Text that will be copy-and-pasted into the SAFE report document
+- Text that will be copied and pasted into the SAFE report document
   - To the extent possible, this text is formatted to match the SAFE report 
   document.  It's not pretty here, but it simplifies things down the line.
   - Mathematical values related to the indicator (e.g., annual maximum) are

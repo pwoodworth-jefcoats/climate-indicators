@@ -1,0 +1,51 @@
+---
+title: "pH_prep"
+author: "Phoebe.Woodworth-Jefcoats@noaa.gov"
+date: "2023-03-16"
+output: html_document
+---
+
+# Prepare data to calculate pH
+The purpose of this script is to match up the dates that have both TA and
+DIC data so that pH can be calculated.  See 02-Oceanic-pH.qmd for more information.
+
+```{r}
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+```
+
+```{r}
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Atmospheric_CO2
+# This is where the data are and where the plots will go
+Dir <- here("Oceanic_pH")
+```
+
+```{r}
+### Load data
+# Monthly(ish) total alkalinity
+TA <- read_csv(file = paste(Dir, '/TA_', RptYr, '.csv', sep = ""))
+
+# Monthly(ish) dissolved inorganic carbon
+DIC <- read_csv(file = paste(Dir, '/DIC_', RptYr, '.csv', sep = ""))
+```
+
+```{r}
+### Match equal dates
+# We'll math Julian Day, cruise number, and (m)m(d)dyy values so that the final file is easier to use
+# But you really only need one of these
+TA_DIC_match <- inner_join(TA, DIC, by = c("crn #", "date mmddyy", "julian day"))
+```
+
+```{r}
+# Save two files:
+# One with the date information for plotting (.csv)
+# One without the date information for calculating pH (.dat)
+write_csv(TA_DIC_match, file = paste(Dir, '/TA_DIC_', RptYr, '_withDate.csv', sep = ""))
+write_delim(TA_DIC_match[,4:5], file = paste(Dir, '/TA_DIC_', RptYr, '.dat', sep = ""), col_names = FALSE)
+```

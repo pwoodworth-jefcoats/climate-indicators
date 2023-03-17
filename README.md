@@ -19,6 +19,9 @@ There's also a `References.qmd` file that includes updated references used
 across all indicators.  `SAFE-Reference-Doc.docx` serves as the style 
 template for Quarto.
 
+Note that an additional script is needed for for the Oceanic pH indicator.
+This script can be found in the Oceanic_pH folder.
+
 ## Questions?  Comments?  Corrections?
 Please open an issue or email Phoebe.Woodworth-Jefcoats@noaa.gov
 

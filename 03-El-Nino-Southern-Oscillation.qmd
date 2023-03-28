@@ -1,0 +1,229 @@
+---
+title: "El_Nino_Southern_Oscillation"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## EL NIÑO – SOUTHERN OSCILLATION
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Atmospheric_CO2
+# This is where the data are and where the plots will go
+Dir <- here("El_Nino_Southern_Oscillation")
+```
+
+```{r}
+#| include: false
+### Load data
+ONI_full <- read_csv(file = paste(Dir, '/ONI_', RptYr, '.csv', sep = ""))
+```
+
+```{r}
+#| include: false
+### Round data to the tenth of a degree
+ONI_rounded <- round(ONI_full$ANOM, digits = 1)
+```
+
+```{r}
+#| include: false
+### Identifying El Niños and La Niñas, based on the criterion that they persist for at least 5 consecutive seasons
+ElNino_idx = which(ONI_rounded >= 0.5);
+LaNina_idx = which(ONI_rounded <= -0.5);
+Neutral_idx = which(ONI_rounded > -0.5 & ONI_rounded < 0.5);
+ElNino <- array(0, dim = c(length(ONI_rounded), 3))
+LaNina <- array(0, dim = c(length(ONI_rounded), 3))
+Neutral <- array(0, dim = c(length(ONI_rounded), 3))
+
+ElNino[ElNino_idx] = ONI_rounded[ElNino_idx]
+LaNina[LaNina_idx] = ONI_rounded[LaNina_idx]
+Neutral[Neutral_idx] = ONI_rounded[Neutral_idx]
+
+if (ElNino[1,1] > 0) {
+  ElNino[1,2] = 1
+  ElNino[1,3] = 1
+}
+
+if (LaNina[1,1] < 0) {
+  LaNina[1,2] = 1
+  LaNina[1,3] = 1
+}
+    
+if (Neutral[1,1] != 0) {
+  Neutral[1,2] = 1
+  Neutral[1,3] = 1
+}
+
+for (r in seq(2, length(ONI_rounded), 1)) {
+  if (ElNino[r,1] > 0) {
+    ElNino[r,2] = 1
+    ElNino[r,3] = ElNino[r,2] + ElNino[r - 1,3]
+  }
+  
+  if (LaNina[r,1] < 0) {
+    LaNina[r,2] = 1
+    LaNina[r,3] = LaNina[r,2] + LaNina[r - 1,3]
+  }
+  
+  if (Neutral[r,1] != 0) {
+    Neutral[r,2] = 1
+    Neutral[r,3] = Neutral[r,2] + Neutral[r - 1,3]
+  }
+}
+
+
+for (l in seq(4, 1, -1)) {
+  for (r in seq(2, length(ONI_rounded), 1)) {
+   if (ElNino[r,3] == 0 && ElNino[r - 1,3] <= l) {
+     ElNino[r - 1,3] = 0
+   }
+   if (LaNina[r,3] == 0 && LaNina[r - 1,3] <= l) {
+      LaNina[r - 1,3] = 0
+   }
+   if (Neutral[r,3] == 0 && Neutral[r - 1,3] <= l) {
+      Neutral[r - 1,3] = 0
+   }
+  }
+}
+
+pos_idx = which(ElNino[,3] == 0)
+ElNino[pos_idx,1] = NA
+neg_idx = which(LaNina[,3] == 0)
+LaNina[neg_idx,1] = NA
+neu_idx = which(Neutral[,3] == 0)
+Neutral[neu_idx,1] = NA
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# Pull out the values we need for the report 
+yr_of_int <- which(ONI_full$YR == RptYr)
+prev_yrs <- which(ONI_full$YR < RptYr)
+all_yrs <- which(ONI_full$YR <= RptYr)
+monthly_min_RptYr <- min(ONI_full$ANOM[yr_of_int])
+monthly_min_PrevYrs <- min(ONI_full$ANOM[prev_yrs])
+monthly_max_RptYr <- max(ONI_full$ANOM[yr_of_int])
+monthly_max_PrevYrs <- max(ONI_full$ANOM[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The highest monthly value was in the report year.')
+}
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The lowest monthly value was in the report year.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Note: plotting the neutral phases is just an error check, not part of the final figure
+
+# x-axes
+# Identify time period from Jan 2000 forward
+x_2000 <- which(ONI_full$YR >= 2000)
+x_all <- which(ONI_full$YR <= 2022)
+
+# Create axes limit values, to make things simpler
+ONI_xlim_full <- c(1, length(ONI_rounded))
+ONI_xlim_2000 <- c(min(x_2000), max(x_2000))
+ONI_ylim <- c(-3, 3)
+
+# Plot
+pdf(paste(Dir, '/ONI_ts_full_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+plot(x_all, ONI_rounded[x_all], type = "l", lwd = 2, col = "#D0D0D0", 
+     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(x_all, ElNino[x_all], type = "l", lwd = 2, col = "red", 
+     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(x_all, LaNina[x_all], type = "l", lwd = 2, col = "blue", 
+     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(x_all, Neutral[x_all], type = "l", lwd = 2, col = "yellow", 
+#      xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(c(min(x_all), max(x_all)), c(0, 0), type = "l", lwd = 1, col = "black", 
+     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = c(seq(1, max(x_all) - 35, 120), max(x_all) - 11), tck = 0.025, labels = c(seq(1950, 2020, 10), 2022))
+axis((2), at = c(seq(-3, 3, 1)), tck = 0.025, las = 1)
+axis((3), at = c(seq(1, max(x_all) - 35, 120), max(x_all) - 11), tck = 0.025, labels = FALSE)
+axis((4), at = c(seq(-3, 3, 1)), tck = 0.025, labels = FALSE)
+dev.off()
+
+pdf(paste(Dir, '/ONI_ts_2000s_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+plot(x_2000, ONI_rounded[x_2000], type = "l", lwd = 2, col = "#D0D0D0", 
+     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(x_2000, ElNino[x_2000], type = "l", lwd = 2, col = "red", 
+     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(x_2000, LaNina[x_2000], type = "l", lwd = 2, col = "blue", 
+     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(x_2000, Neutral[x_2000], type = "l", lwd = 2, col = "yellow", 
+#     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+#     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(c(min(x_2000), max(x_2000)), c(0, 0), type = "l", lwd = 1, col = "black", 
+     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = c(seq(min(x_2000), max(x_2000) - 35, 60), max(x_2000) - 11), tck = 0.025, labels = c(seq(2000, 2020, 5), 2022))
+axis((2), at = c(seq(-3, 3, 1)), tck = 0.025, las = 1)
+axis((3), at = c(seq(min(x_2000), max(x_2000) - 35, 60), max(x_2000) - 11), tck = 0.025, labels = FALSE)
+axis((4), at = c(seq(-3, 3, 1)), tck = 0.025, labels = FALSE)
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries. 
+
+Status: The Oceanic Niño Index (ONI) indicated La Niña conditions throughout `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
+
+Description: The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.
+
+Timeframe: Three-month running average.
+
+Region/Location: Niño 3.4 region, 5°S – 5°N, 120° – 170°W.
+
+Measurement Platform: *In-situ* station, satellite, model.
+
+Data available at: <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>. 
+
+Sourced from NOAA CPC (2023).
+
+Graphics produced in part using Stawitz 2022.
+
+## Additional Information
+
+Data were manually copied and pasted into a .csv.  These data have precision to the hundredth of a degree.  They are subsequently rounded in this script to match the data on the more commonly used [CPC site](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php), which are rounded to the tenth of a degree.  
+
+No data are saved for the Council portal because ONI isn't examined as an annual mean.

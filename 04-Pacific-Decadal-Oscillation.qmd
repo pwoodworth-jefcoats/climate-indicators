@@ -1,0 +1,155 @@
+---
+title: "Pacific_Decadal_Oscillation"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## PACIFIC DECADAL OSCILLATION
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Atmospheric_CO2
+# This is where the data are and where the plots will go
+Dir <- here("Pacific_Decadal_Oscillation")
+```
+
+```{r}
+#| include: false
+### Load data
+PDO_full <- read_csv(file = paste(Dir, '/PDO_', RptYr, '.csv', sep = ""))
+```
+
+```{r}
+#| include: false
+### Rename the PDO column to something reasonable
+PDO_full <- rename(PDO_full, PDO = `PDO from ERSST V5 https://psl.noaa.gov/pdo/ Using EOF from 1920 to 2014 for N Pacific (see webpage)`)
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# Pull out the values we need for the report 
+yr_of_int <- which(year(PDO_full$Date) == RptYr)
+prev_yrs <- which(year(PDO_full$Date) < RptYr)
+all_yrs <- which(year(PDO_full$Date) <= RptYr)
+monthly_min_RptYr <- min(PDO_full$PDO[yr_of_int])
+monthly_min_PrevYrs <- min(PDO_full$PDO[prev_yrs])
+monthly_max_RptYr <- max(PDO_full$PDO[yr_of_int])
+monthly_max_PrevYrs <- max(PDO_full$PDO[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The highest monthly value was in the report year.')
+}
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The lowest monthly value was in the report year.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# x-axes
+# Identify time period from Jan 2000 forward
+x_2000 <- which(year(PDO_full$Date) >= 2000 & year(PDO_full$Date) <=  RptYr)
+x_all <- which(year(PDO_full$Date) <= RptYr)
+
+# Create axes limit values, to make things simpler
+PDO_xlim_full <- c(min(PDO_full$Date[x_all]), max(PDO_full$Date[x_all]))
+PDO_xlim_2000 <- c(min(PDO_full$Date[x_2000]), max(PDO_full$Date[x_2000]))
+PDO_ylim <- c(-5, 5)
+
+# Identify positive and negative values
+pos_PDO_full = which(PDO_full$PDO[x_all] > 0)
+pos_PDO_2000 = which(PDO_full$PDO[x_2000] > 0)
+neg_PDO_full = which(PDO_full$PDO[x_all] < 0)
+neg_PDO_2000 = which(PDO_full$PDO[x_2000] < 0)
+
+# Write a function to make a stem plot
+stem <- function(x, y, stemcol, x_lim, y_lim, x_lab = " ", y_lab = " ") {
+  for (m in seq(1, length(x), 1)) {
+    plot(c(x[m], x[m]), c(0, y[m]), type = "l", lwd = 1, col = stemcol,
+                          xlim = x_lim, ylim = y_lim, xlab = x_lab, ylab = y_lab, 
+                          xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+    par(new = TRUE)
+  }
+}
+# Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/ for inspiration!
+  
+# Plot
+pdf(paste(Dir, '/PDO_ts_full_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+stem(PDO_full$Date[x_all[pos_PDO_full]], PDO_full$PDO[x_all[pos_PDO_full]], "red", 
+     PDO_xlim_full, PDO_ylim)
+par(new = TRUE)
+stem(PDO_full$Date[x_all[neg_PDO_full]], PDO_full$PDO[x_all[neg_PDO_full]], "blue", 
+     PDO_xlim_full, PDO_ylim)
+par(new = TRUE)
+plot(PDO_xlim_full, c(0, 0), type = "l", lwd = 1, col = "black", 
+     xlim = PDO_xlim_full, ylim = PDO_ylim, xlab = 'Year', ylab = 'Pacific Decadal Oscillation (PDO)',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = make_date(c(1854, seq(1860, 2020, 20), RptYr)), tck = 0.025, labels = year(make_date(c(1854, seq(1860, 2020, 20), RptYr))))
+axis((2), at = c(seq(-5, 5, 1)), tck = 0.025, las = 1)
+axis((3), at = make_date(c(1854, seq(1860, 2020, 20), RptYr)), tck = 0.025, labels = FALSE)
+axis((4), at = c(seq(-5, 5, 1)), tck = 0.025, labels = FALSE)
+dev.off()
+
+pdf(paste(Dir, '/PDO_ts_2000s_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+stem(PDO_full$Date[x_2000[pos_PDO_2000]], PDO_full$PDO[x_2000[pos_PDO_2000]], "red", 
+     PDO_xlim_2000, PDO_ylim)
+par(new = TRUE)
+stem(PDO_full$Date[x_2000[neg_PDO_2000]], PDO_full$PDO[x_2000[neg_PDO_2000]], "blue", 
+     PDO_xlim_2000, PDO_ylim)
+par(new = TRUE)
+plot(PDO_xlim_2000, c(0, 0), type = "l", lwd = 1, col = "black", 
+     xlim = PDO_xlim_2000, ylim = PDO_ylim, xlab = 'Year', ylab = 'Pacific Decadal Oscillation (PDO)',
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = make_date(c(seq(2000, 2020, 5), RptYr)), tck = 0.025, labels = year(make_date(c(seq(2000, 2020, 5), RptYr))))
+axis((2), at = c(seq(-5, 5, 1)), tck = 0.025, las = 1)
+axis((3), at = make_date(c(seq(2000, 2020, 5), RptYr)), tck = 0.025, labels = FALSE)
+axis((4), at = c(seq(-5, 5, 1)), tck = 0.025, labels = FALSE)
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+Rationale: The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. 
+
+Status: The PDO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.
+
+Description: The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from NOAA (2023b). 
+
+Timeframe: Monthly.
+
+Region/Location: Pacific Basin north of 20°N.
+
+Measurement Platform: *In-situ* station, satellite, model.
+
+Data available at: <https://psl.noaa.gov/pdo/>. 
+
+Sourced from NOAA (2023b), Mantua (1997), and Newman (2016).
+
+Graphics produced in part using Stawitz 2022.
+
+## Additional Information
+
+The 'PDO ERSST V5' csv time series data were downloaded and manually renamed.  The original file name is pdo.timeseries.ersstv5.csv.
+
+No data are saved for the Council portal because the PDO isn't examined as an annual mean.

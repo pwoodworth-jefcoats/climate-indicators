@@ -95,7 +95,7 @@ coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
 pal <- c(oceans[3], oceans[1], secondary[4], coral[3])
 
 # Plot
-pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 plot(atm_co2$`decimal date`[all_yrs], atm_co2$deseasonalized[all_yrs], type = "l", lwd = 2, col = secondary[4], 
      xlim = CO2_xlim, ylim = CO2_ylim, xlab = "Year", ylab = "Parts per Million (ppm)", 
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")

@@ -130,7 +130,7 @@ ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
 pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
 
 # Plot
-pdf(paste(Dir, '/Oceanic_pH_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/Oceanic_pH_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 plot(make_date(ann_pH$Year, 6), ann_pH$pH, type = "l", lwd = 2, col = ann_grey,
      xlim = pH_xlim, ylim = pH_ylim, xlab = "Year", ylab = "pH",
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")

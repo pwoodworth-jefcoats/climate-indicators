@@ -149,7 +149,7 @@ ONI_xlim_2000 <- c(min(x_2000), max(x_2000))
 ONI_ylim <- c(-3, 3)
 
 # Plot
-pdf(paste(Dir, '/ONI_ts_full_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/ONI_ts_full_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 plot(x_all, ONI_rounded[x_all], type = "l", lwd = 2, col = "#D0D0D0", 
      xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
@@ -175,7 +175,7 @@ axis((3), at = c(seq(1, max(x_all) - 35, 120), max(x_all) - 11), tck = 0.025, la
 axis((4), at = c(seq(-3, 3, 1)), tck = 0.025, labels = FALSE)
 dev.off()
 
-pdf(paste(Dir, '/ONI_ts_2000s_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/ONI_ts_2000s_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 plot(x_2000, ONI_rounded[x_2000], type = "l", lwd = 2, col = "#D0D0D0", 
      xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
@@ -220,7 +220,7 @@ Data available at: <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>.
 
 Sourced from NOAA CPC (2023).
 
-Graphics produced in part using Stawitz 2022.
+Graphics produced in part using Stawitz (2022).
 
 ## Additional Information
 

@@ -95,7 +95,7 @@ stem <- function(x, y, stemcol, x_lim, y_lim, x_lab = " ", y_lab = " ") {
 # Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/ for inspiration!
   
 # Plot
-pdf(paste(Dir, '/PDO_ts_full_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/PDO_ts_full_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 stem(PDO_full$Date[x_all[pos_PDO_full]], PDO_full$PDO[x_all[pos_PDO_full]], "red", 
      PDO_xlim_full, PDO_ylim)
 par(new = TRUE)
@@ -111,7 +111,7 @@ axis((3), at = make_date(c(1854, seq(1860, 2020, 20), RptYr)), tck = 0.025, labe
 axis((4), at = c(seq(-5, 5, 1)), tck = 0.025, labels = FALSE)
 dev.off()
 
-pdf(paste(Dir, '/PDO_ts_2000s_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
+pdf(paste(Dir, '/PDO_ts_2000s_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
 stem(PDO_full$Date[x_2000[pos_PDO_2000]], PDO_full$PDO[x_2000[pos_PDO_2000]], "red", 
      PDO_xlim_2000, PDO_ylim)
 par(new = TRUE)
@@ -146,7 +146,7 @@ Data available at: <https://psl.noaa.gov/pdo/>.
 
 Sourced from NOAA (2023b), Mantua (1997), and Newman (2016).
 
-Graphics produced in part using Stawitz 2022.
+Graphics produced in part using Stawitz (2022).
 
 ## Additional Information
 

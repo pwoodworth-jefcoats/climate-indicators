@@ -27,7 +27,7 @@ Feely et al. (2016): Feely, R.A., Alin, S.R., Carter, B., Bednarsek, N., Hales, 
 Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii Ocean Time-series (HOT) program: Background,
 rationale and field implementation. Deep-Sea Research II, 43(2-3): 129-156.
 
-HOT 2022: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 23 February 2023.
+HOT 2023: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 23 February 2023.
 
 Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code available at: <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>, Accessed: 21 March 2023.
 
@@ -40,4 +40,11 @@ NOAA (2023b) = NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <h
 Manuta (1997) = Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079. 
 
 Newman (2016) = Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1
+
+### Tropical Cyclones
+Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1
+
+Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 14 March 2022].
+
+NOAA (2023c) = NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 29 March 2023, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>
 

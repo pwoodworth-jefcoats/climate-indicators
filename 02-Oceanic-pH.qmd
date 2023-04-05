@@ -190,9 +190,9 @@ Measurement Platform: *In-situ* station.
 
 Data available at: <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>. 
 
-Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi Ocean Time Series as described in Karl and Lukas (1996) and on its website (HOT 2022) using the methodology provided by Zeebe and Wolf-Gladrow (2001).
+Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi Ocean Time Series as described in Karl and Lukas (1996) and on its website (HOT 2023) using the methodology provided by Zeebe and Wolf-Gladrow (2001).
 
-Graphics produced in part using Stawitz 2022.
+Graphics produced in part using Stawitz (2022).
 
 ## Additional Information
 

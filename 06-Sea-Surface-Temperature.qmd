@@ -1,0 +1,255 @@
+---
+title: "Sea_Surface_Temperature"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Sea Surface Temperature
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Sea_Surface_Temperature
+# This is where the data are and where the plots will go
+Dir <- here("Sea_Surface_Temperature")
+```
+
+```{r}
+#| include: false
+### Load data
+# Monthly SST
+# Generated in ~5-yr batches due to memory limitations
+SST_8590 <- read_delim(file = paste(Dir, '/sst_ts_8590.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_9195 <- read_delim(file = paste(Dir, '/sst_ts_9195.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_9600 <- read_delim(file = paste(Dir, '/sst_ts_9600.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_0105 <- read_delim(file = paste(Dir, '/sst_ts_0105.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_0610 <- read_delim(file = paste(Dir, '/sst_ts_0610.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_1115 <- read_delim(file = paste(Dir, '/sst_ts_1115.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_1620 <- read_delim(file = paste(Dir, '/sst_ts_1620.dat', sep = ""), skip = 8, col_names = FALSE)
+SST_2122 <- read_delim(file = paste(Dir, '/sst_ts_2122.dat', sep = ""), skip = 8, col_names = FALSE)
+
+# Concatonate
+SST_full <- rbind(SST_8590, SST_9195, SST_9600, SST_0105, SST_0610, SST_1115, SST_1620, SST_2122)
+```
+
+```{r}
+#| include: false
+# Remove seasonal means to calculate anomalies
+SST_climo <- matrix(NA, nrow = length(SST_full$X2), ncol = 1)
+for (m in seq(1,12,1)) {
+  mo_of_int <- which(month(dmy_hm(SST_full$X1)) == m)
+  SST_climo[mo_of_int,1] <- mean(SST_full$X2[mo_of_int])
+}
+
+SST_anom_ts <- SST_full$X2 - SST_climo
+```
+
+```{r}
+#| include: false
+### Linear fit 
+# Note that this assumes that observations are equally spaced in time, which they're  not
+n_obs <- seq(1, length(SST_full$X2), 1)
+SST_lm <- lm(SST_full$X2 ~ n_obs)
+SST_anom_lm <- lm(SST_anom_ts ~ n_obs)
+
+# Change over time
+delta_SST_lm <- SST_lm$fitted.values[length(n_obs)] - SST_lm$fitted.values[1]
+
+delta_SST_anom_lm <- SST_anom_lm$fitted.values[length(n_obs)] - 
+  SST_anom_lm$fitted.values[1]
+```
+
+```{r}
+#| include: false
+### Annual values
+yrs <- year(dmy_hm(SST_full$X1))
+SST_full <- bind_cols(SST_full, yrs)
+SST_full <- rename(SST_full, Date_Time = X1)
+SST_full <- rename(SST_full, SST_degC = X2)
+SST_full <- rename(SST_full, Year = ...3)
+
+# Add in anomaly to make things easier down the road
+SST_anom_ts <- as_tibble(SST_anom_ts)
+SST_full <- bind_cols(SST_full, SST_anom_ts)
+SST_full <- rename(SST_full, Anom = V1)
+
+ann_SST <- SST_full %>%
+  group_by(Year) %>%
+  summarise(SST_degC = mean(SST_degC, na.rm = TRUE))
+ann_anom <- SST_full %>%
+  group_by(Year) %>%
+  summarise(Anom = mean(Anom, na.rm = TRUE))
+ann_mean_RptYr <- ann_SST$SST_degC[which(ann_SST$Year == RptYr)]
+ann_anom_RptYr <- ann_anom$Anom[which(ann_SST$Year == RptYr)]
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# This section includes some error checks to prompt fixing the text
+if (any(summary(SST_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to monthly values is not signficant. Remove text related to the linear trend.')
+}
+
+if (any(summary(SST_anom_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to anomaly values is not signficant. Remove text related to the linear trend.')
+}
+
+# Pull out the MONTHLY values we need for the report & plots
+yr_of_int <- which(SST_full$Year == RptYr)
+prev_yrs <- which(SST_full$Year < RptYr)
+all_yrs <- which(SST_full$Year <= RptYr)
+monthly_max_RptYr <- max(SST_full$SST_degC[yr_of_int])
+monthly_min_RptYr <- min(SST_full$SST_degC[yr_of_int])
+monthly_max_PrevYrs <- max(SST_full$SST_degC[prev_yrs])
+monthly_min_PrevYrs <- min(SST_full$SST_degC[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The greatest monthly value was during the report year.  Revise text to reflect this.')
+}
+
+if (monthly_min_RptYr < monthly_min_PrevYrs) {
+  print('The lowest monthly value was during the report year.  Revise text to reflect this.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Create a vector that repeats the annual mean the same number of times as there are obs for the latest year
+# (although there are other ways to plot this piece)
+ann_mean_x12 <- rep(ann_mean_RptYr,length(yr_of_int))
+ann_anom_x12 <- rep(ann_anom_RptYr,length(yr_of_int))
+
+# Create axes limit values, to make things simpler
+SST_xlim <- c(min(dmy_hm(SST_full$Date_Time)), max(dmy_hm(SST_full$Date_Time)))
+ts_ylim <- c(17, 25)
+anom_ylim <- c(-1.5, 1.5)
+
+# Create color palette for easy reference 
+oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
+crustacean <- nmfspalette::nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+
+# Plot
+pdf(paste(Dir, '/SST_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_SST$Year, '0601 00:00', sep = "")), ann_SST$SST_degC, type = "l", lwd = 2, col = ann_grey,
+     xlim = SST_xlim, ylim = ts_ylim, xlab = "Year", ylab = "Sea Surface Temperature (Deg C)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[all_yrs]), SST_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = SST_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[all_yrs]), SST_full$SST_degC[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = SST_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[yr_of_int]), SST_full$SST_degC[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = SST_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[yr_of_int]), ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = SST_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_SST$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1985, 2022, 1))))
+axis((2), at = seq(17, 25, 1), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_SST$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(17,25,1), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1985 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1985 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+
+pdf(paste(Dir, '/SST_anom_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_anom$Year, '0601 00:00', sep = "")), ann_anom$Anom, type = "l", lwd = 2, col = ann_grey,
+     xlim = SST_xlim, ylim = anom_ylim, xlab = "Year", ylab = "Sea Surface Temperature Anomaly (Deg C)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[all_yrs]), SST_anom_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = SST_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[all_yrs]), SST_full$Anom[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = SST_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[yr_of_int]), SST_full$Anom[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = SST_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(SST_full$Date_Time[yr_of_int]), ann_anom_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = SST_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_SST$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1985, 2022, 1))))
+axis((2), at = seq(-1.5, 1.5, 0.5), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_SST$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(-1.5, 1.5, 0.5), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1985 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1985 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+```{r}
+#| include: false
+# Write csv for portal
+# Note that output csvs go in their own folder
+ann_SST <- rename(ann_SST, `Degrees C` = SST_degC)
+write_csv(ann_SST, file = paste(here(), '/PelagicClimate_', RptYr, '/SST_', RptYr, '.csv', sep = ""))
+
+ann_anom <- rename(ann_anom, `Degrees C` = Anom)
+write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/SSTanomaly_', RptYr, '.csv', sep = ""))
+```
+
+Rationale: Sea surface temperature is one of the most directly observable existing measures for tracking increasing ocean temperatures. SST varies in response to natural climate cycles such as the El Niño – Southern Oscillation (ENSO) and is rising as a result of anthropogenic climate change. Both short-term variability and long-term trends in SST impact the marine ecosystem. Understanding the mechanisms through which organisms are impacted and the time scales of these impacts is an area of active research.
+
+Status: Annual mean SST was `r signif(ann_mean_RptYr,3)` ºC in `r RptYr`. Over the period of record, SST across the longline fishing grounds has increased by `r signif(delta_SST_lm, 1)` ºC and the monthly SST anomaly increased by `r signif(delta_SST_anom_lm, 1)` ºC, both at a rate of roughly 0.02 ºC yr^-^^1^. Monthly SST values in `r RptYr` ranged from `r signif(monthly_min_RptYr, 3)`–`r signif(monthly_max_RptYr, 3)` ºC, within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 3)`–`r signif(monthly_max_PrevYrs, 3)` ºC). Overall, SST was above the long-term average across most of the Hawaiʻi longline region in `r RptYr`. The exception to this was a patch of slightly cooler waters in the southeastern corner of the fishing grounds where very little fishing takes place and the waters of the California Current where the fishery does not operate.
+
+Description: Satellite remotely sensed monthly sea surface temperature (SST) is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). A time series of monthly mean SST averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. CoralTemp data are used to calculate this indicator. 
+
+Timeframe: Monthly.
+
+Region/Location: Hawaiʻi longline region: 15° – 45°N, 180° – 120°W.
+
+Measurement Platform: Satellite.
+
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> 
+
+Sourced from: NOAA OceanWatch (2023a). Graphics produced in part using Stawitz (2022).
+
+## Additional Information
+A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~4.0 min) than negative (~-3.0 max). The residuals for the anomaly model were also fairly evenly distributed in terms of values, however they did appear to exhibit some periodicity.

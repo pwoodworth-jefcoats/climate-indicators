@@ -10,7 +10,7 @@ format:
 This list includes the full references for all the sources in the pelagic ocean and climate indicators, by indicator.
 
 ### Global
-Stawitz C (2022). nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
 
 ### Atmospheric Carbon Dioxide
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551
@@ -48,3 +48,12 @@ Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J
 
 NOAA (2023c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 29 March 2023, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>
 
+### Sea Surface Temperature
+NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+
+### Temperature at 200-300 m Depth
+APDRC (2023): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2023. 
+
+Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
+
+NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2023. 

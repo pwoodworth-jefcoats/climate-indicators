@@ -1,0 +1,240 @@
+---
+title: "Temperature_at_Depth"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Temperature at 200-300m Depth
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Sea_Surface_Temperature
+# This is where the data are and where the plots will go
+Dir <- here("Temperature_at_Depth")
+```
+
+```{r}
+#| include: false
+### Load data
+# Monthly temperature
+# Generated in ~5-yr batches due to memory limitations
+TatD_full <- read_delim(file = paste(Dir, '/T_at_200300_ts.dat', sep = ""), skip = 9, col_names = FALSE)
+```
+
+```{r}
+#| include: false
+# Remove seasonal means to calculate anomalies
+TatD_climo <- matrix(NA, nrow = length(TatD_full$X2), ncol = 1)
+for (m in seq(1,12,1)) {
+  mo_of_int <- which(month(dmy_hm(TatD_full$X1)) == m)
+  TatD_climo[mo_of_int,1] <- mean(TatD_full$X2[mo_of_int])
+}
+
+TatD_anom_ts <- TatD_full$X2 - TatD_climo
+```
+
+```{r}
+#| include: false
+### Linear fit 
+# Note that this assumes that observations are equally spaced in time, which they're  not
+n_obs <- seq(1, length(TatD_full$X2), 1)
+TatD_lm <- lm(TatD_full$X2 ~ n_obs)
+TatD_anom_lm <- lm(TatD_anom_ts ~ n_obs)
+
+# Change over time
+delta_TatD_lm <- TatD_lm$fitted.values[length(n_obs)] - TatD_lm$fitted.values[1]
+
+delta_TatD_anom_lm <- TatD_anom_lm$fitted.values[length(n_obs)] - TatD_anom_lm$fitted.values[1]
+```
+
+```{r}
+#| include: false
+### Annual values
+yrs <- year(dmy_hm(TatD_full$X1))
+TatD_full <- bind_cols(TatD_full, yrs)
+TatD_full <- rename(TatD_full, Date_Time = X1)
+TatD_full <- rename(TatD_full, TatD_degC = X2)
+TatD_full <- rename(TatD_full, Year = ...3)
+
+# Add in anomaly to make things easier down the road
+TatD_anom_ts <- as_tibble(TatD_anom_ts)
+TatD_full <- bind_cols(TatD_full, TatD_anom_ts)
+TatD_full <- rename(TatD_full, Anom = V1)
+
+ann_TatD <- TatD_full %>%
+  group_by(Year) %>%
+  summarise(TatD_degC = mean(TatD_degC, na.rm = TRUE))
+ann_anom <- TatD_full %>%
+  group_by(Year) %>%
+  summarise(Anom = mean(Anom, na.rm = TRUE))
+ann_mean_RptYr <- ann_TatD$TatD_degC[which(ann_TatD$Year == RptYr)]
+ann_anom_RptYr <- ann_anom$Anom[which(ann_TatD$Year == RptYr)]
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# This section includes some error checks to prompt fixing the text
+if (any(summary(TatD_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to monthly values is not signficant. Remove text related to the linear trend.')
+}
+
+if (any(summary(TatD_anom_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to anomaly values is not signficant. Remove text related to the linear trend.')
+}
+
+# Pull out the MONTHLY values we need for the report & plots
+yr_of_int <- which(TatD_full$Year == RptYr)
+prev_yrs <- which(TatD_full$Year < RptYr)
+all_yrs <- which(TatD_full$Year <= RptYr)
+monthly_max_RptYr <- max(TatD_full$TatD_degC[yr_of_int])
+monthly_min_RptYr <- min(TatD_full$TatD_degC[yr_of_int])
+monthly_max_PrevYrs <- max(TatD_full$TatD_degC[prev_yrs])
+monthly_min_PrevYrs <- min(TatD_full$TatD_degC[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The greatest monthly value was during the report year.  Revise text to reflect this.')
+}
+
+if (monthly_min_RptYr < monthly_min_PrevYrs) {
+  print('The lowest monthly value was during the report year.  Revise text to reflect this.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Create a vector that repeats the annual mean the same number of times as there are obs for the latest year
+# (although there are other ways to plot this piece)
+ann_mean_x12 <- rep(ann_mean_RptYr,length(yr_of_int))
+ann_anom_x12 <- rep(ann_anom_RptYr,length(yr_of_int))
+
+# Create axes limit values, to make things simpler
+TatD_xlim <- c(min(dmy_hm(TatD_full$Date_Time)), max(dmy_hm(TatD_full$Date_Time)))
+ts_ylim <- c(10.8, 11.7)
+anom_ylim <- c(-0.5, 0.5)
+
+# Create color palette for easy reference 
+oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
+crustacean <- nmfspalette::nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+
+# Plot
+pdf(paste(Dir, '/TempAtDepth_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_TatD$Year, '0601 00:00', sep = "")), ann_TatD$TatD_degC, type = "l", lwd = 2, col = ann_grey,
+     xlim = TatD_xlim, ylim = ts_ylim, xlab = "Year", ylab = "200-300m Temperature (Deg C)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_full$TatD_degC[all_yrs], type = "l", lwd = 2, col = oceans[3],      xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), TatD_full$TatD_degC[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1980, 2022, 1))))
+axis((2), at = seq(10.8, 11.7, 0.1), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(10.8, 11.7, 0.1), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1980 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1980 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+
+pdf(paste(Dir, '/TempAtDepth_anom_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_anom$Year, '0601 00:00', sep = "")), ann_anom$Anom, type = "l", lwd = 2, col = ann_grey,
+     xlim = TatD_xlim, ylim = anom_ylim, xlab = "Year", ylab = "200-300m Temperature Anomaly (Deg C)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_anom_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_full$Anom[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), TatD_full$Anom[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), ann_anom_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1980, 2022, 1))))
+axis((2), at = seq(-0.5, 0.5, 0.1), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(-0.5, 0.5, 0.1), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1980 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1980 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+```{r}
+#| include: false
+# Write csv for portal
+# Note that output csvs go in their own folder
+ann_TatD <- rename(ann_TatD, `Degrees C` = TatD_degC)
+write_csv(ann_TatD, file = paste(here(), '/PelagicClimate_', RptYr, '/Tat200to300m_', RptYr, '.csv', sep = ""))
+
+# Anomaly time series not included given that it tracks actual time series so closely.
+```
+
+Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.
+
+Status: In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r signif(delta_TatD_lm, 1)` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures north of about 30°N 0–0.5 °C above average. 
+
+Description: Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats. 
+
+Timeframe: Annual, monthly.
+
+Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.
+
+Measurement Platform: In-situ sensors, model.
+
+Sourced from: NOAA (2023d) and APDRC (2023).  Graphics produced in part using Stawitz (2022).
+
+## Additional Information
+A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~0.4 max) than negative (~-0.3 min). The residuals for the anomaly model were also fairly evenly distributed in terms of values.  Both sets of residual exhibited periodicity that closely track the time series pattern.

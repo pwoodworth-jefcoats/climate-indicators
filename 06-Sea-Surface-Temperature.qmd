@@ -252,4 +252,4 @@ Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_
 Sourced from: NOAA OceanWatch (2023a). Graphics produced in part using Stawitz (2022).
 
 ## Additional Information
-A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~4.0 min) than negative (~-3.0 max). The residuals for the anomaly model were also fairly evenly distributed in terms of values, however they did appear to exhibit some periodicity.
+A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~4.0 ma) than negative (~-3.0 min). The residuals for the anomaly model were also fairly evenly distributed in terms of values, however they did appear to exhibit some periodicity.

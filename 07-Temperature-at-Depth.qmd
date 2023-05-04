@@ -34,7 +34,6 @@ Dir <- here("Temperature_at_Depth")
 #| include: false
 ### Load data
 # Monthly temperature
-# Generated in ~5-yr batches due to memory limitations
 TatD_full <- read_delim(file = paste(Dir, '/T_at_200300_ts.dat', sep = ""), skip = 9, col_names = FALSE)
 ```
 

@@ -1,0 +1,250 @@
+---
+title: "Ocean_Color"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Ocean Color
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Sea_Surface_Temperature
+# This is where the data are and where the plots will go
+Dir <- here("Ocean_Color")
+```
+
+```{r}
+#| include: false
+### Load data
+# Monthly ocean color
+# Generated in ~5-yr batches due to memory limitations
+Chl_9802 <- read_delim(file = paste(Dir, '/chl_ts_9802.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_0307 <- read_delim(file = paste(Dir, '/chl_ts_0307.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_0812 <- read_delim(file = paste(Dir, '/chl_ts_0812.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_1317 <- read_delim(file = paste(Dir, '/chl_ts_1317.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_1822 <- read_delim(file = paste(Dir, '/chl_ts_1822.dat', sep = ""), skip = 8, col_names = FALSE)
+
+# Concatonate
+Chl_full <- rbind(Chl_9802, Chl_0307, Chl_0812, Chl_1317, Chl_1822)
+```
+
+```{r}
+#| include: false
+# Remove seasonal means to calculate anomalies
+Chl_climo <- matrix(NA, nrow = length(Chl_full$X2), ncol = 1)
+for (m in seq(1,12,1)) {
+  mo_of_int <- which(month(dmy_hm(Chl_full$X1)) == m)
+  Chl_climo[mo_of_int,1] <- mean(Chl_full$X2[mo_of_int])
+}
+
+Chl_anom_ts <- Chl_full$X2 - Chl_climo
+```
+
+```{r}
+#| include: false
+### Linear fit 
+# Note that this assumes that observations are equally spaced in time, which they're  not
+n_obs <- seq(1, length(Chl_full$X2), 1)
+Chl_lm <- lm(Chl_full$X2 ~ n_obs)
+Chl_anom_lm <- lm(Chl_anom_ts ~ n_obs)
+
+# Change over time
+delta_Chl_lm <- Chl_lm$fitted.values[length(n_obs)] - Chl_lm$fitted.values[1]
+
+delta_Chl_anom_lm <- Chl_anom_lm$fitted.values[length(n_obs)] - Chl_anom_lm$fitted.values[1]
+```
+
+```{r}
+#| include: false
+### Annual values
+yrs <- year(dmy_hm(Chl_full$X1))
+Chl_full <- bind_cols(Chl_full, yrs)
+Chl_full <- rename(Chl_full, Date_Time = X1)
+Chl_full <- rename(Chl_full, Chl_mgm3 = X2)
+Chl_full <- rename(Chl_full, Year = ...3)
+
+# Add in anomaly to make things easier down the road
+Chl_anom_ts <- as_tibble(Chl_anom_ts)
+Chl_full <- bind_cols(Chl_full, Chl_anom_ts)
+Chl_full <- rename(Chl_full, Anom = V1)
+
+ann_Chl <- Chl_full %>%
+  group_by(Year) %>%
+  summarise(Chl_mgm3 = mean(Chl_mgm3, na.rm = TRUE))
+ann_anom <- Chl_full %>%
+  group_by(Year) %>%
+  summarise(Anom = mean(Anom, na.rm = TRUE))
+ann_mean_RptYr <- ann_Chl$Chl_mgm3[which(ann_Chl$Year == RptYr)]
+ann_anom_RptYr <- ann_anom$Anom[which(ann_Chl$Year == RptYr)]
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# This section includes some error checks to prompt fixing the text
+if (any(summary(Chl_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to monthly values is not signficant. Remove text related to the linear trend.')
+}
+
+if (any(summary(Chl_anom_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to anomaly values is not signficant. Remove text related to the linear trend.')
+}
+
+# Pull out the MONTHLY values we need for the report & plots
+yr_of_int <- which(Chl_full$Year == RptYr)
+prev_yrs <- which(Chl_full$Year < RptYr)
+all_yrs <- which(Chl_full$Year <= RptYr)
+monthly_max_RptYr <- max(Chl_full$Chl_mgm3[yr_of_int])
+monthly_min_RptYr <- min(Chl_full$Chl_mgm3[yr_of_int])
+monthly_max_PrevYrs <- max(Chl_full$Chl_mgm3[prev_yrs])
+monthly_min_PrevYrs <- min(Chl_full$Chl_mgm3[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The greatest monthly value was during the report year.  Revise text to reflect this.')
+}
+
+if (monthly_min_RptYr < monthly_min_PrevYrs) {
+  print('The lowest monthly value was during the report year.  Revise text to reflect this.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Create a vector that repeats the annual mean the same number of times as there are obs for the latest year
+# (although there are other ways to plot this piece)
+ann_mean_x12 <- rep(ann_mean_RptYr,length(yr_of_int))
+ann_anom_x12 <- rep(ann_anom_RptYr,length(yr_of_int))
+
+# Create axes limit values, to make things simpler
+Chl_xlim <- c(min(dmy_hm(Chl_full$Date_Time)), max(dmy_hm(Chl_full$Date_Time)))
+ts_ylim <- c(0.07, 0.19)
+anom_ylim <- c(-0.035, 0.035)
+
+# Create color palette for easy reference 
+oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
+crustacean <- nmfspalette::nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+
+# Plot
+pdf(paste(Dir, '/Chl_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_Chl$Year, '0601 00:00', sep = "")), ann_Chl$Chl_mgm3, type = "l", lwd = 2, col = ann_grey,
+     xlim = Chl_xlim, ylim = ts_ylim, xlab = "Year", ylab = "Chlorophyll-a Concengration (mg m-3)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[all_yrs]), Chl_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = Chl_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[all_yrs]), Chl_full$Chl_mgm3[all_yrs], type = "l", lwd = 2, col = oceans[3],      xlim = Chl_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[yr_of_int]), Chl_full$Chl_mgm3[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = Chl_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[yr_of_int]), ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = Chl_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_Chl$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1998, 2022, 1))))
+axis((2), at = seq(0.07, 0.19, 0.01), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_Chl$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(0.07, 0.19, 0.01), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+
+pdf(paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_anom$Year, '0601 00:00', sep = "")), ann_anom$Anom, type = "l", lwd = 2, col = ann_grey,
+     xlim = Chl_xlim, ylim = anom_ylim, xlab = "Year", ylab = "Chlorophyll-a Concentration Anomaly (mg m3)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[all_yrs]), Chl_anom_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = Chl_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[all_yrs]), Chl_full$Anom[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = Chl_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[yr_of_int]), Chl_full$Anom[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = Chl_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(Chl_full$Date_Time[yr_of_int]), ann_anom_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = Chl_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_Chl$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1998, 2022, 1))))
+axis((2), at = seq(-0.035, 0.035, 0.01), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_Chl$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(-0.035, 0.035, 0.01), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+```{r}
+#| include: false
+# Write csv for portal
+# Note that output csvs go in their own folder
+ann_Chl <- rename(ann_Chl, `mg/m^3` = Chl_mgm3)
+write_csv(ann_Chl, file = paste(here(), '/PelagicClimate_', RptYr, '/CHL_', RptYr, '.csv', sep = ""))
+
+ann_anom <- rename(ann_anom, `mg/m^3` = Anom)
+write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/CHLanomaly_', RptYr, '.csv', sep = ""))
+```
+
+Rationale: Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.
+
+Status: The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r signif(delta_Chl_anom_lm, 1)`.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30 - 35°N.
+
+Description: Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).
+
+Timeframe: Monthly
+
+Region/Location: Hawaii longline region: 5° – 45°N, 180° – 120°W
+
+Measurement Platform: Satellite
+
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
+
+Sourced from: NOAA OceanWatch (2023b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz (2022).
+
+## Additional Information
+A plot of the residuals from the linear model for the anomalies showed that they were evenly distributed, although were more positive (~0.03 max) than negative (~-0.02 min). These residual exhibited periodicity that closely track the time series pattern.

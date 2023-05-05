@@ -56,4 +56,9 @@ APDRC (2023): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data
 
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
 
-NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2023. 
+NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2023.
+
+### Ocean Color
+NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+
+Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>

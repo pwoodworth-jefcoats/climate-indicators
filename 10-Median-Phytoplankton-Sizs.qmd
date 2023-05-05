@@ -1,0 +1,254 @@
+---
+title: "Median_Phytoplankton_Size"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Estimated Median Phytoplankton Size
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+# Note that there's a one year lag for HOTS data
+RptYr <- 2022
+
+# Set path to variable: Median_Phytoplankton_Size
+# This is where the data are and where the plots will go
+Dir <- here("Median_Phytoplankton_Size")
+```
+
+```{r}
+#| include: false
+### Load data
+# Monthly estimated median phytoplankton size
+# Generated in ~5-yr batches due to memory limitations
+med_phyto_9802 <- read_delim(file = paste(Dir, '/medphyto_ts_9802.dat', sep = ""), skip = 8, col_names = FALSE)
+med_phyto_0307 <- read_delim(file = paste(Dir, '/medphyto_ts_0307.dat', sep = ""), skip = 8, col_names = FALSE)
+med_phyto_0812 <- read_delim(file = paste(Dir, '/medphyto_ts_0812.dat', sep = ""), skip = 8, col_names = FALSE)
+med_phyto_1317 <- read_delim(file = paste(Dir, '/medphyto_ts_1317.dat', sep = ""), skip = 8, col_names = FALSE)
+med_phyto_1822 <- read_delim(file = paste(Dir, '/medphyto_ts_1822.dat', sep = ""), skip = 8, col_names = FALSE)
+
+# Concatonate
+med_phyto_full <- rbind(med_phyto_9802, med_phyto_0307, med_phyto_0812, med_phyto_1317, med_phyto_1822)
+```
+
+```{r}
+#| include: false
+# Remove seasonal means to calculate anomalies
+medphyto_climo <- matrix(NA, nrow = length(med_phyto_full$X2), ncol = 1)
+for (m in seq(1,12,1)) {
+  mo_of_int <- which(month(dmy_hm(med_phyto_full$X1)) == m)
+  medphyto_climo[mo_of_int,1] <- mean(med_phyto_full$X2[mo_of_int])
+}
+
+med_phyto_anom_ts <- med_phyto_full$X2 - medphyto_climo
+```
+
+```{r}
+#| include: false
+### Linear fit 
+# Note that this assumes that observations are equally spaced in time, which they're  not
+n_obs <- seq(1, length(med_phyto_full$X2), 1)
+medphyto_lm <- lm(med_phyto_full$X2 ~ n_obs)
+medphyto_anom_lm <- lm(med_phyto_anom_ts ~ n_obs)
+
+# Change over time
+delta_size_lm <- medphyto_lm$fitted.values[length(n_obs)] - medphyto_lm$fitted.values[1]
+delta_size_pct = (medphyto_lm$fitted.values[length(n_obs)] - medphyto_lm$fitted.values[1]) / 
+  medphyto_lm$fitted.values[1] * 100
+
+delta_size_anom_lm <- medphyto_anom_lm$fitted.values[length(n_obs)] - 
+  medphyto_anom_lm$fitted.values[1]
+```
+
+```{r}
+#| include: false
+### Annual values
+yrs <- year(dmy_hm(med_phyto_full$X1))
+med_phyto_full <- bind_cols(med_phyto_full, yrs)
+med_phyto_full <- rename(med_phyto_full, Date_Time = X1)
+med_phyto_full <- rename(med_phyto_full, ESD_um = X2)
+med_phyto_full <- rename(med_phyto_full, Year = ...3)
+
+# Add in anomaly to make things easier down the road
+med_phyto_anom_ts <- as_tibble(med_phyto_anom_ts)
+med_phyto_full <- bind_cols(med_phyto_full, med_phyto_anom_ts)
+med_phyto_full <- rename(med_phyto_full, Anom = V1)
+
+ann_size <- med_phyto_full %>%
+  group_by(Year) %>%
+  summarise(ESD_um = mean(ESD_um, na.rm = TRUE))
+ann_anom <- med_phyto_full %>%
+  group_by(Year) %>%
+  summarise(Anom = mean(Anom, na.rm = TRUE))
+ann_mean_RptYr <- ann_size$ESD_um[which(ann_size$Year == RptYr)]
+ann_anom_RptYr <- ann_anom$Anom[which(ann_size$Year == RptYr)]
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# This section includes some error checks to prompt fixing the text
+if (any(summary(medphyto_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to monthly values is not signficant. Remove text related to the linear trend.')
+}
+
+if (any(summary(medphyto_anom_lm)$coefficients[,4] > 0.05)) {
+  print('The linear fit to anomaly values is not signficant. Remove text related to the linear trend.')
+}
+
+# Pull out the MONTHLY values we need for the report & plots
+yr_of_int <- which(med_phyto_full$Year == RptYr)
+prev_yrs <- which(med_phyto_full$Year < RptYr)
+all_yrs <- which(med_phyto_full$Year <= RptYr)
+monthly_max_RptYr <- max(med_phyto_full$ESD_um[yr_of_int])
+monthly_min_RptYr <- min(med_phyto_full$ESD_um[yr_of_int])
+monthly_max_PrevYrs <- max(med_phyto_full$ESD_um[prev_yrs])
+monthly_min_PrevYrs <- min(med_phyto_full$ESD_um[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The greatest monthly value was during the report year.  Revise text to reflect this.')
+}
+
+if (monthly_min_RptYr < monthly_min_PrevYrs) {
+  print('The lowest monthly value was during the report year.  Revise text to reflect this.')
+}
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Create a vector that repeats the annual mean the same number of times as there are obs for the latest year
+# (although there are other ways to plot this piece)
+ann_mean_x12 <- rep(ann_mean_RptYr,length(yr_of_int))
+ann_anom_x12 <- rep(ann_anom_RptYr,length(yr_of_int))
+
+# Create axes limit values, to make things simpler
+sz_xlim <- c(min(dmy_hm(med_phyto_full$Date_Time)), max(dmy_hm(med_phyto_full$Date_Time)))
+ts_ylim <- c(1.1, 1.9)
+anom_ylim <- c(-0.15, 0.15)
+
+# Create color palette for easy reference 
+oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
+crustacean <- nmfspalette::nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+
+# Plot
+# pdf(paste(Dir, '/Median_Phyto_size_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_size$Year, '0601 00:00', sep = "")), ann_size$ESD_um, type = "l", lwd = 2, col = ann_grey,
+     xlim = sz_xlim, ylim = ts_ylim, xlab = "Year", ylab = "Median Phytoplankton Size (ESD in um)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[all_yrs]), medphyto_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = sz_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[all_yrs]), med_phyto_full$ESD_um[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = sz_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[yr_of_int]), med_phyto_full$ESD_um[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = sz_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[yr_of_int]), ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = sz_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_size$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1998, 2022, 1))))
+axis((2), at = seq(1.1, 1.9, 0.1), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_size$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(1.1, 1.9, 0.1), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+# dev.off()
+
+# pdf(paste(Dir, '/Median_Phyto_size_anom_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
+plot(ymd_hm(paste(ann_anom$Year, '0601 00:00', sep = "")), ann_anom$Anom, type = "l", lwd = 2, col = ann_grey,
+     xlim = sz_xlim, ylim = anom_ylim, xlab = "Year", ylab = "Median Phytoplankton Size Anomaly (ESD in um)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[all_yrs]), medphyto_anom_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
+     xlim = sz_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[all_yrs]), med_phyto_full$Anom[all_yrs], type = "l", lwd = 2, col = oceans[3], 
+     xlim = sz_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[yr_of_int]), med_phyto_full$Anom[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
+     xlim = sz_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(dmy_hm(med_phyto_full$Date_Time[yr_of_int]), ann_anom_x12, type = "l", lwd = 2, col = coral[3], 
+     xlim = sz_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = ymd_hm(paste(ann_size$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1998, 2022, 1))))
+axis((2), at = seq(-0.15, 0.15, 0.05), tck = 0.025, las = 1)
+axis((3), at = ymd_hm(paste(ann_size$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
+axis((4), at = seq(-0.15, 0.15, 0.05), tck = 0.025, labels = FALSE)
+legend(x = "bottomright", 
+       legend = c(paste("Monthly average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Monthly average, ", RptYr, sep = ""),
+                  paste("Annual average, 1998 - ", RptYr - 1, sep = ""), 
+                  paste("Annual average, ", RptYr, sep = ""),
+                  "Long-term trend"), 
+       lty = 1, lwd = 2,
+       col = pal, 
+       bty = "n")
+# dev.off()
+# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
+# bty = "n" removes the box around the legend
+```
+
+```{r}
+#| include: false
+# Write csv for portal
+# Note that output csvs go in their own folder
+ann_size <- rename(ann_size, `ESD in um` = ESD_um)
+write_csv(ann_size, file = paste(here(), '/PelagicClimate_', RptYr, '/MedianPhytoSize_', RptYr, '.csv', sep = ""))
+
+ann_anom <- rename(ann_anom, `ESD in um` = Anom)
+write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/MedianPhytoSizeAnomaly_', RptYr, '.csv', sep = ""))
+```
+
+Rationale: Phytoplankton are the base of the food web and their abundance influences the food available to all higher trophic levels from zooplankton through tuna and billfish. Some studies project that climate change will result in both fewer and smaller phytoplankton. This would reduce the food available to all members of the food web. Understanding trends in phytoplankton abundance and size structure, how they are influenced by oceanographic conditions, and how they influence fish abundance and size structure are areas of active research.
+
+Status: The mean monthly phytoplankton cell size was `r signif(ann_mean_RptYr,3)` $\mu$m Equivalent Spherical Diameter (ESD) in `r RptYr`. Monthly mean cell size ranged from `r signif(monthly_min_RptYr,3)`–`r signif(monthly_max_RptYr,3)` $\mu$m ESD during the year, within the range of values observed over the period of record (`r signif(monthly_min_PrevYrs,3)`–`r signif(monthly_max_PrevYrs,3)` $\mu$m ESD). Over the period of record, there has been weakly significant decline in monthly median phytoplankton size. Over the time series, median phytoplankton size has declined by `r signif(delta_size_lm,2)` $\mu$m ESD, or by `r signif(delta_size_pct,2)`%. The monthly anomaly has declined as well, by `r signif(delta_size_anom_lm,2)` $\mu$m ESD. Average estimated median phytoplankton size was below average across much of the fishing grounds.  
+
+Description: Median phytoplankton cell size can be estimated from satellite remotely sensed SST and ocean color (Barnes et al. 2011). A time series of monthly median phytoplankton cell size averaged over the Hawaiʻi longline region is presented, as well as a time series of anomalies. NOAA CoralTemp (see SST indicator) and ESA CCI data (see ocean color indicator) are used to calculate median phytoplankton cell size.
+
+Timeframe: Monthly
+
+Region: Hawaii longline region: 15° – 45°N, 180° – 120°W
+
+Measurement Platform: Satellite
+
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>
+
+Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2023c). Graphics produced in part using Stawitz (2022).
+
+## Additional Information
+A plot of the residuals from the linear model showed that they were evenly distributed, although were more negative (~-0.39 min) than positive (~0.35 max). The residuals for the anomaly model were also fairly evenly distributed.

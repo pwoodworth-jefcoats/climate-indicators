@@ -72,3 +72,12 @@ NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-c
 
 Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic global feature defining migration and forage habitat for marine resources. Progress in Oceanography, 49, pp. 469-483.
 
+### Estimated Median Phytoplankton Size
+Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088
+
+NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+
+NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+
+
+

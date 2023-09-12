@@ -235,6 +235,39 @@ ann_anom <- rename(ann_anom, `Degrees C` = Anom)
 write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/SSTanomaly_', RptYr, '.csv', sep = ""))
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+
+# Add columns for month, variable ID, and units
+Month <- month(dmy_hm(SST_full$Date_Time))
+ID <- rep('SST', dim(SST_full)[1])
+Units <- rep('Deg C', dim(SST_full)[1])
+
+SST_dashboard <- bind_cols(SST_full$Date_Time, 
+                           SST_full$Year, 
+                           Month,
+                           SST_full$SST_degC,
+                           SST_full$Anom,
+                           ID,
+                           SST_lm$fitted.values,
+                           SST_anom_lm$fitted.values,
+                           Units)
+# Need to figure out how to render this unnecessary
+SST_dashboard <- rename(SST_dashboard, Date_Time = ...1)
+SST_dashboard <- rename(SST_dashboard, Year = ...2)
+SST_dashboard <- rename(SST_dashboard, Month = ...3)
+SST_dashboard <- rename(SST_dashboard, Value = ...4)
+SST_dashboard <- rename(SST_dashboard, Anom = ...5)
+SST_dashboard <- rename(SST_dashboard, ID = ...6)
+SST_dashboard <- rename(SST_dashboard, Value_lm = ...7)
+SST_dashboard <- rename(SST_dashboard, Anom_lm = ...8)
+SST_dashboard <- rename(SST_dashboard, Units = ...9)
+
+write_csv(SST_dashboard, file = here("Indicator_Dashboard", "Dashboard_Data.csv"))
+```
+
 Rationale: Sea surface temperature is one of the most directly observable existing measures for tracking increasing ocean temperatures. SST varies in response to natural climate cycles such as the El Niño – Southern Oscillation (ENSO) and is rising as a result of anthropogenic climate change. Both short-term variability and long-term trends in SST impact the marine ecosystem. Understanding the mechanisms through which organisms are impacted and the time scales of these impacts is an area of active research.
 
 Status: Annual mean SST was `r signif(ann_mean_RptYr,3)` ºC in `r RptYr`. Over the period of record, SST across the longline fishing grounds has increased by `r signif(delta_SST_lm, 1)` ºC and the monthly SST anomaly increased by `r signif(delta_SST_anom_lm, 1)` ºC, both at a rate of roughly 0.02 ºC yr^-^^1^. Monthly SST values in `r RptYr` ranged from `r signif(monthly_min_RptYr, 3)`–`r signif(monthly_max_RptYr, 3)` ºC, within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 3)`–`r signif(monthly_max_PrevYrs, 3)` ºC). Overall, SST was above the long-term average across most of the Hawaiʻi longline region in `r RptYr`. The exception to this was a patch of slightly cooler waters in the southeastern corner of the fishing grounds where very little fishing takes place and the waters of the California Current where the fishery does not operate.

@@ -230,6 +230,40 @@ ann_anom <- rename(ann_anom, `mg/m^3` = Anom)
 write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/CHLanomaly_', RptYr, '.csv', sep = ""))
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+
+# Add columns for month, variable ID, and units
+Month <- month(dmy_hm(Chl_full$Date_Time))
+ID <- rep('Chl', dim(Chl_full)[1])
+Units <- rep('mg chl per m3', dim(Chl_full)[1])
+Value_lm <- rep(NA, dim(Chl_full)[1]) # No significant trend in chl
+
+Chl_dashboard <- bind_cols(Chl_full$Date_Time, 
+                           Chl_full$Year, 
+                           Month,
+                           Chl_full$Chl_mgm3,
+                           Chl_full$Anom,
+                           ID,
+                           Value_lm, # Chl_lm$fitted.values,
+                           Chl_anom_lm$fitted.values,
+                           Units)
+# Need to figure out how to render this unnecessary
+Chl_dashboard <- rename(Chl_dashboard, Date_Time = ...1)
+Chl_dashboard <- rename(Chl_dashboard, Year = ...2)
+Chl_dashboard <- rename(Chl_dashboard, Month = ...3)
+Chl_dashboard <- rename(Chl_dashboard, Value = ...4)
+Chl_dashboard <- rename(Chl_dashboard, Anom = ...5)
+Chl_dashboard <- rename(Chl_dashboard, ID = ...6)
+Chl_dashboard <- rename(Chl_dashboard, Value_lm = ...7)
+Chl_dashboard <- rename(Chl_dashboard, Anom_lm = ...8)
+Chl_dashboard <- rename(Chl_dashboard, Units = ...9)
+
+write_csv(Chl_dashboard, file = here("Indicator_Dashboard", paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
 Rationale: Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.
 
 Status: The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r signif(delta_Chl_anom_lm, 1)`.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30 - 35°N.

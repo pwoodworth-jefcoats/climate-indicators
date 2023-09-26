@@ -17,6 +17,7 @@ library(here)
 library(plotly)
 library(viridis)
 library(htmltools)
+library(rmarkdown)
 ```
 
 ```{r, include = FALSE}
@@ -30,11 +31,12 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
                     'Median Phytoplankton Size' = 'MD50')
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, global = TRUE}
 ### Access indicator data
 # This will need to be built out to include additional indicators.
 # For now, just testing the framework.
-indicator_data <- read_csv(here('Indicator_Dashboard','Dashboard_Data.csv'))
+
+indicator_data <- read_csv(here('Indicator_Dashboard','Dashboard_Data_2022.csv'))
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -69,7 +71,7 @@ Indicators at a Glance
 ======================================================================
 
 ```{r}
-knitr::include_graphics(here("Indicator_Dashboard","Indicator-Table-2022-Monthly-Variables.png"))
+knitr::include_graphics(here("Indicator_Dashboard", "Indicator-Table-2022-Monthly-Variables.png"))
 ```
 
 Visualize Indicator
@@ -144,13 +146,30 @@ output$anom_ts <- renderPlotly({
 plotlyOutput('anom_ts')
 ```
 
-Row
+Row {align="center"}
 -----------------------------------------------------------------------
 
-### Map
+### Map 
 
 ```{r}
-knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
+#knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
+
+#expects image to be in the format f.ex. ./SST/SST_map_2022.png
+output$map <- renderImage({
+
+  # Select image
+  filename = here(input$indicator, paste(input$indicator, '_map_2022.png', sep = ''))
+  height <- session$clientData$output_map_height #dynamically adjust height 
+  
+  #Return a list containing filename and alt text
+  list(src = filename,
+       alt = "This is alternate text",
+       height = height)
+
+}, deleteFile = FALSE)
+
+imageOutput("map")
+
 ```
 
 ### Seasonal Cycle
@@ -178,10 +197,10 @@ plotlyOutput('seasonal_cycle')
 View Indicator Data
 ======================================================================
 
-Row
+Row {data-height=3}
 -----------------------------------------------------------------------
 
-### View Indicator Time Series
+### Indicator Time Series
 
 ```{r}
 renderTable({
@@ -210,60 +229,45 @@ renderTable({
 })
 ```
 
-### Download Indictor Time Series
-```{r}
-# https://shiny.posit.co/r/reference/shiny/1.0.4/downloadbutton
-# https://stackoverflow.com/questions/55345498/downloadbutton-width-in-r-flexdashboard
-
-# output$series_table <- downloadHandler({
-#   
-#   # Filter data
-#   indicator_data <- indicator_data %>% filter(ID == input$indicator)
-#   
-#   # Just get the indicator columns
-#   IndicatorTimeSeries <- indicator_data %>% select(Date_Time, Value)
-#   
-#   filename = function() {
-#     paste(indicator_data$ID[1], 'in', indicator_data$Units[1], Sys.Date(), '.csv', sep = '')
-#   },
-#   content = function(file_out) {
-#     write.csv(IndicatorTimeSeries, file_out, row.names = FALSE)
-#   }
-#   
-# })
-# 
-# downloadButton('series_table', 'Download Time Series')
-```
+Row {data-height=1}
+-----------------------------------------------------------------------
 
 ```{r}
 # Create placeholder for the downloadButton
-# uiOutput("downloadUI")
+uiOutput("downloadUI")
 ```
 
 ```{r}
 # Create the actual downloadButton
-# output$downloadUI <- renderUI( {
-#   downloadButton("series_table", "Download Time Series") # , style = "width:100%;")
-#   
-#   # Filter data
-#   indicator_data <- indicator_data %>% filter(ID == input$indicator)
-# 
-#   # Just get the indicator columns
-#   IndicatorTimeSeries <- indicator_data %>% select(Date_Time, Value)
-# })
-# 
-# # Add download handling
-# output$series_table <- downloadHandler(
-#   filename = function() {
-#     paste(indicator_data$ID[1], 'in', indicator_data$Units[1], Sys.Date(), '.csv', sep = '')
-#   },
-#   content = function(file_out) {
-#     write.csv(IndicatorTimeSeries, file_out, row.names = FALSE)
-#   }
-# )
+output$downloadUI <- renderUI( {
+  downloadButton("downBtn", "Download time series data", style = paste("width: 220px;",
+                                                                       "background-color:", pal[1], ";",
+                                                                       "border-color:", pal[1], ";",
+                                                                       "align: right;",
+                                                                       "margin: 0px 0px 8px 0px;",
+                                                                       sep =""))
+})
+
+# Add download handling
+output$downBtn <- downloadHandler(
+  filename = function() {
+    
+    indicator_data <- indicator_data %>% filter(ID == input$indicator) 
+    paste(indicator_data$ID[1], 'in', str_remove(indicator_data$Units[1], " "), Sys.Date(), '.csv', sep = '_')
+    
+  },
+  content = function(file_out) {
+    
+    #select indicator of interest and export only time and value
+    data_for_dl <- indicator_data %>% 
+      filter(ID == input$indicator) %>% 
+      select(Date_Time, Value)
+    
+    write.csv(data_for_dl, file_out, row.names = FALSE)
+})
 ```
 
-Row
+Row {data-height=3}
 -----------------------------------------------------------------------
 
 ### Anomaly Time Series
@@ -281,20 +285,54 @@ renderTable({
 })
 ```
 
-### Download Anomaly Time Series
+Row {data-height=1}
+-----------------------------------------------------------------------
+
 ```{r}
+# Create placeholder for the downloadButton
+uiOutput("downloadUIAnom")
+```
+
+```{r}
+# Create the actual downloadButton
+output$downloadUIAnom <- renderUI( {
+  downloadButton("downBtnAnom", "Download anomaly data", style = paste("width: 220px;",
+                                                                       "background-color:", pal[1], ";",
+                                                                       "border-color:", pal[1], ";",
+                                                                       "align: right;",
+                                                                       "margin: 0px 0px 8px 0px;",
+                                                                       sep =""))
+})
+
+# Add download handling
+output$downBtnAnom <- downloadHandler(
+  filename = function() {
+    indicator_data <- indicator_data %>% filter(ID == input$indicator)
+    paste(indicator_data$ID[1], 'in', str_remove(indicator_data$Units[1], " "), Sys.Date(), 'Anomaly.csv', sep = '_')
+  },
+  content = function(file_out) {
+    
+    #select indicator of interest and export only time and value
+    data_for_dl <- indicator_data %>% 
+      filter(ID == input$indicator) %>% 
+      select(Date_Time, Anom)
+    
+    write.csv(data_for_dl, file_out, row.names = FALSE)
+})
 ```
 
 About the Indicator
 ======================================================================
 ```{r}
 Indicator_Description <- reactive({
-  indicator_data <- indicator_data %>% filter(ID == input$indicator)
+  indicator_desc <- indicator_data %>% filter(ID == input$indicator)
   # htmltools::includeMarkdown(here('Indicator_Dashboard',paste(indicator_data$ID[1], '_description.md', sep = '')))
- includeMarkdown(here('Indicator_Dashboard',paste(indicator_data$ID[1], '_description.md', sep = '')))
+  includeMarkdown(path = here('Indicator_Dashboard', paste(indicator_desc$ID[1], '_description.md', sep = '')))
 })
-renderText({Indicator_Description()})
-  # indicator_data <- indicator_data %>% filter(ID == input$indicator)
+
+renderUI({Indicator_Description()}) #renderUI needed here instead of renderText
+
+# indicator_data <- indicator_data %>% filter(ID == input$indicator)
 # Try htmltools::includeMarkdown('about.md')
 # htmltools::includeMarkdown(here('Indicator_Dashboard','TestMarkdown.md'))
 ```

@@ -17,6 +17,7 @@ library(here)
 library(plotly)
 library(viridis)
 library(htmltools)
+library(rmarkdown)
 ```
 
 ```{r, include = FALSE}
@@ -30,11 +31,12 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
                     'Median Phytoplankton Size' = 'MD50')
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, global = TRUE}
 ### Access indicator data
 # This will need to be built out to include additional indicators.
 # For now, just testing the framework.
-indicator_data <- read_csv(here('Indicator_Dashboard','Dashboard_Data.csv'))
+
+indicator_data <- read_csv(here('Indicator_Dashboard','Dashboard_Data_2022.csv'))
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -43,7 +45,10 @@ oceans <- nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
 crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
 ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
-pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+#pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
+pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[2]) #making some tweaks for visibility
+
 ```
 
 Sidebar {.sidebar}
@@ -69,13 +74,13 @@ Indicators at a Glance
 ======================================================================
 
 ```{r}
-knitr::include_graphics(here("Indicator_Dashboard","Indicator-Table-2022-Monthly-Variables.png"))
+knitr::include_graphics(here("images", "Indicator-Table-2022-Monthly-Variables.png"))
 ```
 
-Visualize Indicator
+Visualize Indicator {style="position:relative;" data-orientation=columns}
 ======================================================================
 
-Row
+Column {style="height:100pc;"}
 -----------------------------------------------------------------------
 
 ### Indicator Time Series
@@ -100,7 +105,10 @@ output$ts <- renderPlotly({
     add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Value,
               type = "scatter", mode = "lines", line = list(color = pal[3]),
               name = "Annual Mean") |>
-    layout(yaxis = list(title = indicator_data$Units[1])) # ,
+    layout(yaxis = list(title = indicator_data$Units[1],
+                        hoverformat = '.3f'),
+           hovermode = "x unified", 
+           hoverlabel = list(namelength = -1))
            # xaxis = list(title = " ", rangeslider = list(type = "date")))
   
   p1
@@ -108,9 +116,6 @@ output$ts <- renderPlotly({
 
 plotlyOutput('ts')
 ```
-
-Row
------------------------------------------------------------------------
 
 ### Anomaly Time Series
 
@@ -135,22 +140,16 @@ output$anom_ts <- renderPlotly({
     add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Anom,
               type = "scatter", mode = "lines", line = list(color = pal[3]),
               name = "Annual Mean") |>
-    layout(yaxis = list(title = indicator_data$Units[1]))#,
+    layout(yaxis = list(title = indicator_data$Units[1],
+                        hoverformat = '.3f'),
+           hovermode = "x unified", 
+           hoverlabel = list(namelength = -1))#,
            # xaxis = list(title = " ", rangeslider = list(type = "date")))
   
   p2
 })
 
 plotlyOutput('anom_ts')
-```
-
-Row
------------------------------------------------------------------------
-
-### Map
-
-```{r}
-knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
 ```
 
 ### Seasonal Cycle
@@ -161,12 +160,18 @@ output$seasonal_cycle <- renderPlotly({
   # Filter data
   indicator_data <- indicator_data %>% filter(ID == input$indicator)
 
-  Seasonal <- indicator_data |> group_by(Year)
+  #add month names
+  Seasonal <- indicator_data |> group_by(Year) |> mutate("Month_Abb" =  month.abb)
+  
+  #add month order
+  xform <- list(title = "", categoryorder = "array", categoryarray = month.abb)
 
-  p3 <- plot_ly(Seasonal, x = ~Month, y = ~Value, 
-                type = 'scatter', mode = 'markers', color = ~Year,
-                name = ~ID[1]) |>
-    layout(yaxis = list(title = indicator_data$Units[1]))
+  p3 <- plot_ly(Seasonal, x = ~Month_Abb, y = ~Value, 
+                type = 'scatter', mode = 'markers', color = ~Year, text = ~ID[1],
+                hovertemplate = paste('<b>%{text}</b>: %{y}',
+                                      '<br><b>Year</b>: %{marker.color}',
+                                      '<extra></extra>')) |>
+    layout(yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'), xaxis = xform)
   
   p3
 
@@ -175,13 +180,36 @@ output$seasonal_cycle <- renderPlotly({
 plotlyOutput('seasonal_cycle')
 ```
 
+### Map
+
+```{r}
+#knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
+
+#expects image to be in the format f.ex. ./images/SST_map_2022.png
+output$map <- renderImage({
+
+  # Select image
+  filename = here('images', paste(input$indicator, '_map_2022.png', sep = ''))
+  height <- session$clientData$output_map_height #dynamically adjust height 
+  
+  #Return a list containing filename and alt text
+  list(src = filename,
+       alt = "This is alternate text",
+       height = height)
+
+}, deleteFile = FALSE)
+
+imageOutput("map")
+
+```
+
 View Indicator Data
 ======================================================================
 
-Row
+Row {data-height=3}
 -----------------------------------------------------------------------
 
-### View Indicator Time Series
+### Indicator Time Series
 
 ```{r}
 renderTable({
@@ -210,60 +238,45 @@ renderTable({
 })
 ```
 
-### Download Indictor Time Series
-```{r}
-# https://shiny.posit.co/r/reference/shiny/1.0.4/downloadbutton
-# https://stackoverflow.com/questions/55345498/downloadbutton-width-in-r-flexdashboard
-
-# output$series_table <- downloadHandler({
-#   
-#   # Filter data
-#   indicator_data <- indicator_data %>% filter(ID == input$indicator)
-#   
-#   # Just get the indicator columns
-#   IndicatorTimeSeries <- indicator_data %>% select(Date_Time, Value)
-#   
-#   filename = function() {
-#     paste(indicator_data$ID[1], 'in', indicator_data$Units[1], Sys.Date(), '.csv', sep = '')
-#   },
-#   content = function(file_out) {
-#     write.csv(IndicatorTimeSeries, file_out, row.names = FALSE)
-#   }
-#   
-# })
-# 
-# downloadButton('series_table', 'Download Time Series')
-```
+Row {data-height=1}
+-----------------------------------------------------------------------
 
 ```{r}
 # Create placeholder for the downloadButton
-# uiOutput("downloadUI")
+uiOutput("downloadUI")
 ```
 
 ```{r}
 # Create the actual downloadButton
-# output$downloadUI <- renderUI( {
-#   downloadButton("series_table", "Download Time Series") # , style = "width:100%;")
-#   
-#   # Filter data
-#   indicator_data <- indicator_data %>% filter(ID == input$indicator)
-# 
-#   # Just get the indicator columns
-#   IndicatorTimeSeries <- indicator_data %>% select(Date_Time, Value)
-# })
-# 
-# # Add download handling
-# output$series_table <- downloadHandler(
-#   filename = function() {
-#     paste(indicator_data$ID[1], 'in', indicator_data$Units[1], Sys.Date(), '.csv', sep = '')
-#   },
-#   content = function(file_out) {
-#     write.csv(IndicatorTimeSeries, file_out, row.names = FALSE)
-#   }
-# )
+output$downloadUI <- renderUI( {
+  downloadButton("downBtn", "Download time series data", style = paste("width: 220px;",
+                                                                       "background-color:", pal[1], ";",
+                                                                       "border-color:", pal[1], ";",
+                                                                       "align: right;",
+                                                                       "margin: 0px 0px 8px 0px;",
+                                                                       sep =""))
+})
+
+# Add download handling
+output$downBtn <- downloadHandler(
+  filename = function() {
+    
+    indicator_data <- indicator_data %>% filter(ID == input$indicator) 
+    paste(indicator_data$ID[1], 'in', str_remove(indicator_data$Units[1], " "), Sys.Date(), '.csv', sep = '_')
+    
+  },
+  content = function(file_out) {
+    
+    #select indicator of interest and export only time and value
+    data_for_dl <- indicator_data %>% 
+      filter(ID == input$indicator) %>% 
+      select(Date_Time, Value)
+    
+    write.csv(data_for_dl, file_out, row.names = FALSE)
+})
 ```
 
-Row
+Row {data-height=3}
 -----------------------------------------------------------------------
 
 ### Anomaly Time Series
@@ -281,20 +294,54 @@ renderTable({
 })
 ```
 
-### Download Anomaly Time Series
+Row {data-height=1}
+-----------------------------------------------------------------------
+
 ```{r}
+# Create placeholder for the downloadButton
+uiOutput("downloadUIAnom")
+```
+
+```{r}
+# Create the actual downloadButton
+output$downloadUIAnom <- renderUI( {
+  downloadButton("downBtnAnom", "Download anomaly data", style = paste("width: 220px;",
+                                                                       "background-color:", pal[1], ";",
+                                                                       "border-color:", pal[1], ";",
+                                                                       "align: right;",
+                                                                       "margin: 0px 0px 8px 0px;",
+                                                                       sep =""))
+})
+
+# Add download handling
+output$downBtnAnom <- downloadHandler(
+  filename = function() {
+    indicator_data <- indicator_data %>% filter(ID == input$indicator)
+    paste(indicator_data$ID[1], 'in', str_remove(indicator_data$Units[1], " "), Sys.Date(), 'Anomaly.csv', sep = '_')
+  },
+  content = function(file_out) {
+    
+    #select indicator of interest and export only time and value
+    data_for_dl <- indicator_data %>% 
+      filter(ID == input$indicator) %>% 
+      select(Date_Time, Anom)
+    
+    write.csv(data_for_dl, file_out, row.names = FALSE)
+})
 ```
 
 About the Indicator
 ======================================================================
 ```{r}
 Indicator_Description <- reactive({
-  indicator_data <- indicator_data %>% filter(ID == input$indicator)
+  indicator_desc <- indicator_data %>% filter(ID == input$indicator)
   # htmltools::includeMarkdown(here('Indicator_Dashboard',paste(indicator_data$ID[1], '_description.md', sep = '')))
- includeMarkdown(here('Indicator_Dashboard',paste(indicator_data$ID[1], '_description.md', sep = '')))
+  includeMarkdown(path = here('Indicator_Dashboard', paste(indicator_desc$ID[1], '_description.md', sep = '')))
 })
-renderText({Indicator_Description()})
-  # indicator_data <- indicator_data %>% filter(ID == input$indicator)
+
+renderUI({Indicator_Description()}) #renderUI needed here instead of renderText
+
+# indicator_data <- indicator_data %>% filter(ID == input$indicator)
 # Try htmltools::includeMarkdown('about.md')
 # htmltools::includeMarkdown(here('Indicator_Dashboard','TestMarkdown.md'))
 ```

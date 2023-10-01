@@ -29,14 +29,16 @@ RptYr <- 2022
 # pH <- 
 # ENSO <- 
 # PDO <- 
-# TatD <- 
+TatD <- read_csv(here('Indicator_Dashboard', paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
 SST <- read_csv(here('Indicator_Dashboard', paste('SST_Dashboard_Data_', RptYr, '.csv', sep = ""))) 
 Chl <- read_csv(here('Indicator_Dashboard',paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
-# MD50 <- 
+MD50 <- read_csv(here('Indicator_Dashboard',paste('MD50_Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # Aggregate files
-Dashboard_Data <- bind_rows(SST,
-                            Chl)
+Dashboard_Data <- bind_rows(TatD,
+                            SST,
+                            Chl,
+                            MD50)
 
 # Save file
 write_csv(Dashboard_Data, file = here("Indicator_Dashboard", paste('Dashboard_Data_', RptYr, '.csv', sep = "")))

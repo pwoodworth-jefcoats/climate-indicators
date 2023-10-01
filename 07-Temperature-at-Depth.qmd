@@ -221,6 +221,41 @@ write_csv(ann_TatD, file = paste(here(), '/PelagicClimate_', RptYr, '/Tat200to30
 # Anomaly time series not included given that it tracks actual time series so closely.
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+
+# Add columns for month, variable ID, and units
+Month <- month(dmy_hm(TatD_full$Date_Time))
+ID <- rep('TatD', dim(TatD_full)[1])
+Units <- rep('Deg C', dim(TatD_full)[1])
+Value_Anom <- rep(NA, dim(TatD_full)[1]) # No anomaly for this variable
+Value_Anom_lm <- rep(NA, dim(TatD_full)[1]) # No anomaly for this variable
+
+TatD_dashboard <- bind_cols(TatD_full$Date_Time, 
+                           TatD_full$Year, 
+                           Month,
+                           TatD_full$TatD_degC,
+                           Value_Anom, # TatD_full$Anom,
+                           ID,
+                           TatD_lm$fitted.values,
+                           Value_Anom_lm, # TatD_anom_lm$fitted.values,
+                           Units)
+# Need to figure out how to render this unnecessary
+TatD_dashboard <- rename(TatD_dashboard, Date_Time = ...1)
+TatD_dashboard <- rename(TatD_dashboard, Year = ...2)
+TatD_dashboard <- rename(TatD_dashboard, Month = ...3)
+TatD_dashboard <- rename(TatD_dashboard, Value = ...4)
+TatD_dashboard <- rename(TatD_dashboard, Anom = ...5)
+TatD_dashboard <- rename(TatD_dashboard, ID = ...6)
+TatD_dashboard <- rename(TatD_dashboard, Value_lm = ...7)
+TatD_dashboard <- rename(TatD_dashboard, Anom_lm = ...8)
+TatD_dashboard <- rename(TatD_dashboard, Units = ...9)
+
+write_csv(TatD_dashboard, file = here("Indicator_Dashboard", paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
 Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.
 
 Status: In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r signif(delta_TatD_lm, 1)` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures north of about 30°N 0–0.5 °C above average. 

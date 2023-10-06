@@ -14,7 +14,7 @@ format:
 library(tidyverse)
 library(lubridate)
 library(here)
-remotes::install_github("nmfs-fish-tools/nmfspalette")
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
 ```
 
@@ -148,6 +148,23 @@ dev.off()
 AtmosphericCO2 <- ann_co2 %>% select(year, mean)
 AtmosphericCO2 <- rename(AtmosphericCO2, ppm = mean)
 write_csv(AtmosphericCO2, file = paste(here(), '/PelagicClimate_', RptYr, '/AtmosphericCO2_', RptYr, '.csv', sep = ""))
+```
+
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+# Thanks to Emily Conklin for this chunk of code!
+
+CO2_dashboard <- atm_co2 %>%
+  mutate(Date_Time = date_decimal(`decimal date`) %>% 
+           format('%d-%b-%Y %H:%M') %>%
+           toupper) %>%
+  mutate(ID = "CO2") %>%
+  select(Date_Time, Year = year, Month = month, Value = average, Anom = deseasonalized, ID) %>%
+  mutate(Value_lm = NA, Anom_lm = NA, Units = "ppm")
+
+write_csv(CO2_dashboard, file = here("Indicator_Dashboard", "Data", paste('CO2_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 Rationale: Atmospheric carbon dioxide is a measure of what human activity has already done to affect the climate system through greenhouse gas emissions. It provides quantitative information in a simplified, standardized format that decision makers can easily understand. This indicator demonstrates that the concentration (and, in turn, warming influence) of greenhouse gases in the atmosphere has increased substantially over the last several decades.  

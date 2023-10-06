@@ -3587,20 +3587,8 @@
     "Data/Aggregate_Dashboard_Data.Rmd": {
       "checksum": "61f3992a4487578fdd0b69b5586792eb"
     },
-    "Data/Chl_Dashboard_Data_2022.csv": {
-      "checksum": "e3e97841a706b37d40f7c35a711a8df4"
-    },
     "Data/Dashboard_Data_2022.csv": {
       "checksum": "143410d7c7d2cb270774705d9eb619db"
-    },
-    "Data/MD50_Dashboard_Data_2022.csv": {
-      "checksum": "2bf1cbf9cde5303d113e523aef88f618"
-    },
-    "Data/SST_Dashboard_Data_2022.csv": {
-      "checksum": "8b446a50e43966c6e11aa1d0ce4508f3"
-    },
-    "Data/TatD_Dashboard_Data_2022.csv": {
-      "checksum": "ef66bc066a4fb3500056c69ec0df817a"
     },
     "Images/CHL_map_2022.png": {
       "checksum": "7f904c4d31dde661a1afab5cb1ee441d"

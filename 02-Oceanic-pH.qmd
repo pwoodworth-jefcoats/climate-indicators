@@ -176,6 +176,28 @@ ann_pH <- rename(ann_pH, year = Year)
 write_csv(ann_pH, file = paste(here(), '/PelagicClimate_', RptYr, '/pH_', RptYr, '.csv', sep = ""))
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+# Thanks to Emily Conklin for this chunk of code!
+
+pH_dashboard <- pH_dates %>%
+  mutate(Date_Time = as.character(`date mmddyy`)) %>%
+  mutate(Date_Time_tmp = ifelse(str_length(Date_Time) == 5, "0", "")) %>%
+  mutate(Date_Time = paste0(Date_Time_tmp, Date_Time)) %>%
+  mutate(Date_Time = mdy(Date_Time)) %>%
+  mutate(Year = year(Date_Time), Month = month(Date_Time), ID = "pH", Anom = NA, Value_lm = pH_lm_fit,
+         Anom_lm = NA, Units = "pH") %>%
+  mutate(Date_Time = Date_Time %>%
+           format('%d-%b-%Y %H:%M') %>%
+           toupper) %>%
+  select(Date_Time, Year, Month, Value = pH, Anom, ID, Value_lm, Anom_lm, Units)
+
+
+write_csv(pH_dashboard, file = here("Indicator_Dashboard", "Data", paste('pH_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
 Rationale: Oceanic pH is a measure of how greenhouse gas emissions have already impacted the ocean. This indicator demonstrates that oceanic pH has decreased significantly over the past several decades (i.e., the ocean has become more acidic). Increasing ocean acidification limits the ability of marine organisms to build shells and other calcareous structures. Recent research has shown that pelagic organisms such as pteropods and other prey for commercially valuable fish species are already being negatively impacted by increasing acidification (Feely et al. 2016). The full impact of ocean acidification on the pelagic food web is an area of active research (Fabry et al. 2008).
 
 Status: The ocean is roughly `r signif(delta_pH_pct, 3)`% more acidic than it was 30 years ago at the start of this time series. Over this time, pH has declined by `r abs(signif(delta_pH_lm, 2))` at a constant rate. In `r RptYr-1`, the most recent year for which data are available, the average pH was `r signif(ann_mean_RptYr, 3)`. Additionally, for the `r n_yrs_below`th year, small variations seen over the course of the year are outside the range seen in the first year of the time series. The highest pH value reported for the most recent year (`r signif(ann_max_RptYr, 4)`) is lower than the lowest pH value reported in the first year of the time series (`r signif(yr1_min, 4)`).

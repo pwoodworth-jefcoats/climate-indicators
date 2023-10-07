@@ -204,6 +204,26 @@ dev.off()
 # bty = "n" removes the box around the legend
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+# Thanks to Emily Conklin for this chunk of code!
+
+month_list <- c("DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", 
+                "JJA", "JAS", "ASO", "SON", "OND", "NDJ")
+
+ENSO_dashboard <- ONI_full %>%
+  rowwise() %>%
+  mutate(Month = which(month_list == SEAS)) %>%
+  mutate(Date_Time = paste0("15-", Month, "-", as.character(YR), " 00:00")) %>%
+  mutate(Value_lm = NA, Anom = NA, Anom_lm = NA, ID = "ENSO", Units = "Oceanic Nino Index") %>%
+  select(Date_Time, Year = YR, Month, Value = ANOM, Anom, ID, Value_lm, Anom_lm, Units)
+
+
+write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
 Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries. 
 
 Status: The Oceanic Niño Index (ONI) indicated La Niña conditions throughout `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.

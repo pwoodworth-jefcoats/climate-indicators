@@ -253,7 +253,7 @@ TatD_dashboard <- rename(TatD_dashboard, Value_lm = ...7)
 TatD_dashboard <- rename(TatD_dashboard, Anom_lm = ...8)
 TatD_dashboard <- rename(TatD_dashboard, Units = ...9)
 
-write_csv(TatD_dashboard, file = here("Indicator_Dashboard", paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
+write_csv(TatD_dashboard, file = here("Indicator_Dashboard", "Data", paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.

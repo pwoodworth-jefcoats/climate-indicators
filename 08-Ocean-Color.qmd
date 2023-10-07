@@ -261,7 +261,7 @@ Chl_dashboard <- rename(Chl_dashboard, Value_lm = ...7)
 Chl_dashboard <- rename(Chl_dashboard, Anom_lm = ...8)
 Chl_dashboard <- rename(Chl_dashboard, Units = ...9)
 
-write_csv(Chl_dashboard, file = here("Indicator_Dashboard", paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
+write_csv(Chl_dashboard, file = here("Indicator_Dashboard", "Data", paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 Rationale: Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.

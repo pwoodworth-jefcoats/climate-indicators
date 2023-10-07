@@ -265,7 +265,7 @@ SST_dashboard <- rename(SST_dashboard, Value_lm = ...7)
 SST_dashboard <- rename(SST_dashboard, Anom_lm = ...8)
 SST_dashboard <- rename(SST_dashboard, Units = ...9)
 
-write_csv(SST_dashboard, file = here("Indicator_Dashboard", paste('SST_Dashboard_Data_', RptYr, '.csv', sep = "")))
+write_csv(SST_dashboard, file = here("Indicator_Dashboard", "Data", paste('SST_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 Rationale: Sea surface temperature is one of the most directly observable existing measures for tracking increasing ocean temperatures. SST varies in response to natural climate cycles such as the El Niño – Southern Oscillation (ENSO) and is rising as a result of anthropogenic climate change. Both short-term variability and long-term trends in SST impact the marine ecosystem. Understanding the mechanisms through which organisms are impacted and the time scales of these impacts is an area of active research.

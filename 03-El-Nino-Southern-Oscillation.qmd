@@ -218,7 +218,8 @@ ENSO_dashboard <- ONI_full %>%
   mutate(Month = which(month_list == SEAS)) %>%
   mutate(Date_Time = paste0("15-", Month, "-", as.character(YR), " 00:00")) %>%
   mutate(Value_lm = NA, Anom = NA, Anom_lm = NA, ID = "ENSO", Units = "Oceanic Nino Index") %>%
-  select(Date_Time, Year = YR, Month, Value = ANOM, Anom, ID, Value_lm, Anom_lm, Units)
+  select(Date_Time, Year = YR, Month, Value = ANOM, Anom, ID, Value_lm, Anom_lm, Units) |>
+  filter(Year <= RptYr)
 
 
 write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))

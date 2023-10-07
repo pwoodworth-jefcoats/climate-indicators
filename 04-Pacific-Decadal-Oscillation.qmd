@@ -130,6 +130,27 @@ dev.off()
 # bty = "n" removes the box around the legend
 ```
 
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+# Thanks to Emily Conklin for this chunk of code!
+
+PDO_dashboard <- PDO_full %>%
+  mutate(Date_Time = as_datetime(Date), Year = year(Date_Time), 
+         Month = month(Date_Time)) %>%
+  mutate(Date_Time = Date_Time %>%
+           format('%d-%b-%Y %H:%M') %>%
+           toupper) %>%
+  select(Date_Time, Year, Month, Value = PDO) %>%
+  mutate(Anom = NA, ID = "PDO", Value_lm = NA, Anom_lm = NA, Units = "Pacific Decadal Oscillation") |>
+  filter(Year <= RptYr) 
+
+
+
+write_csv(PDO_dashboard, file = here("Indicator_Dashboard", "Data", paste('PDO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
 Rationale: The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. 
 
 Status: The PDO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.

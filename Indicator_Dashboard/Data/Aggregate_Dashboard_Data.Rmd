@@ -25,21 +25,25 @@ RptYr <- 2022
 ```{r}
 #| include: false
 # Load files
-# CO2 <- 
-# pH <- 
-# ENSO <- 
-# PDO <- 
-TatD <- read_csv(here('Indicator_Dashboard', paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
-SST <- read_csv(here('Indicator_Dashboard', paste('SST_Dashboard_Data_', RptYr, '.csv', sep = ""))) 
-Chl <- read_csv(here('Indicator_Dashboard',paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
-MD50 <- read_csv(here('Indicator_Dashboard',paste('MD50_Dashboard_Data_', RptYr, '.csv', sep = "")))
+CO2 <- read_csv(here('Indicator_Dashboard', 'Data', paste('CO2_Dashboard_Data_', RptYr, '.csv', sep = "")))
+pH <- read_csv(here('Indicator_Dashboard', 'Data', paste('pH_Dashboard_Data_', RptYr, '.csv', sep = "")))
+ENSO <- read_csv(here('Indicator_Dashboard', 'Data', paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+PDO <- read_csv(here('Indicator_Dashboard', 'Data', paste('PDO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+TatD <- read_csv(here('Indicator_Dashboard', 'Data', paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
+SST <- read_csv(here('Indicator_Dashboard', 'Data', paste('SST_Dashboard_Data_', RptYr, '.csv', sep = ""))) 
+Chl <- read_csv(here('Indicator_Dashboard','Data', paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
+MD50 <- read_csv(here('Indicator_Dashboard','Data', paste('MD50_Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # Aggregate files
-Dashboard_Data <- bind_rows(TatD,
+Dashboard_Data <- bind_rows(CO2,
+                            pH,
+                            ENSO,
+                            PDO,
+                            TatD,
                             SST,
                             Chl,
                             MD50)
 
 # Save file
-write_csv(Dashboard_Data, file = here("Indicator_Dashboard", paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
+write_csv(Dashboard_Data, file = here("Indicator_Dashboard", "Data", paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```

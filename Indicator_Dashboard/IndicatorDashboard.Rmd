@@ -183,8 +183,6 @@ plotlyOutput('seasonal_cycle')
 ### Map
 
 ```{r}
-#knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
-
 #expects image to be in the format f.ex. ./images/SST_map_2022.png
 output$map <- renderImage({
 
@@ -335,13 +333,8 @@ About the Indicator
 ```{r}
 Indicator_Description <- reactive({
   indicator_desc <- indicator_data %>% filter(ID == input$indicator)
-  # htmltools::includeMarkdown(here('Indicator_Dashboard',paste(indicator_data$ID[1], '_description.md', sep = '')))
   includeMarkdown(path = here('Indicator_Dashboard', paste(indicator_desc$ID[1], '_description.md', sep = '')))
 })
 
 renderUI({Indicator_Description()}) #renderUI needed here instead of renderText
-
-# indicator_data <- indicator_data %>% filter(ID == input$indicator)
-# Try htmltools::includeMarkdown('about.md')
-# htmltools::includeMarkdown(here('Indicator_Dashboard','TestMarkdown.md'))
 ```

@@ -3585,10 +3585,34 @@
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "Data/Aggregate_Dashboard_Data.Rmd": {
-      "checksum": "61f3992a4487578fdd0b69b5586792eb"
+      "checksum": "bb4345e769e4a22505656919145e9731"
+    },
+    "Data/Chl_Dashboard_Data_2022.csv": {
+      "checksum": "e3e97841a706b37d40f7c35a711a8df4"
+    },
+    "Data/CO2_Dashboard_Data_2022.csv": {
+      "checksum": "30aa455bf3028da20e280e65b720f5e3"
     },
     "Data/Dashboard_Data_2022.csv": {
-      "checksum": "143410d7c7d2cb270774705d9eb619db"
+      "checksum": "2efc1e7e276f2ed4e0b8db6370526ae4"
+    },
+    "Data/ENSO_Dashboard_Data_2022.csv": {
+      "checksum": "42bb55fc3978b5a90b43026a36d1df25"
+    },
+    "Data/MD50_Dashboard_Data_2022.csv": {
+      "checksum": "2bf1cbf9cde5303d113e523aef88f618"
+    },
+    "Data/PDO_Dashboard_Data_2022.csv": {
+      "checksum": "11d481e92086b8619901d3d4811ba847"
+    },
+    "Data/pH_Dashboard_Data_2022.csv": {
+      "checksum": "589eff2c0a39bd015f4dd760ad7b39fa"
+    },
+    "Data/SST_Dashboard_Data_2022.csv": {
+      "checksum": "8b446a50e43966c6e11aa1d0ce4508f3"
+    },
+    "Data/TatD_Dashboard_Data_2022.csv": {
+      "checksum": "ef66bc066a4fb3500056c69ec0df817a"
     },
     "Images/CHL_map_2022.png": {
       "checksum": "7f904c4d31dde661a1afab5cb1ee441d"

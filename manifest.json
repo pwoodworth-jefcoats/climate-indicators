@@ -3593,8 +3593,14 @@
     "Indicator_Dashboard/Images/Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b1fedf1b10ef6a07fb4bed8d371e3795"
     },
+    "Indicator_Dashboard/Images/MD50_map_2022.png": {
+      "checksum": "870eb43ede43bef18ceea6de3ecae3a2"
+    },
     "Indicator_Dashboard/Images/SST_map_2022.png": {
       "checksum": "122bced755201350b1f50e4d200c2129"
+    },
+    "Indicator_Dashboard/Images/TatD_map_2022.png": {
+      "checksum": "f9087ca3ae177107de8e8571edc15593"
     },
     "IndicatorDashboard.Rmd": {
       "checksum": "6e4fde017ed6171fed3e30b88d7a57c7"

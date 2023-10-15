@@ -6,12 +6,12 @@ output:
     vertical_layout: fill
 runtime: shiny
 resource_files:
-  - "Data/Dashboard_Data_2022.csv"
-  - "Images/Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/SST_map_2022.png"
-  - "Images/TatD_map_2022.png"
-  - "Images/Chl_map_2022.png"
-  - "Images/MD50_map_2022.png"
+  - "Indicator_Dashboard/Data/Dashboard_Data_2022.csv"
+  - "Indicator_Dashboard/Images/Indicator-Table-2022-Monthly-Variables.png"
+  - "Indicator_Dashboard/Images/SST_map_2022.png"
+  - "Indicator_Dashboard/Images/TatD_map_2022.png"
+  - "Indicator_Dashboard/Images/Chl_map_2022.png"
+  - "Indicator_Dashboard/Images/MD50_map_2022.png"
 ---
 
 ```{r setup, include = FALSE}

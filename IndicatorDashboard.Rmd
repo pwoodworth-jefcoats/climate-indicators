@@ -429,7 +429,7 @@ About the Indicator
 ```{r}
 Indicator_Description <- reactive({
   indicator_desc <- indicator_data %>% filter(ID == input$indicator)
-  includeMarkdown(path = here('Indicator_Dashboard', paste(indicator_desc$ID[1], '_description.md', sep = '')))
+  includeMarkdown(path = here('Indicator_Dashboard', 'Descriptions', paste(indicator_desc$ID[1], '_description.md', sep = '')))
 })
 
 renderUI({Indicator_Description()}) #renderUI needed here instead of renderText

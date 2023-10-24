@@ -3,7 +3,7 @@
   "locale": "en_US",
   "platform": "4.2.2",
   "metadata": {
-    "appmode": "quarto-shiny",
+    "appmode": "rmd-shiny",
     "primary_rmd": "IndicatorDashboard.Rmd",
     "primary_html": null,
     "content_category": null,

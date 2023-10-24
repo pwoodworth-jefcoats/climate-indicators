@@ -3581,11 +3581,20 @@
     }
   },
   "files": {
+    "Indicator_Dashboard/.Rapp.history": {
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
     "Indicator_Dashboard/Data/Aggregate_Dashboard_Data.Rmd": {
       "checksum": "bb4345e769e4a22505656919145e9731"
     },
     "Indicator_Dashboard/Data/Dashboard_Data_2022.csv": {
       "checksum": "2efc1e7e276f2ed4e0b8db6370526ae4"
+    },
+    "Indicator_Dashboard/Descriptions/SST_description.md": {
+      "checksum": "a33ddfe4465baed3e9c13afa1d0a7cb8"
+    },
+    "Indicator_Dashboard/Descriptions/SST_description.Rmd": {
+      "checksum": "37be6d361c71db59fb515d85a10c7ff5"
     },
     "Indicator_Dashboard/Images/CHL_map_2022.png": {
       "checksum": "7f904c4d31dde661a1afab5cb1ee441d"
@@ -3603,7 +3612,7 @@
       "checksum": "f9087ca3ae177107de8e8571edc15593"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "6e4fde017ed6171fed3e30b88d7a57c7"
+      "checksum": "33cfc2c488e8776f568a5a26f4163cd0"
     }
   },
   "users": null

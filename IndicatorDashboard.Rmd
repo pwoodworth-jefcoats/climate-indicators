@@ -12,6 +12,7 @@ resource_files:
   - "Indicator_Dashboard/Images/TatD_map_2022.png"
   - "Indicator_Dashboard/Images/Chl_map_2022.png"
   - "Indicator_Dashboard/Images/MD50_map_2022.png"
+  - "Indicator_Dashboard/Descriptions/SST_description.md"
 ---
 
 ```{r setup, include = FALSE}

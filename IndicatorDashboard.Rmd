@@ -48,6 +48,7 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
 
 include_anom_list <- c("SST", "CO2", "Chl", "MD50")
 exclude_ann_mean_list <- c("PDO", "ENSO")
+RptYr <- 2022
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -469,7 +470,92 @@ output$downBtnAnom <- downloadHandler(
 
 About the Indicator
 ======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### 2022* Average
+
 ```{r}
+
+renderValueBox({
+  
+  indicator_data <- indicator_data %>% filter(ID == input$indicator)
+  
+  # Annual mean for report year
+  if (input$indicator == "pH"){
+    ann_mean_RptYr <- indicator_data |> filter(Year == RptYr - 1) |>
+    summarise(Value = mean(Value, na.rm = TRUE)) |> signif(3)
+    tmp_caption <- paste(as.character(RptYr - 1), "Average")
+  } else{
+    ann_mean_RptYr <- indicator_data |> filter(Year == RptYr) |>
+    summarise(Value = mean(Value, na.rm = TRUE)) |> signif(3) 
+    tmp_caption <- paste(as.character(RptYr), "Average")
+  }
+  
+  valueBox(value = ann_mean_RptYr, color = pal[1], caption = tmp_caption)
+})
+```
+
+### 2022* Range
+
+```{r}
+
+renderValueBox({
+  
+  indicator_data <- indicator_data %>% filter(ID == input$indicator)
+  
+  # Monthly min & max for report year
+  if (input$indicator == "pH"){
+    monthly_min_RptYr <- indicator_data |> filter(Year == RptYr - 1) |>
+      summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
+    monthly_max_RptYr <- indicator_data |> filter(Year == RptYr - 1) |>
+      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3) 
+    tmp_caption <- paste(as.character(RptYr - 1), "Average")
+  } else{
+    monthly_min_RptYr <- indicator_data |> filter(Year == RptYr) |>
+      summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
+    monthly_max_RptYr <- indicator_data |> filter(Year == RptYr) |>
+      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3)
+    tmp_caption <- paste(as.character(RptYr), "Average")
+  }
+  
+  valueBox(value = paste(monthly_min_RptYr, "\u2013", monthly_max_RptYr), color = pal[1], caption = tmp_caption)
+})
+```
+
+### Long-Term Range
+
+```{r}
+
+renderValueBox({
+  
+  indicator_data <- indicator_data %>% filter(ID == input$indicator)
+  
+  # Monthly min & max for report year
+  if (input$indicator == "pH"){
+    # Monthly min & max for previous years
+    monthly_min_PrevYrs <- indicator_data |> filter(Year < (RptYr - 1)) |>
+      summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
+    monthly_max_PrevYrs <- indicator_data |> filter(Year < (RptYr - 1)) |>
+      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3) 
+  } else{
+    # Monthly min & max for previous years
+    monthly_min_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+      summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
+    monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3)  
+  }
+
+  valueBox(value = paste(monthly_min_PrevYrs, "\u2013", monthly_max_PrevYrs), color = pal[1])
+})
+```
+
+Row
+-----------------------------------------------------------------------
+
+```{r}
+
 Indicator_Description <- reactive({
   
   indicator_desc <- indicator_data %>% filter(ID == input$indicator)
@@ -477,4 +563,5 @@ Indicator_Description <- reactive({
 })
 
 renderUI({Indicator_Description()}) #renderUI needed here instead of renderText
+
 ```

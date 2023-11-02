@@ -4,7 +4,7 @@
   "platform": "4.2.2",
   "metadata": {
     "appmode": "rmd-shiny",
-    "primary_rmd": "IndicatorDashboard.Rmd",
+    "primary_rmd": "Data/Aggregate_Dashboard_Data.Rmd",
     "primary_html": null,
     "content_category": null,
     "has_parameters": false
@@ -40,6 +40,33 @@
         "Repository": "CRAN",
         "Date/Publication": "2022-06-18 07:10:15 UTC",
         "Built": "R 4.2.0; ; 2022-06-19 11:17:45 UTC; unix"
+      }
+    },
+    "DT": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "DT",
+        "Type": "Package",
+        "Title": "A Wrapper of the JavaScript Library 'DataTables'",
+        "Version": "0.30",
+        "Authors@R": "c(\nperson(\"Yihui\", \"Xie\", email = \"xie@yihui.name\", role = c(\"aut\", \"cre\")),\nperson(\"Joe\", \"Cheng\", role = \"aut\"),\nperson(\"Xianying\", \"Tan\", role = \"aut\"),\nperson(\"JJ\", \"Allaire\", role = \"ctb\"),\nperson(\"Maximilian\", \"Girlich\", role = \"ctb\"),\nperson(\"Greg\", \"Freedman Ellis\", role = \"ctb\"),\nperson(\"Johannes\", \"Rauh\", role = \"ctb\"),\nperson(\"SpryMedia Limited\", role = c(\"ctb\", \"cph\"), comment = \"DataTables in htmlwidgets/lib\"),\nperson(\"Brian\", \"Reavis\", role = c(\"ctb\", \"cph\"), comment = \"selectize.js in htmlwidgets/lib\"),\nperson(\"Leon\", \"Gersen\", role = c(\"ctb\", \"cph\"), comment = \"noUiSlider in htmlwidgets/lib\"),\nperson(\"Bartek\", \"Szopka\", role = c(\"ctb\", \"cph\"), comment = \"jquery.highlight.js in htmlwidgets/lib\"),\nperson(\"Alex\", \"Pickering\", role = c(\"ctb\")),\nperson(\"William\", \"Holmes\", role = c(\"ctb\")),\nperson(\"Mikko\", \"Marttila\", role = c(\"ctb\")),\nperson(\"Andres\", \"Quintero\", role = c(\"ctb\")),\nperson(\"Stéphane\", \"Laurent\", role = c(\"ctb\")),\nperson(given = \"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
+        "Maintainer": "Yihui Xie <xie@yihui.name>",
+        "Description": "Data objects in R can be rendered as HTML tables using the\nJavaScript library 'DataTables' (typically via R Markdown or Shiny). The\n'DataTables' library has been included in this R package. The package name\n'DT' is an abbreviation of 'DataTables'.",
+        "URL": "https://github.com/rstudio/DT",
+        "BugReports": "https://github.com/rstudio/DT/issues",
+        "License": "GPL-3 | file LICENSE",
+        "Imports": "htmltools (>= 0.3.6), htmlwidgets (>= 1.3), httpuv, jsonlite\n(>= 0.9.16), magrittr, crosstalk, jquerylib, promises",
+        "Suggests": "knitr (>= 1.8), rmarkdown, shiny (>= 1.6), bslib, future,\ntestit, tibble",
+        "VignetteBuilder": "knitr",
+        "RoxygenNote": "7.2.3",
+        "Encoding": "UTF-8",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-10-04 20:26:15 UTC; yihui",
+        "Author": "Yihui Xie [aut, cre],\nJoe Cheng [aut],\nXianying Tan [aut],\nJJ Allaire [ctb],\nMaximilian Girlich [ctb],\nGreg Freedman Ellis [ctb],\nJohannes Rauh [ctb],\nSpryMedia Limited [ctb, cph] (DataTables in htmlwidgets/lib),\nBrian Reavis [ctb, cph] (selectize.js in htmlwidgets/lib),\nLeon Gersen [ctb, cph] (noUiSlider in htmlwidgets/lib),\nBartek Szopka [ctb, cph] (jquery.highlight.js in htmlwidgets/lib),\nAlex Pickering [ctb],\nWilliam Holmes [ctb],\nMikko Marttila [ctb],\nAndres Quintero [ctb],\nStéphane Laurent [ctb],\nPosit Software, PBC [cph, fnd]",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-10-05 13:10:02 UTC",
+        "Built": "R 4.2.0; ; 2023-10-13 04:56:08 UTC; unix"
       }
     },
     "MASS": {
@@ -2887,6 +2914,33 @@
         "Built": "R 4.2.0; ; 2023-07-07 11:44:50 UTC; unix"
       }
     },
+    "shinyjs": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "shinyjs",
+        "Title": "Easily Improve the User Experience of Your Shiny Apps in Seconds",
+        "Version": "2.1.0",
+        "Authors@R": "person(\"Dean\", \"Attali\",\nemail = \"daattali@gmail.com\",\nrole = c(\"aut\", \"cre\"),\ncomment= c(ORCID=\"0000-0002-5645-3493\"))",
+        "Description": "Perform common useful JavaScript operations in Shiny apps that will\ngreatly improve your apps without having to know any JavaScript. Examples\ninclude: hiding an element, disabling an input, resetting an input back to\nits original value, delaying code execution by a few seconds, and many more\nuseful functions for both the end user and the developer. 'shinyjs' can also\nbe used to easily call your own custom JavaScript functions from R.",
+        "URL": "https://deanattali.com/shinyjs/",
+        "BugReports": "https://github.com/daattali/shinyjs/issues",
+        "Depends": "R (>= 3.1.0)",
+        "Imports": "digest (>= 0.6.8), jsonlite, shiny (>= 1.0.0)",
+        "Suggests": "htmltools (>= 0.2.9), knitr (>= 1.7), rmarkdown, shinyAce,\nshinydisconnect, testthat (>= 0.9.1)",
+        "License": "MIT + file LICENSE",
+        "VignetteBuilder": "knitr",
+        "RoxygenNote": "7.1.1",
+        "Encoding": "UTF-8",
+        "NeedsCompilation": "no",
+        "Packaged": "2021-12-21 11:32:22 UTC; Dean-X1C",
+        "Author": "Dean Attali [aut, cre] (<https://orcid.org/0000-0002-5645-3493>)",
+        "Maintainer": "Dean Attali <daattali@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2021-12-23 10:10:02 UTC",
+        "Built": "R 4.2.0; ; 2022-04-27 21:49:14 UTC; unix"
+      }
+    },
     "sourcetools": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -3581,38 +3635,62 @@
     }
   },
   "files": {
-    "Indicator_Dashboard/.Rapp.history": {
+    ".Rapp.history": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
-    "Indicator_Dashboard/Data/Aggregate_Dashboard_Data.Rmd": {
+    "Data/Aggregate_Dashboard_Data.Rmd": {
       "checksum": "bb4345e769e4a22505656919145e9731"
     },
-    "Indicator_Dashboard/Data/Dashboard_Data_2022.csv": {
+    "Data/Dashboard_Data_2022.csv": {
       "checksum": "2efc1e7e276f2ed4e0b8db6370526ae4"
     },
-    "Indicator_Dashboard/Descriptions/SST_description.md": {
+    "Descriptions/SST_description.md": {
       "checksum": "a33ddfe4465baed3e9c13afa1d0a7cb8"
     },
-    "Indicator_Dashboard/Descriptions/SST_description.Rmd": {
+    "Descriptions/SST_description.Rmd": {
       "checksum": "37be6d361c71db59fb515d85a10c7ff5"
     },
-    "Indicator_Dashboard/Images/CHL_map_2022.png": {
+    "Images/CHL_map_2022.png": {
       "checksum": "7f904c4d31dde661a1afab5cb1ee441d"
     },
-    "Indicator_Dashboard/Images/Indicator-Table-2022-Monthly-Variables.png": {
+    "Images/Chl-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "b9767cc3f00156a3b476658de3a717d8"
+    },
+    "Images/CO2-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "0b45a1e31622b6bd01a049f5fce120c1"
+    },
+    "Images/ENSO-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "d8d9556f03dff138725181bcde3453eb"
+    },
+    "Images/Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b1fedf1b10ef6a07fb4bed8d371e3795"
     },
-    "Indicator_Dashboard/Images/MD50_map_2022.png": {
+    "Images/MD50_map_2022.png": {
       "checksum": "870eb43ede43bef18ceea6de3ecae3a2"
     },
-    "Indicator_Dashboard/Images/SST_map_2022.png": {
+    "Images/MD50-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "b4349ec7534ce523ccc8665b338d21bb"
+    },
+    "Images/PDO-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "96bfd04c419a1ffad60df2f1c0f44fd4"
+    },
+    "Images/pH-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "db5c630721f4e487d4d43c0dd9d7b849"
+    },
+    "Images/SST_map_2022.png": {
       "checksum": "122bced755201350b1f50e4d200c2129"
     },
-    "Indicator_Dashboard/Images/TatD_map_2022.png": {
+    "Images/SST-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "2c0bb0d1e5bf84eb9ad75ac63bf7e6b6"
+    },
+    "Images/TatD_map_2022.png": {
       "checksum": "f9087ca3ae177107de8e8571edc15593"
     },
+    "Images/TatD-Indicator-Table-2022-Monthly-Variables.png": {
+      "checksum": "593224fe34ceb85c0e765b8cc394a744"
+    },
     "IndicatorDashboard.Rmd": {
-      "checksum": "33cfc2c488e8776f568a5a26f4163cd0"
+      "checksum": "9ee6df857ee4e06b1c3b9d76ae4c70c9"
     }
   },
   "users": null

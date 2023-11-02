@@ -34,6 +34,8 @@ library(plotly)
 library(viridis)
 library(htmltools)
 library(rmarkdown)
+library(shinyjs)
+library(DT)
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -49,6 +51,10 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
 include_anom_list <- c("SST", "CO2", "Chl", "MD50")
 exclude_ann_mean_list <- c("PDO", "ENSO")
 RptYr <- 2022
+
+#plotly title formatting
+t1 <- list(size = 14)
+
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -75,7 +81,7 @@ Sidebar {.sidebar}
 ======================================================================
 ```{r}
 # Select indicator to view
-selectInput('indicator', label = 'Select an indicator', choices = indicator_list, selected = c('CO2'))
+selectInput('indicator', label = 'Select an indicator', choices = indicator_list, selected = c('SST'))
 
 ```
 
@@ -119,10 +125,8 @@ imageOutput("summary_img")
 Visualize Indicator {style="position:relative;" data-orientation=columns}
 ======================================================================
 
-Column {style="height:100pc;"}
+Column {style="margin-right: 5px;"}
 -----------------------------------------------------------------------
-
-### Indicator Time Series {style="min-height:350px"}
 
 ```{r}
 output$ts <- renderPlotly({
@@ -136,7 +140,7 @@ output$ts <- renderPlotly({
         mutate(Units = "Pacific Decal Oscillation (PDO)")
       
       #color-coded bar chart for PDO
-      p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
+      p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar", height = 350,
                     name = ~ifelse(Value > 0, yes = "Positive PDO", no = "Negative PDO"),
                     color = ~Value > 0, colors = c(oceans[2], coral[2]))
       
@@ -156,7 +160,7 @@ output$ts <- renderPlotly({
       indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <- "El Niño"
 
       #color-coded bar chart for ENSO
-      p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
+      p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar", height = 350, 
                     name = ~ENSO, color = ~ENSO, colors = c(coral[2], oceans[2], ann_grey))
     
   }
@@ -169,7 +173,7 @@ output$ts <- renderPlotly({
       
       p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
                 type = "scatter", mode = "lines", line = list(color = pal[1]),
-                name = ~ID[1]) |>
+                name = ~ID[1], height = 350) |>
       add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value_lm,
                type = "scatter", mode = "lines", line = list(color = pal[5]),
                name = "Long-term Trend") |>
@@ -179,21 +183,21 @@ output$ts <- renderPlotly({
   }
 
    #apply same layout for all plots
-   p1 <- p1 |> layout(yaxis = list(title = indicator_data$Units[1],
-                      hoverformat = '.3f'),
+   p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = t1), 
+                      yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'),
+                      paper_bgcolor='transparent',
+                      plot_bgcolor='transparent',
                       hovermode = "x unified", 
                       hoverlabel = list(namelength = -1))
   
-  p1
+   p1
+   
 }) %>% bindCache(input$indicator)
 
-plotlyOutput('ts')
-```
 
-```{r results='asis'}
-
-#TODO - how to make this conditional?? have tried a bunch of things and nothing has worked
-cat("\n### Anomaly Time Series {style='min-height:350px'}\n")
+div(style = "margin-top: 10px; margin-bottom: -50px;",
+  plotlyOutput('ts')
+)
 
 ```
 
@@ -201,41 +205,48 @@ cat("\n### Anomaly Time Series {style='min-height:350px'}\n")
 
 output$anom_ts <- renderPlotly({
   
-  #only plot for certain variables
-  if (input$indicator %in% include_anom_list){
+  # Filter data
+  indicator_data <- indicator_data %>% filter(ID == input$indicator)
   
-      # Filter data
-      indicator_data <- indicator_data %>% filter(ID == input$indicator)
-      
-      # Calculate annual means
-      ann_vals <- indicator_data |>
-      group_by(Year) |>
-      summarise(Anom = mean(Anom, na.rm = TRUE))
-    
-      
-      p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom,
-                    type = "scatter", mode = "lines", line = list(color = pal[1]),
-                    name = "Monthly Anomaly") |>
-        add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom_lm,
-                  type = "scatter", mode = "lines", line = list(color = pal[5]),
-                  name = "Long-term Trend") |>
-        add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Anom,
-                  type = "scatter", mode = "lines", line = list(color = pal[3]),
-                  name = "Annual Mean") |>
-        layout(yaxis = list(title = indicator_data$Units[1],
-                            hoverformat = '.3f'),
-               hovermode = "x unified", 
-               hoverlabel = list(namelength = -1))
-      
-      p2
-  }
+  # Calculate annual means
+  ann_vals <- indicator_data |>
+  group_by(Year) |>
+  summarise(Anom = mean(Anom, na.rm = TRUE))
+
+  
+  p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = 350,
+                type = "scatter", mode = "lines", line = list(color = pal[1]),
+                name = "Monthly Anomaly") |>
+    add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom_lm,
+              type = "scatter", mode = "lines", line = list(color = pal[5]),
+              name = "Long-term Trend") |>
+    add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Anom,
+              type = "scatter", mode = "lines", line = list(color = pal[3]),
+              name = "Annual Mean") |>
+    layout(yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'),
+           title = list(text = "Anomaly Time Series", x = 0.01, font = t1),
+           paper_bgcolor='transparent',
+           plot_bgcolor='transparent',
+           hovermode = "x unified", 
+           hoverlabel = list(namelength = -1))
+  
+  p2
   
 }) %>% bindCache(input$indicator)
 
-plotlyOutput('anom_ts')
-```
+useShinyjs(rmd = TRUE)
 
-### Seasonal Cycle {style="min-height:350px"}
+observeEvent(input$indicator, {
+  if (input$indicator %in% include_anom_list){
+    shinyjs::showElement(id = "anom_ts")
+  } else{
+    shinyjs::hideElement(id = "anom_ts")
+  }
+})
+
+plotlyOutput('anom_ts')
+
+```
 
 ```{r warning = FALSE}
 
@@ -255,7 +266,7 @@ output$seasonal_cycle <- renderPlotly({
   
   p3_tmp <- Seasonal |>
     group_by(Month) |>
-    group_map(~{plot_ly(.x, x = ~Year, y = ~Value, type = "scatter", color = ~Year, name = ~Month_Abb, 
+    group_map(~{plot_ly(.x, x = ~Year, y = ~Value, type = "scatter", color = ~Year, name = ~Month_Abb, height = 350,
                    colors = coral, mode = "markers+lines", line = list(color = pal[1], width = 1),
                    showlegend = FALSE) |>
          layout(yaxis = list(title = Seasonal$Units[1], hoverformat = '.3f'), 
@@ -263,7 +274,10 @@ output$seasonal_cycle <- renderPlotly({
          add_segments(x = min(Seasonal$Year), xend = max(Seasonal$Year), y = ~Mean_Val, yend = ~Mean_Val,
                 line = list(color = "black", width = 2), name = "Monthly Mean", showlegend = (.y == 1)) |>
          colorbar(title = "Year", len = 0.7, x = 1, y = 0.8, limits = c(min(Seasonal$Year), max(Seasonal$Year)))}) |>
-    subplot(nrows = 1, shareX = TRUE, shareY = TRUE, margin = 0.005)
+    subplot(nrows = 1, shareX = TRUE, shareY = TRUE, margin = 0.005) |>
+    layout(title = list(text = "Seasonal Cycle Plot", x = 0.01, font = t1),
+           paper_bgcolor='transparent',
+           plot_bgcolor='transparent')
   
   #add titles - better way to do this?
   p3_tmp$x$layout$xaxis$title <- "Jan"
@@ -283,11 +297,11 @@ output$seasonal_cycle <- renderPlotly({
   
 }) %>% bindCache(input$indicator)
 
-plotlyOutput('seasonal_cycle')
+div(style = "margin-top: 10px;",
+  plotlyOutput('seasonal_cycle')
+)
 
 ```
-
-### Seasonal Points {style="min-height:350px"}
 
 ```{r}
 # Inspiration: Melanie's OceanWatch figure where each year is plotted individually
@@ -302,21 +316,25 @@ output$seasonal_dots <- renderPlotly({
   #add month order
   xform <- list(title = "", categoryorder = "array", categoryarray = month.abb)
 
-  p3 <- plot_ly(Seasonal, x = ~Month_Abb, y = ~Value, 
+  p3 <- plot_ly(Seasonal, x = ~Month_Abb, y = ~Value, height = 350,
                 type = 'scatter', mode = 'markers', color = ~Year, text = ~ID[1],
                 hovertemplate = paste('<b>%{text}</b>: %{y}',
                                       '<br><b>Year</b>: %{marker.color}',
                                       '<extra></extra>')) |>
-    layout(yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'), xaxis = xform)
+    layout(title = list(text = "Seasonal Points Plot", x = 0.01, font = t1), 
+           paper_bgcolor='transparent',
+           plot_bgcolor='transparent',
+           yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'), xaxis = xform)
   
   p3
 
 }) %>% bindCache(input$indicator)
 
-plotlyOutput('seasonal_dots')
-```
+div(style = "margin-top: -20px;",
+  plotlyOutput('seasonal_dots')
+)
 
-### Map {style="min-height:400px"}
+```
 
 ```{r}
 #knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
@@ -326,29 +344,28 @@ output$map <- renderImage({
 
   # Select image
   filename = here('Indicator_Dashboard', 'Images',  paste(input$indicator, '_map_2022.png', sep = ''))
-  height <- session$clientData$output_map_height #dynamically adjust height 
   
   #Return a list containing filename and alt text
   list(src = filename,
        alt = "This is alternate text",
-       height = height)
+       height = 350)
 
 }, deleteFile = FALSE)
 
-imageOutput("map")
+div(style = "margin-top: -30px; margin-bottom: 10px",
+  imageOutput("map")
+)
 
 ```
 
 View Indicator Data
 ======================================================================
 
-Row {data-height=3}
+Row
 -----------------------------------------------------------------------
 
-### Indicator Time Series
-
 ```{r}
-renderTable({
+output$time_series_table <- renderDT({
   
   # Filter data
   indicator_data <- indicator_data %>% filter(ID == input$indicator)
@@ -358,29 +375,22 @@ renderTable({
   
   # Rename the 'Value' column
   new_name <- paste(indicator_data$ID[1], 'in', indicator_data$Units[1], sep = ' ')
-  # IndicatorTimeSeries <- rename(IndicatorTimeSeries, 
-  #                               paste(indicator_data$ID[1], 'in', indicator_data$Units[1], sep = ' ') = Value)
+  names(IndicatorTimeSeries)[2] <- new_name
+
+  IndicatorTimeSeries}, 
+  selection = 'none',
+  caption = htmltools::tags$caption(style = 'color:black;', "Indicator Time Series Data:"),
+  options = list(searching = FALSE, paging = TRUE, info = FALSE, lengthChange = FALSE,
+                 columnDefs = list(list(className = 'dt-right', targets = c(1, 2))))
   
-  IndicatorTimeSeries
-# },
-#   
-# downloadHandler(filename = function() {
-#      paste(indicator_data$ID[1], 'in', indicator_data$Units[1], Sys.Date(), '.csv', sep = '')
-#    },
-#      content = function(file) {
-#      write.csv(IndicatorTimeSeries, file, row.names = FALSE)
-#    })
+)
 
-})
+DTOutput("time_series_table", width = "90%")
+
 ```
 
-Row {data-height=1}
+Row
 -----------------------------------------------------------------------
-
-```{r}
-# Create placeholder for the downloadButton
-uiOutput("downloadUI")
-```
 
 ```{r}
 # Create the actual downloadButton
@@ -411,15 +421,18 @@ output$downBtn <- downloadHandler(
     
     write.csv(data_for_dl, file_out, row.names = FALSE)
 })
+
+# Create placeholder for the downloadButton
+uiOutput("downloadUI")
+
 ```
 
-Row {data-height=3}
+Row 
 -----------------------------------------------------------------------
 
-### Anomaly Time Series
-
 ```{r}
-renderTable({
+
+output$anom_table <- renderDT({
   
   # Filter data
   indicator_data <- indicator_data %>% filter(ID == input$indicator)
@@ -427,17 +440,32 @@ renderTable({
   # Just get the indicator columns
   IndicatorTimeSeries <- indicator_data %>% select(Date_Time, Anom)
   
-  IndicatorTimeSeries
+  IndicatorTimeSeries}, 
+  selection = 'none',
+  height = '20%',
+  caption = htmltools::tags$caption(style = 'color:black;', "Anomaly Time Series Data:"),
+  options = list(searching = FALSE, paging = TRUE, info = FALSE, lengthChange = FALSE,
+                 columnDefs = list(list(className = 'dt-right', targets = c(1, 2))))
+  
+)
+
+useShinyjs(rmd = TRUE)
+
+observeEvent(input$indicator, {
+  if (input$indicator %in% include_anom_list){
+    shinyjs::showElement(id = "anom_table")
+  } else{
+    shinyjs::hideElement(id = "anom_table")
+  }
 })
+
+
+DTOutput("anom_table", width = "90%")
+
 ```
 
-Row {data-height=1}
+Row 
 -----------------------------------------------------------------------
-
-```{r}
-# Create placeholder for the downloadButton
-uiOutput("downloadUIAnom")
-```
 
 ```{r}
 # Create the actual downloadButton
@@ -466,6 +494,20 @@ output$downBtnAnom <- downloadHandler(
     
     write.csv(data_for_dl, file_out, row.names = FALSE)
 })
+
+useShinyjs(rmd = TRUE)
+
+observeEvent(input$indicator, {
+  if (input$indicator %in% include_anom_list){
+    shinyjs::showElement(id = "downloadUIAnom")
+  } else{
+    shinyjs::hideElement(id = "downloadUIAnom")
+  }
+})
+
+# Create placeholder for the downloadButton
+uiOutput("downloadUIAnom")
+
 ```
 
 About the Indicator

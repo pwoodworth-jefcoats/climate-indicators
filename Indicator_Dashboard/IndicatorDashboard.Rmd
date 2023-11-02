@@ -216,7 +216,6 @@ div(style = "margin-top: 10px; margin-bottom: -50px;",
 
 ```
 
-
 ```{r}
 
 output$anom_desc <- renderUI(
@@ -593,13 +592,13 @@ renderValueBox({
       summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
     monthly_max_report_year <- indicator_data |> filter(Year == report_year - 1) |>
       summarise(Value = max(Value, na.rm = TRUE)) |> signif(3) 
-    tmp_caption <- paste(as.character(report_year - 1), "Average")
+    tmp_caption <- paste(as.character(report_year - 1), "Range")
   } else{
     monthly_min_report_year <- indicator_data |> filter(Year == report_year) |>
       summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
     monthly_max_report_year <- indicator_data |> filter(Year == report_year) |>
       summarise(Value = max(Value, na.rm = TRUE)) |> signif(3)
-    tmp_caption <- paste(as.character(report_year), "Average")
+    tmp_caption <- paste(as.character(report_year), "Range")
   }
   
   valueBox(value = paste(monthly_min_report_year, "\u2013", monthly_max_report_year), color = pal[1], caption = tmp_caption)

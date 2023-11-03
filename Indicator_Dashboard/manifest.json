@@ -1978,6 +1978,34 @@
         "Archs": "magrittr.so.dSYM"
       }
     },
+    "markdown": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "markdown",
+        "Type": "Package",
+        "Title": "Render Markdown with 'commonmark'",
+        "Version": "1.7",
+        "Authors@R": "c(\nperson(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\")),\nperson(\"JJ\", \"Allaire\", role = \"aut\"),\nperson(\"Jeffrey\", \"Horner\", role = \"aut\"),\nperson(\"Henrik\", \"Bengtsson\", role = \"ctb\"),\nperson(\"Jim\", \"Hester\", role = \"ctb\"),\nperson(\"Yixuan\", \"Qiu\", role = \"ctb\"),\nperson(\"Kohske\", \"Takahashi\", role = \"ctb\"),\nperson(\"Adam\", \"November\", role = \"ctb\"),\nperson(\"Nacho\", \"Caballero\", role = \"ctb\"),\nperson(\"Jeroen\", \"Ooms\", role = \"ctb\"),\nperson(\"Thomas\", \"Leeper\", role = \"ctb\"),\nperson(\"Joe\", \"Cheng\", role = \"ctb\"),\nperson(\"Andrzej\", \"Oles\", role = \"ctb\"),\nperson(given = \"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
+        "Description": "Render Markdown to full and lightweight HTML/LaTeX documents with\nthe 'commonmark' package. It also supports features that are missing in\n'commonmark', such as raw HTML/LaTeX blocks, LaTeX math, superscripts,\nsubscripts, footnotes, element attributes, appendices, and fenced 'Divs'.\nWith additional JavaScript and CSS, it can also create HTML slides and\narticles.",
+        "Depends": "R (>= 2.11.1)",
+        "Imports": "utils, commonmark (>= 1.9.0), xfun (>= 0.38)",
+        "Suggests": "knitr, rmarkdown (>= 2.18), yaml, RCurl",
+        "License": "MIT + file LICENSE",
+        "URL": "https://github.com/rstudio/markdown",
+        "BugReports": "https://github.com/rstudio/markdown/issues",
+        "VignetteBuilder": "knitr",
+        "RoxygenNote": "7.2.3",
+        "Encoding": "UTF-8",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-05-16 04:10:01 UTC; yihui",
+        "Author": "Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\nJJ Allaire [aut],\nJeffrey Horner [aut],\nHenrik Bengtsson [ctb],\nJim Hester [ctb],\nYixuan Qiu [ctb],\nKohske Takahashi [ctb],\nAdam November [ctb],\nNacho Caballero [ctb],\nJeroen Ooms [ctb],\nThomas Leeper [ctb],\nJoe Cheng [ctb],\nAndrzej Oles [ctb],\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Yihui Xie <xie@yihui.name>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-05-16 10:00:03 UTC",
+        "Built": "R 4.2.0; ; 2023-05-17 10:23:03 UTC; unix"
+      }
+    },
     "memoise": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -3648,7 +3676,7 @@
       "checksum": "a33ddfe4465baed3e9c13afa1d0a7cb8"
     },
     "Descriptions/SST_description.Rmd": {
-      "checksum": "37be6d361c71db59fb515d85a10c7ff5"
+      "checksum": "29943d11e01e5585456e821601d078ca"
     },
     "Images/CHL_map_2022.png": {
       "checksum": "7f904c4d31dde661a1afab5cb1ee441d"
@@ -3690,7 +3718,7 @@
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "9ee6df857ee4e06b1c3b9d76ae4c70c9"
+      "checksum": "668e14cd04417eb29bbb4bf0f06e0491"
     }
   },
   "users": null

@@ -141,8 +141,6 @@ Visualize Indicator {style="position:relative;" data-orientation=columns}
 Column {style="margin-right: 5px;"}
 -----------------------------------------------------------------------
 
-<span style="color: #A5A5A5;">The __Time Series Plot__ shows monthly values for the indicator along with the annual average, or mean.  For variables with a significant and steady (or linear) long-term trend, this is shown as well.</span>
-
 ```{r}
 output$ts <- renderPlotly({
   
@@ -216,26 +214,7 @@ div(style = "margin-top: 10px; margin-bottom: -50px;",
 
 ```
 
-```{r}
-
-output$anom_desc <- renderUI(
-  
-  markdown("<span style='color: #A5A5A5;'>The __Anomaly Time Series Plot__ show the time series and annual average, or mean, with the seasonal cycle removed.  For anomalies with a significant and steady (or linear) long-term trend, this is shown as well.</span>")
-)
-
-useShinyjs(rmd = TRUE)
-
-observeEvent(input$indicator, {
-  if (input$indicator %in% include_anom_list){
-    shinyjs::showElement(id = "anom_desc")
-  } else{
-    shinyjs::hideElement(id = "anom_desc")
-  }
-})
-
-uiOutput("anom_desc")
-
-```
+<span style="color: #A5A5A5;">The __Time Series Plot__ shows monthly values for the indicator along with the annual average, or mean.  For variables with a significant and steady (or linear) long-term trend, this is shown as well.</span>
 
 ```{r}
 
@@ -284,7 +263,26 @@ plotlyOutput('anom_ts')
 
 ```
 
-<span style="color: #A5A5A5;">The __Seasonal Plots__ show the indicator values by month.  The cycle plot shows all the values for a given month in order by year.  The points plot stacks them vertically.</span>
+```{r}
+
+output$anom_desc <- renderUI(
+  
+  markdown("<span style='color: #A5A5A5;'>The __Anomaly Time Series Plot__ show the time series and annual average, or mean, with the seasonal cycle removed.  For anomalies with a significant and steady (or linear) long-term trend, this is shown as well.</span>")
+)
+
+useShinyjs(rmd = TRUE)
+
+observeEvent(input$indicator, {
+  if (input$indicator %in% include_anom_list){
+    shinyjs::showElement(id = "anom_desc")
+  } else{
+    shinyjs::hideElement(id = "anom_desc")
+  }
+})
+
+uiOutput("anom_desc")
+
+```
 
 ```{r warning = FALSE}
 
@@ -374,7 +372,7 @@ div(style = "margin-top: -20px; margin-bottom: -40px",
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Maps__</span>
+<span style="color: #A5A5A5;">The __Seasonal Plots__ show the indicator values by month.  The cycle plot shows all the values for a given month in order by year.  The points plot stacks them vertically.</span>
 
 ```{r}
 #knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
@@ -397,6 +395,8 @@ div(style = "margin-bottom: 10px",
 )
 
 ```
+
+<span style="color: #A5A5A5;">This is some text about the __Maps__</span>
 
 View Indicator Data
 ======================================================================

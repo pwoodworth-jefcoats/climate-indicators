@@ -13,15 +13,19 @@ output:
 runtime: shiny
 resource_files:
   - "Data/Dashboard_Data_2022.csv"
+  - "Data/Dashboard_Map_Data_2022.csv"
+  - "Data/rnatearth_coast.RData"
+  - "Data/rnatearth_land.RData"
+  - "Data/Dashboard_Map_Data_2022.csv"
   - "Images/Indicator-Table-2022-Monthly-Variables.png"
-  - "CO2-Indicator-Table-2022-Monthly-Variables.png"
-  - "Chl-Indicator-Table-2022-Monthly-Variables.png"
-  - "ENSO-Indicator-Table-2022-Monthly-Variables.png"
-  - "MD50-Indicator-Table-2022-Monthly-Variables.png"
-  - "PDO-Indicator-Table-2022-Monthly-Variables.png"
-  - "SST-Indicator-Table-2022-Monthly-Variables.png"
-  - "TatD-Indicator-Table-2022-Monthly-Variables.png"
-  - "pH-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/CO2-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/Chl-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/ENSO-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/MD50-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/PDO-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/SST-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/TatD-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/pH-Indicator-Table-2022-Monthly-Variables.png"
   - "Images/SST_map_2022.png"
   - "Images/TatD_map_2022.png"
   - "Images/Chl_map_2022.png"
@@ -77,6 +81,7 @@ table_height <- 300 #in pixels
 # For now, just testing the framework.
 
 indicator_data <- read_csv(here('Data', 'Dashboard_Data_2022.csv'))
+indicator_map_data <- read_csv(here('Data', 'Dashboard_Map_Data_2022.csv'))
 
 #coastlines for maps
 land_proj <- readRDS("Data/rnatearth_land.RData")
@@ -387,9 +392,8 @@ div(style = "margin-top: -20px; margin-bottom: -40px",
 
 output$map <- renderPlotly({
   
-  #read in plotting data
-  filename = here('Data', paste0(input$indicator, "_map_2022.csv"))
-  raster_df <- read.csv(filename)
+  #filter plotting data
+  raster_df <- indicator_map_data %>% filter(ID == input$indicator) 
   
   #set color scheme and plotting parameters based on indicator
   if (input$indicator == "SST"){
@@ -443,9 +447,9 @@ plotlyOutput('map')
 
 output$anom_map <- renderPlotly({
   
-  #read in plotting data
-  filename = here('Data', paste0(input$indicator, "_anom_map_2022.csv"))
-  raster_anom_df <- read.csv(filename)
+  #filter plotting data
+  raster_anom_df <- indicator_map_data %>% filter(ID == paste0(input$indicator, "_anom")) 
+
   
   if (input$indicator == "Chl"){
     anom_fill_scale <- scale_fill_gradient2(name = input$indicator, low = oceans[2], 
@@ -651,7 +655,7 @@ About the Indicator
 Row
 -----------------------------------------------------------------------
 
-### 2022* Average
+### 2022 Average
 
 ```{r}
 
@@ -674,7 +678,7 @@ renderValueBox({
 })
 ```
 
-### 2022* Range
+### 2022 Range
 
 ```{r}
 

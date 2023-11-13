@@ -3669,44 +3669,23 @@
     "Data/Aggregate_Dashboard_Data.Rmd": {
       "checksum": "bb4345e769e4a22505656919145e9731"
     },
-    "Data/Chl_anom_map_2022.csv": {
-      "checksum": "274800b156d8aad67ffbd635d62aa1dc"
-    },
-    "Data/Chl_map_2022.csv": {
-      "checksum": "95b67d52ca5aad49c25fe676987d8711"
-    },
     "Data/Dashboard_Data_2022.csv": {
       "checksum": "2efc1e7e276f2ed4e0b8db6370526ae4"
     },
-    "Data/MD50_anom_map_2022.csv": {
-      "checksum": "3750b6d1b2dc8850ebf96f4a70bcfe97"
-    },
-    "Data/MD50_map_2022.csv": {
-      "checksum": "549c4b69c63e8f8d8b5e3ccfd43785ef"
-    },
-    "Data/rnatearth_coast_md50.RData": {
-      "checksum": "cc9507c5e08a01a178152180784df736"
+    "Data/Dashboard_Map_Data_2022.csv": {
+      "checksum": "7d076193541b453b47acaa1f8b534470"
     },
     "Data/rnatearth_coast.RData": {
       "checksum": "eba625ba47d18321d11547124b5697b4"
     },
-    "Data/rnatearth_land_md50.RData": {
-      "checksum": "a93d933abb0926f5405937ff31a85cd5"
-    },
     "Data/rnatearth_land.RData": {
       "checksum": "04be68e050346ebf9dc3fb176320ca2b"
     },
-    "Data/SST_anom_map_2022.csv": {
-      "checksum": "01b9d37810bddb4c41772507a3aea93c"
+    "Data/TatD_coast.RData": {
+      "checksum": "eba625ba47d18321d11547124b5697b4"
     },
-    "Data/SST_map_2022.csv": {
-      "checksum": "f91149c4d2103163bb17a43d641160ec"
-    },
-    "Data/TatD_anom_map_2022.csv": {
-      "checksum": "e5a145022894b5ca1f15c7e29d70ebf8"
-    },
-    "Data/TatD_map_2022.csv": {
-      "checksum": "2b27bd3c0585e2b277812678c724e8cd"
+    "Data/TatD_land.RData": {
+      "checksum": "04be68e050346ebf9dc3fb176320ca2b"
     },
     "Descriptions/SST_description.md": {
       "checksum": "a33ddfe4465baed3e9c13afa1d0a7cb8"
@@ -3754,7 +3733,7 @@
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "a0947baff754e81ef07e515647a9b846"
+      "checksum": "8a135f6ab1a19d92b3701e9e6b62e42e"
     }
   },
   "users": null

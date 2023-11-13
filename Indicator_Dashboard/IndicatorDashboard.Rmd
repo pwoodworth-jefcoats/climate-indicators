@@ -42,6 +42,7 @@ library(htmltools)
 library(rmarkdown)
 library(shinyjs)
 library(DT)
+library(scales)
 ```
 
 ```{r}
@@ -59,6 +60,7 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
                     'Median Phytoplankton Size' = 'MD50')
 
 include_anom_list <- c("SST", "CO2", "Chl", "MD50")
+include_anom_map_list <- c("SST", "TatD", "Chl", "MD50")
 exclude_ann_mean_list <- c("PDO", "ENSO")
 report_year <- 2022
 
@@ -75,6 +77,11 @@ table_height <- 300 #in pixels
 # For now, just testing the framework.
 
 indicator_data <- read_csv(here('Data', 'Dashboard_Data_2022.csv'))
+
+#coastlines for maps
+land_proj <- readRDS("Data/rnatearth_land.RData")
+coast_proj <- readRDS("Data/rnatearth_coast.RData")
+
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -85,6 +92,7 @@ crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
 ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
 #pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
 pal <- c(oceans[3], oceans[1], waves[2], coral[3], crustacean[2]) #making some tweaks for visibility
 
@@ -377,26 +385,114 @@ div(style = "margin-top: -20px; margin-bottom: -40px",
 ```{r}
 #knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
 
-#expects image to be in the format f.ex. ./images/SST_map_2022.png
-output$map <- renderImage({
-
-  # Select image
-  filename = here('Images',  paste(input$indicator, '_map_2022.png', sep = ''))
+output$map <- renderPlotly({
   
-  #Return a list containing filename and alt text
-  list(src = filename,
-       alt = "This is alternate text",
-       height = plot_height)
+  #read in plotting data
+  filename = here('Data', paste0(input$indicator, "_map_2022.csv"))
+  raster_df <- read.csv(filename)
+  
+  #set color scheme and plotting parameters based on indicator
+  if (input$indicator == "SST"){
+    pal <- rev(waves)
+    ll_rect_color <- "white"   
+    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+  } else if (input$indicator == "TatD"){
+    pal <- rev(waves)
+    ll_rect_color <- "white"
+    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+  } else if (input$indicator == "Chl"){
+    pal <- seagrass
+    ll_rect_color <- "white"
+    fill_scale <- scale_fill_gradientn(name = input$indicator, trans = log10_trans(),  
+                                       colors = pal, limits = c(0.01, 10), oob = squish)
+  } else if (input$indicator == "MD50"){
+    pal <- seagrass
+    ll_rect_color <- "black"
+    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+  }
+  
+  #report year map
+  p <- ggplot() + 
+    geom_raster(data = raster_df, mapping = aes(x=x, y=y, fill=layer, text = labels)) +
+    geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  +
+    annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
+    fill_scale +
+    geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5") +
+    geom_sf(data = coast_proj) +
+    coord_sf( expand = F) +
+    xlab("") + ylab("") + 
+    theme_bw() + theme(panel.grid = element_line(color="black", linewidth = 0.1),
+                       legend.background = element_rect(fill='transparent'))
+  
+  g <- ggplotly(p, tooltip = c("labels"), height = plot_height) %>%
+    layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent') %>%
+    style(hoverinfo = "skip", traces = c(3, 4))
+  
+  g
+    
+}) %>% bindCache(input$indicator)
 
-}, deleteFile = FALSE)
-
-div(style = "margin-bottom: 10px",
-  imageOutput("map")
-)
+plotlyOutput('map')
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Maps__</span>
+<span style="color: #A5A5A5;">This is some text about the __Map__</span>
+
+```{r}
+#knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
+
+output$anom_map <- renderPlotly({
+  
+  #read in plotting data
+  filename = here('Data', paste0(input$indicator, "_anom_map_2022.csv"))
+  raster_anom_df <- read.csv(filename)
+  
+  if (input$indicator == "Chl"){
+    anom_fill_scale <- scale_fill_gradient2(name = input$indicator, low = oceans[2], 
+                                            mid = "white", high = coral[2], oob = squish, 
+                                            midpoint = 0, limits = c(-1, 1))
+  } else{
+    anom_fill_scale <- scale_fill_gradient2(name = input$indicator, low = oceans[2], 
+                                            mid = "white", high = coral[2], midpoint = 0)
+  }
+
+  
+  #report year map
+  p_anom <- ggplot() + 
+    geom_raster(data = raster_anom_df, mapping = aes(x=x, y=y, fill=layer, text = labels)) +
+    geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
+    annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
+    anom_fill_scale +
+    geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5") +
+    geom_sf(data = coast_proj) +
+    coord_sf(expand = F) +
+    xlab("") + ylab("") +
+    theme_bw() + theme(panel.grid = element_line(color="black", linewidth = 0.1),
+                       legend.background = element_rect(fill='transparent'))
+  
+  g_anom <- ggplotly(p_anom, tooltip = c("labels"), height = plot_height) %>%
+            layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent') %>%
+            style(hoverinfo = "skip", traces = c(3, 4))
+  
+  g_anom
+    
+}) %>% bindCache(input$indicator)
+
+useShinyjs(rmd = TRUE)
+
+observeEvent(input$indicator, {
+  if (input$indicator %in% include_anom_map_list){
+    shinyjs::showElement(id = "anom_map")
+  } else{
+    shinyjs::hideElement(id = "anom_map")
+  }
+})
+
+plotlyOutput('anom_map')
+
+```
+
+<span style="color: #A5A5A5;">This is some text about the __Anomaly Map__</span>
 
 View Indicator Data
 ======================================================================

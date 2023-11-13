@@ -3693,9 +3693,6 @@
     "Descriptions/SST_description.Rmd": {
       "checksum": "29943d11e01e5585456e821601d078ca"
     },
-    "Images/CHL_map_2022.png": {
-      "checksum": "7f904c4d31dde661a1afab5cb1ee441d"
-    },
     "Images/Chl-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b9767cc3f00156a3b476658de3a717d8"
     },
@@ -3708,9 +3705,6 @@
     "Images/Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b1fedf1b10ef6a07fb4bed8d371e3795"
     },
-    "Images/MD50_map_2022.png": {
-      "checksum": "870eb43ede43bef18ceea6de3ecae3a2"
-    },
     "Images/MD50-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b4349ec7534ce523ccc8665b338d21bb"
     },
@@ -3720,20 +3714,14 @@
     "Images/pH-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "db5c630721f4e487d4d43c0dd9d7b849"
     },
-    "Images/SST_map_2022.png": {
-      "checksum": "122bced755201350b1f50e4d200c2129"
-    },
     "Images/SST-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "2c0bb0d1e5bf84eb9ad75ac63bf7e6b6"
-    },
-    "Images/TatD_map_2022.png": {
-      "checksum": "f9087ca3ae177107de8e8571edc15593"
     },
     "Images/TatD-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "8a135f6ab1a19d92b3701e9e6b62e42e"
+      "checksum": "dd5c5da6541fb8c4dc91e55ce41c9370"
     }
   },
   "users": null

@@ -47,7 +47,6 @@ library(rmarkdown)
 library(shinyjs)
 library(DT)
 library(scales)
-library(sf)
 ```
 
 ```{r}

@@ -436,7 +436,7 @@ plotlyOutput('map')
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Map__</span>
+<span style="color: #A5A5A5;">This __Map__ shows the long-term average for this variable.</span>
 
 ```{r}
 #knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
@@ -492,7 +492,7 @@ plotlyOutput('anom_map')
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Anomaly Map__</span>
+<span style="color: #A5A5A5;">This __Anomaly Map__ shows the difference between the most recent year and the long-term average.  Positive values mean the most recent year is above average and negative values mean the most recent year is below average.</span>
 
 View Indicator Data
 ======================================================================

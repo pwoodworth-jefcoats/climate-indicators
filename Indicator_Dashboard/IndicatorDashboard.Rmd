@@ -117,9 +117,9 @@ The __View Indicator Data__ tab lets you access the indicator time series data.
 
 The __About the Indicator__ tab provides background information about the indicator along with some summary statistics.
 
-
-
 This dashboard is designed to complement the Western Pacific Regional Fishery Management Council's [data portal](www.wpcouncildata.org/pelagicsafereport/), which includes the full suite of pelagic Climate and Oceanic Indicators and provides access to annual data.
+
+The dashboard data match the __2022__ pelagic SAFE report.  Dashboard data will be updated each summer following publication of the SAFE report.
 
 Indicators at a Glance {style="position:relative;" data-orientation=columns}
 ======================================================================

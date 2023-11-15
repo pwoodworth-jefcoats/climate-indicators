@@ -438,7 +438,7 @@ plotlyOutput('map')
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Map__</span>
+<span style="color: #A5A5A5;">This __Map__ shows the climatological average for this variable.  The data in the graphs above is averaged over the longline fishing grounds as indicated on this map.</span>
 
 ```{r}
 #knitr::include_graphics(here("Sea_Surface_Temperature","SST_map_2022.png"))
@@ -494,7 +494,7 @@ plotlyOutput('anom_map')
 
 ```
 
-<span style="color: #A5A5A5;">This is some text about the __Anomaly Map__</span>
+<span style="color: #A5A5A5;">This __Anomaly Map__ shows the difference between the latest full year and the climatological average.  Positive values show that the indicator is greater than averarage in that location and negative values show that is lower than average.</span>
 
 View Indicator Data
 ======================================================================

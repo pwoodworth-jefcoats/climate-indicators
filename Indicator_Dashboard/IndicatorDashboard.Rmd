@@ -2,6 +2,7 @@
 title: "Indicator Dashboard"
 output: 
   flexdashboard::flex_dashboard:
+    source_code: "https://github.com/pwoodworth-jefcoats/climate-indicators"
     orientation: rows
     vertical_layout: fill
     theme:

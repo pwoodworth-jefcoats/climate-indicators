@@ -83,8 +83,8 @@ indicator_data <- read_csv(here('Data', 'Dashboard_Data_2022.csv'))
 indicator_map_data <- read_csv(here('Data', 'Dashboard_Map_Data_2022.csv'))
 
 #coastlines for maps
-land_proj <- readRDS("Data/rnatearth_land.RData")
-coast_proj <- readRDS("Data/rnatearth_coast.RData")
+land_proj <- readRDS(here('Data', 'rnatearth_land.RData'))
+coast_proj <- readRDS(here('Data', 'rnatearth_coast.RData'))
 
 ```
 
@@ -418,44 +418,162 @@ output$map <- renderPlotly({
   #filter plotting data
   raster_df <- indicator_map_data %>% filter(ID == input$indicator) 
   
-  #set color scheme and plotting parameters based on indicator
-  if (input$indicator == "SST"){
-    pal <- rev(waves)
-    ll_rect_color <- "white"   
-    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
-  } else if (input$indicator == "TatD"){
-    pal <- rev(waves)
-    ll_rect_color <- "white"
-    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
-  } else if (input$indicator == "Chl"){
-    pal <- seagrass
-    ll_rect_color <- "white"
-    fill_scale <- scale_fill_gradientn(name = input$indicator, trans = log10_trans(),  
-                                       colors = pal, limits = c(0.01, 10), oob = squish)
-  } else if (input$indicator == "MD50"){
-    pal <- seagrass
-    ll_rect_color <- "black"
-    fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+  #indicators with spatial data (SST, TatD, Chl, and MD40)
+  if (input$indicator %in% include_anom_map_list){
+    
+    #set color scheme and plotting parameters based on indicator
+    if (input$indicator == "SST"){
+      pal <- rev(waves)
+      ll_rect_color <- "white"   
+      fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+    } else if (input$indicator == "TatD"){
+      pal <- rev(waves)
+      ll_rect_color <- "white"
+      fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+    } else if (input$indicator == "Chl"){
+      pal <- seagrass
+      ll_rect_color <- "white"
+      fill_scale <- scale_fill_gradientn(name = input$indicator, trans = log10_trans(),  
+                                         colors = pal, limits = c(0.01, 10), oob = squish)
+    } else if (input$indicator == "MD50"){
+      pal <- seagrass
+      ll_rect_color <- "black"
+      fill_scale <- scale_fill_gradientn(name = input$indicator, colors = pal)
+    }
+    
+    #report year map
+    p <- ggplot() + 
+      geom_raster(data = raster_df, mapping = aes(x=x, y=y, fill=layer, text = labels)) +
+      geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  +
+      annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
+      fill_scale +
+      geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+      geom_sf(data = coast_proj) +
+      coord_sf(expand = F) +
+      xlab("") + ylab("") + 
+      theme_bw() + theme(panel.grid = element_line(color="black", linewidth = 0.1),
+                         legend.background = element_rect(fill='transparent'))
+    
+    g <- ggplotly(p, tooltip = c("labels"), height = plot_height) %>%
+      layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent') %>%
+      style(hoverinfo = "skip", traces = c(3, 4))
+    
+    g
+    
+  } else{ #indicators without spatial data (CO2, pH, ENSO, PDO)
+    
+    ext <- st_bbox(land_proj)
+    
+    #make base maps
+    #p <- ggplot() + 
+    #  geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = ext$ymin, ymax = ext$ymax), 
+    #            color = NA, fill = oceans[1])  +
+    #  geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
+    #  annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
+    #  geom_vline(xintercept = c(0, 60), color="black", linewidth = 0.1) +
+    #  geom_hline(yintercept = seq(0, 60, 10), color="black", linewidth = 0.1) +
+    #  geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+    #  geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+    #  coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+    #  xlab("") + ylab("") +
+    #  theme_bw()
+    
+    p <- ggplot() + 
+      geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = ext$ymin, ymax = ext$ymax), 
+                color = NA, fill = oceans[1])  +
+      geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
+      annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
+      geom_vline(xintercept = c(0, 60), color="black", linewidth = 0.1) +
+      geom_hline(yintercept = seq(0, 60, 10), color="black", linewidth = 0.1) +
+      xlab("") + ylab("") +
+      theme_bw()
+    
+    #add data based on indicator
+    if (input$indicator == "CO2"){
+      
+      p <- p +       
+        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        annotate(geom = "point", x = 24.4, y = 19.5, color = crustacean[2]) +
+        annotate(geom = "text", x = 33.5, y = 19.5, color = "black", size = 3.2,
+                 label = "Mauna Loa\nObservatory")
+      
+      g <- ggplotly(p, height = plot_height) %>% 
+        layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent',
+               xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE)) %>%
+        style(hoverinfo = "skip", traces = c(1:8, 10))
+    
+      #customize tooltip
+      g$x$data[[9]]$text <- "155.6W, 19.5N<br />Mauna Loa Observatory"
+      
+      g
+      
+    } else if (input$indicator == "pH"){
+      
+      p <- p + 
+        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        annotate(geom = "point", x = 22.0, y = 22.75, color = crustacean[2]) +
+        annotate(geom = "text", x = 22.0, y = 26.5, color = "black", size = 3.2,
+                 label = "Station\nALOHA")
+      
+      g <- ggplotly(p, height = plot_height) %>% 
+        layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent',
+               xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE)) %>%
+        style(hoverinfo = "skip", traces = c(1:8, 10))
+    
+      #customize tooltip
+      g$x$data[[9]]$text <- "158.0W, 22.75N<br />Station ALOHA"
+      
+      g
+            
+    } else if (input$indicator == "ENSO"){
+      
+      p <- p + 
+        geom_rect(aes(xmin = 60, xmax = 10, ymin = -5, ymax = 5), 
+                         color = crustacean[3], fill = crustacean[2], 
+                         alpha = 0.5, linewidth = 0.5) +
+        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        annotate("text", x = 35, y = 7, label = "Niño 3.4 Region", size = 3.2, color = "black")
+      
+      g <- ggplotly(p, height = plot_height) %>% 
+        layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent',
+               xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE)) %>%
+        style(hoverinfo = "skip", traces = c(1:6, 8:10))
+            
+      #customize tooltip
+      g$x$data[[7]]$text <- "120.0W to 170.0W<br />5.0S to 5.0N<br />Niño 3.4 Region"
+      
+      g
+      
+    } else if (input$indicator == "PDO"){
+      
+      p <- p + 
+        geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = 20, ymax = ext$ymax), 
+                         color = crustacean[3], fill = crustacean[2], 
+                         alpha = 0.5, linewidth = 0.5) +
+        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        annotate("text", x = 160, y = 22, 
+                 label = "PDO Region", size = 3.2, color = "black")
+      
+      g <- ggplotly(p, height = plot_height) %>% 
+        layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent',
+               xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE)) %>%
+        style(hoverinfo = "skip", traces = c(1:6, 8:10))
+            
+      #customize tooltip
+      g$x$data[[7]]$text <- "Pacific basin above 20N<br />PDO Region"
+      
+      g
+      
+    }
   }
-  
-  #report year map
-  p <- ggplot() + 
-    geom_raster(data = raster_df, mapping = aes(x=x, y=y, fill=layer, text = labels)) +
-    geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  +
-    annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
-    fill_scale +
-    geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5") +
-    geom_sf(data = coast_proj) +
-    coord_sf( expand = F) +
-    xlab("") + ylab("") + 
-    theme_bw() + theme(panel.grid = element_line(color="black", linewidth = 0.1),
-                       legend.background = element_rect(fill='transparent'))
-  
-  g <- ggplotly(p, tooltip = c("labels"), height = plot_height) %>%
-    layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent') %>%
-    style(hoverinfo = "skip", traces = c(3, 4))
-  
-  g
     
 }) %>% bindCache(input$indicator)
 
@@ -496,7 +614,7 @@ output$anom_map <- renderPlotly({
     geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
     annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
     anom_fill_scale +
-    geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5") +
+    geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
     geom_sf(data = coast_proj) +
     coord_sf(expand = F) +
     xlab("") + ylab("") +
@@ -784,4 +902,3 @@ Indicator_Description <- reactive({
 renderUI({Indicator_Description()}) #renderUI needed here instead of renderText
 
 ```
-=======

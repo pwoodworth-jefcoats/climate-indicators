@@ -104,9 +104,10 @@ pal <- c(oceans[3], oceans[1], waves[2], coral[3], crustacean[2]) #making some t
 
 Sidebar {.sidebar}
 ======================================================================
+#### __Select an indicator__
 ```{r}
 # Select indicator to view
-selectInput('indicator', label = 'Select an indicator', choices = indicator_list, selected = c('SST'))
+selectInput('indicator', label = ' ', choices = indicator_list, selected = c('SST'))
 
 ```
 

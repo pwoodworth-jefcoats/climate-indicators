@@ -364,6 +364,19 @@ div(style = paste0("margin-bottom: ", plot_spacer_1, "px"),
   plotlyOutput('seasonal_cycle')
 )
 
+output$season_desc <- renderUI(
+  
+  markdown('The __Seasonal Plot__ shows the indicator values by month.  The cycle plot shows all the values for a given month in order by year. The points plot stacks them vertically.')
+)
+
+div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
+  uiOutput("season_desc")
+)
+
+output$season_divider <- renderUI(hr(style = paste0("border-top: 1px solid ", pal[1], "; margin-bottom: ", plot_spacer_2, "px")))
+
+uiOutput("season_divider")
+
 ```
 
 ```{r}
@@ -393,21 +406,8 @@ output$seasonal_dots <- renderPlotly({
 
 }) %>% bindCache(input$indicator)
 
-
-plotlyOutput('seasonal_dots')
-
-output$season_desc <- renderUI(
-  
-  markdown('The __Seasonal Plots__ show the indicator values by month.  The cycle plot shows all the values for a given month in order by year. The points plot stacks them vertically.')
-)
-
-div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
-  uiOutput("season_desc")
-)
-
-output$season_divider <- renderUI(hr(style = paste0("border-top: 1px solid ", pal[1], "; margin-bottom: ", plot_spacer_2, "px")))
-
-uiOutput("season_divider")
+#uncomment line below to render dots plot
+#plotlyOutput('seasonal_dots')
 
 ```
 
@@ -465,20 +465,7 @@ output$map <- renderPlotly({
     
     ext <- st_bbox(land_proj)
     
-    #make base maps
-    #p <- ggplot() + 
-    #  geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = ext$ymin, ymax = ext$ymax), 
-    #            color = NA, fill = oceans[1])  +
-    #  geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
-    #  annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
-    #  geom_vline(xintercept = c(0, 60), color="black", linewidth = 0.1) +
-    #  geom_hline(yintercept = seq(0, 60, 10), color="black", linewidth = 0.1) +
-    #  geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-    #  geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-    #  coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
-    #  xlab("") + ylab("") +
-    #  theme_bw()
-    
+    #make base map
     p <- ggplot() + 
       geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = ext$ymin, ymax = ext$ymax), 
                 color = NA, fill = oceans[1])  +

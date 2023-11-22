@@ -225,7 +225,19 @@ div(style = "margin-top: 10px; margin-bottom: -50px;",
   plotlyOutput('ts')
 )
 output$ts_desc <- renderUI(
-  markdown('The __Time Series Plot__ shows monthly values for the indicator along with the annual average, or mean. For variables with a significant and steady (or linear) long-term trend, this is shown as well.')
+  
+  #markdown('The __Time Series Plot__ shows monthly values for the indicator along with the annual average, or mean. For variables with a significant and steady (or linear) long-term trend, this is shown as well.')
+  
+  #indicator-specific descriptions for time series plot
+  if (input$indicator == "CO2"){
+    markdown("CO2 time series plot description")
+  } else if (input$indicator == "SST"){
+    markdown("SST time series plot description")
+  } else if (input$indicator == "Chl"){
+    markdown("Chl time series plot description")    
+  } else if (input$indicator == "MD50"){
+    markdown("MD50 time series plot description")    
+  }
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
@@ -286,7 +298,26 @@ plotlyOutput('anom_ts')
 
 output$anom_desc <- renderUI(
   
-  markdown('The __Anomaly Time Series Plot__ shows the time series and annual average, or mean, with the seasonal cycle removed. For anomalies with a significant and steady (or linear) long-term trend, this is shown as well.')
+  #markdown('The __Anomaly Time Series Plot__ shows the time series and annual average, or mean, with the seasonal cycle removed. For anomalies with a significant and steady (or linear) long-term trend, this is shown as well.')
+
+  #indicator-specific descriptions for anomaly plot
+  if (input$indicator == "CO2"){
+    markdown("CO2 anomaly plot description")
+  } else if (input$indicator == "pH"){
+    markdown("pH anomaly plot description")
+  } else if (input$indicator == "ENSO"){
+    markdown("ENSO anomaly plot description")
+  } else if (input$indicator == "PDO"){
+    markdown("PDO anomaly plot description")
+  } else if (input$indicator == "SST"){
+    markdown("SST anomaly plot description")
+  } else if (input$indicator == "TatD"){
+    markdown("TatD anomaly plot description")    
+  } else if (input$indicator == "Chl"){
+    markdown("Chl anomaly plot description")    
+  } else if (input$indicator == "MD50"){
+    markdown("MD50 anomaly plot description")    
+  }
 )
 
 useShinyjs(rmd = TRUE)
@@ -366,7 +397,26 @@ div(style = paste0("margin-bottom: ", plot_spacer_1, "px"),
 
 output$season_desc <- renderUI(
   
-  markdown('The __Seasonal Plot__ shows the indicator values by month.  The cycle plot shows all the values for a given month in order by year. The points plot stacks them vertically.')
+  #markdown('The __Seasonal Plot__ shows the indicator values by month.  The cycle plot shows all the values for a given month in order by year. The points plot stacks them vertically.')
+  
+  #indicator-specific descriptions for seasonal plot
+  if (input$indicator == "CO2"){
+    markdown("CO2 seasonal plot description")
+  } else if (input$indicator == "pH"){
+    markdown("pH seasonal plot description")
+  } else if (input$indicator == "ENSO"){
+    markdown("ENSO seasonal plot description")
+  } else if (input$indicator == "PDO"){
+    markdown("PDO seasonal plot description")
+  } else if (input$indicator == "SST"){
+    markdown("SST seasonal plot description")
+  } else if (input$indicator == "TatD"){
+    markdown("TatD seasonal plot description")    
+  } else if (input$indicator == "Chl"){
+    markdown("Chl seasonal plot description")    
+  } else if (input$indicator == "MD50"){
+    markdown("MD50 seasonal plot description")    
+  }
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
@@ -381,6 +431,7 @@ uiOutput("season_divider")
 
 ```{r}
 # Inspiration: Melanie's OceanWatch figure where each year is plotted individually
+#not included for now
 output$seasonal_dots <- renderPlotly({
 
   # Filter data
@@ -568,7 +619,27 @@ output$map <- renderPlotly({
 plotlyOutput('map')
 
 output$map_desc <- renderUI(
-  markdown('This __Map__ shows the climatological average for this variable.  The data in the graphs above is averaged over the longline fishing grounds as indicated on this map.')
+  #markdown('This __Map__ shows the climatological average for this variable.  The data in the graphs above is averaged over the longline fishing grounds as indicated on this map.')
+  
+  #indicator-specific descriptions for map
+  if (input$indicator == "CO2"){
+    markdown("CO2 map description")
+  } else if (input$indicator == "pH"){
+    markdown("pH map description")
+  } else if (input$indicator == "ENSO"){
+    markdown("ENSO map description")
+  } else if (input$indicator == "PDO"){
+    markdown("PDO map description")
+  } else if (input$indicator == "SST"){
+    markdown("SST map description")
+  } else if (input$indicator == "TatD"){
+    markdown("TatD map description")    
+  } else if (input$indicator == "Chl"){
+    markdown("Chl map description")    
+  } else if (input$indicator == "MD50"){
+    markdown("MD50 map description")    
+  }  
+  
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
@@ -633,7 +704,20 @@ observeEvent(input$indicator, {
 plotlyOutput('anom_map')
 
 output$anom_map_desc <- renderUI(
-  markdown('This __Anomaly Map__ shows the difference between the latest full year and the climatological average.  Positive values show that the indicator is greater than averarage in that location and negative values show that is lower than average.')
+  
+  #markdown('This __Anomaly Map__ shows the difference between the latest full year and the climatological average.  Positive values show that the indicator is greater than averarage in that location and negative values show that is lower than average.')
+  
+  #indicator-specific descriptions for seasonal plot
+  if (input$indicator == "SST"){
+    markdown("SST map description")
+  } else if (input$indicator == "TatD"){
+    markdown("TatD map description")    
+  } else if (input$indicator == "Chl"){
+    markdown("Chl map description")    
+  } else if (input$indicator == "MD50"){
+    markdown("MD50 map description")    
+  }  
+  
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: 10px;'),

@@ -1,0 +1,99 @@
+---
+title: "PDO_description"
+author: "Phoebe.Woodworth-Jefcoats@noaa.gov"
+date: "2023-12-06"
+output: md_document
+preserve_yaml: FALSE
+---
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+library(markdown)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2022
+
+# Identify the variable we're focused on
+var <- 'PDO'
+```
+
+```{r, include = FALSE, global = TRUE}
+# Access indicator data
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+
+# And just use our variable of interest
+indicator_data <- indicator_data |> filter(ID == var)
+```
+
+```{r, include = FALSE}
+# Values that are included in the text
+
+# Annual mean for report year
+ann_mean_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = mean(Value, na.rm = TRUE))
+
+# Increase over time from linear model
+if (!is.na(indicator_data$Value_lm[1])) {
+  delta_SST_lm <- indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
+    indicator_data$Value_lm[1]
+}
+
+# Increase in anomaly over time from linear model
+if (!is.na(indicator_data$Anom_lm[1])) {
+  delta_SST_anom_lm <- indicator_data$Anom_lm[length(indicator_data$Anom_lm)] - 
+    indicator_data$Anom_lm[1]
+}
+
+# Monthly min & max for report year
+monthly_min_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+
+# Monthly min & max for previous years
+monthly_min_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+```
+
+## Pacific Decadal Oscillation
+__About the Indicator__  
+The Pacific Decadal Oscillation (PDO) is one of the most prominent modes of natural climate variability in the North Pacific.  PDO cycles, which typically last 20 - 30 years, are known to impact Pacific fisheries, including tuna fisheries, because they cause interannual changes in sea surface temperature and phytoplankton abundance.
+
+The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics.   
+
+Understanding the effects of natural climate variability like the PDO on the ocean, marine ecosystems, and fisheries is an active area of research.
+
+__Status of the Indicator__  
+The PDO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.
+
+__Indicator Data__  
+Description: The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from NOAA (2023b).
+
+Timeframe: Monthly.
+
+Region/Location: Pacific Basin north of 20°N.
+
+Measurement Platform: *In-situ* station, satellite, model.
+
+Data available at: <https://psl.noaa.gov/pdo/>. 
+
+Sourced from NOAA (2023b), Mantua (1997), and Newman (2016). Graphics produced in part using Stawitz (2022).
+
+__References__  
+NOAA (2023b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 27 March 2023
+
+Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079. 
+
+Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1
+
+Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>

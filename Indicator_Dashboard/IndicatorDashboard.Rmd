@@ -756,7 +756,8 @@ output$time_series_table <- renderDT({
   selection = 'none',
   caption = htmltools::tags$caption(style = 'color:black; caption-side: top;', "Indicator Time Series Data:"),
   options = list(searching = FALSE, paging = TRUE, info = FALSE, lengthChange = FALSE,
-                 columnDefs = list(list(className = 'dt-right', targets = c(1, 2))))
+                 columnDefs = list(list(className = 'dt-right', targets = c(0, 1)))),
+  rownames = FALSE
   
 )
 
@@ -819,7 +820,8 @@ output$anom_table <- renderDT({
   selection = 'none',
   caption = htmltools::tags$caption(style = 'color:black; caption-side: top;', "Anomaly Time Series Data:"),
   options = list(searching = FALSE, paging = TRUE, info = FALSE, lengthChange = FALSE,
-                 columnDefs = list(list(className = 'dt-right', targets = c(1, 2))))
+                 columnDefs = list(list(className = 'dt-right', targets = c(0, 1)))),
+  rownames = FALSE
   
 )
 
@@ -890,7 +892,7 @@ About the Indicator
 Row
 -----------------------------------------------------------------------
 
-### 2022 Average
+### Annual Average
 
 ```{r}
 
@@ -913,7 +915,7 @@ renderValueBox({
 })
 ```
 
-### 2022 Range
+### Annual Range
 
 ```{r}
 

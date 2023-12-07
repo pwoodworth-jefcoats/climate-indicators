@@ -1,0 +1,101 @@
+---
+title: "MD50_description"
+author: "Phoebe.Woodworth-Jefcoats@noaa.gov"
+date: "2023-12-06"
+output: md_document
+preserve_yaml: FALSE
+---
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+library(markdown)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2022
+
+# Identify the variable we're focused on
+var <- 'MD50'
+```
+
+```{r, include = FALSE, global = TRUE}
+# Access indicator data
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+
+# And just use our variable of interest
+indicator_data <- indicator_data |> filter(ID == var)
+```
+
+```{r, include = FALSE}
+# Values that are included in the text
+
+# Annual mean for report year
+ann_mean_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = mean(Value, na.rm = TRUE))
+
+# Increase over time from linear model
+if (!is.na(indicator_data$Value_lm[1])) {
+  delta_size_lm <- indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
+    indicator_data$Value_lm[1]
+  delta_size_pct = (indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
+                      indicator_data$Value_lm[1]) / indicator_data$Value_lm[1] * 100
+}
+
+# Increase in anomaly over time from linear model
+if (!is.na(indicator_data$Anom_lm[1])) {
+  delta_size_anom_lm <- indicator_data$Anom_lm[length(indicator_data$Anom_lm)] - 
+    indicator_data$Anom_lm[1]
+}
+
+# Monthly min & max for report year
+monthly_min_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+
+# Monthly min & max for previous years
+monthly_min_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+```
+
+## Median Phytoplankton Size
+__About the Indicator__  
+Phytoplankton are the base of the food web and their abundance influences the food available to all higher trophic levels from zooplankton through tuna and billfish. Sea surface temperature and ocean color data can be combined to estimate median phytoplankton size. Changes to median phytoplankton can propagate through the food web and influence fish size structure, weight-per-unit-effort, and the bigeye tuna recruitment index. Furthermore, median phytoplankton size can be combined with the recruitment index to forecast bigeye tuna catch rates up to four years in advance.
+
+Some studies project that climate change will result in both fewer and smaller phytoplankton. This would reduce the food available to all members of the food web. 
+
+Understanding variability and trends in phytoplankton abundance and size structure, how they are influenced by oceanographic conditions, and how they influence fish abundance and size structure are areas of active research.
+
+__Status of the Indicator__  
+The mean monthly phytoplankton cell size was `r signif(ann_mean_RptYr,3)` $\mu$m Equivalent Spherical Diameter (ESD) in `r RptYr`. Monthly mean cell size ranged from `r signif(monthly_min_RptYr,3)`–`r signif(monthly_max_RptYr,3)` $\mu$m ESD during the year, within the range of values observed over the period of record (`r signif(monthly_min_PrevYrs,3)`–`r signif(monthly_max_PrevYrs,3)` $\mu$m ESD). Over the period of record, there has been weakly significant decline in monthly median phytoplankton size. Over the time series, median phytoplankton size has declined by `r abs(signif(delta_size_lm,2))` $\mu$m ESD, or by `r abs(signif(delta_size_pct,2))`%. The monthly anomaly has declined as well, by `r abs(signif(delta_size_anom_lm,2))` $\mu$m ESD. Average estimated median phytoplankton size was below average across much of the fishing grounds.
+
+__Indicator Data__  
+Description: Median phytoplankton cell size can be estimated from satellite remotely sensed SST and ocean color (Barnes et al. 2011). A time series of monthly median phytoplankton cell size averaged over the Hawaiʻi longline region is presented, as well as a time series of anomalies. NOAA CoralTemp (see SST indicator) and ESA CCI data (see ocean color indicator) are used to calculate median phytoplankton cell size.
+
+Timeframe: Monthly
+
+Region: Hawaii longline region: 15° – 45°N, 180° – 120°W
+
+Measurement Platform: Satellite
+
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>
+
+Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2023c). Graphics produced in part using Stawitz (2022).
+
+__References__  
+Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088
+
+NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+
+NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+
+Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>

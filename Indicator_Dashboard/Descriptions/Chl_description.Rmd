@@ -1,0 +1,97 @@
+---
+title: "Chl_description"
+author: "Phoebe.Woodworth-Jefcoats@noaa.gov"
+date: "2023-12-06"
+output: md_document
+preserve_yaml: FALSE
+---
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+library(markdown)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2022
+
+# Identify the variable we're focused on
+var <- 'Chl'
+```
+
+```{r, include = FALSE, global = TRUE}
+# Access indicator data
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+
+# And just use our variable of interest
+indicator_data <- indicator_data |> filter(ID == var)
+```
+
+```{r, include = FALSE}
+# Values that are included in the text
+
+# Annual mean for report year
+ann_mean_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = mean(Value, na.rm = TRUE))
+
+# Increase over time from linear model
+if (!is.na(indicator_data$Value_lm[1])) {
+  delta_Chl_lm <- indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
+    indicator_data$Value_lm[1]
+}
+
+# Increase in anomaly over time from linear model
+if (!is.na(indicator_data$Anom_lm[1])) {
+  delta_Chl_anom_lm <- indicator_data$Anom_lm[length(indicator_data$Anom_lm)] - 
+    indicator_data$Anom_lm[1]
+}
+
+# Monthly min & max for report year
+monthly_min_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_RptYr <- indicator_data |> filter(Year == RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+
+# Monthly min & max for previous years
+monthly_min_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = min(Value, na.rm = TRUE))
+monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
+  summarise(Value = max(Value, na.rm = TRUE))
+```
+
+## Ocean Color
+__About the Indicator__  
+Ocean color measures chlorophyll-a concentration near the ocean's surface, which provides information on phytoplankton abundance.  Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.  Increased phytoplankton abundance can lead to the transition zone chlorophyll front (TZCF) being farther south and vice versa, and changes in the location of this front particularly impact Hawaiʻi’s swordfish fishery. 
+
+Climate change is projected to lead to lower phytoplankton abundance. Combined, rising ocean temperatures and lower phytoplankton abundance may lead to smaller median phytoplankton sizes. Smaller phytoplankton may alter fish size structure, weight-per-unit-effort, and the bigeye tuna recruitment index.
+
+Understanding the effects of natural climate variability and anthropogenic climate change on the ocean, marine ecosystems, and the fishery is an active area of research.
+
+__Status of the Indicator__  
+The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r signif(delta_Chl_anom_lm, 1)`.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30 - 35°N.
+
+__Indicator Data__  
+Description: Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).
+
+Timeframe: Monthly
+
+Region/Location: Hawaii longline region: 5° – 45°N, 180° – 120°W
+
+Measurement Platform: Satellite
+
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
+
+Sourced from: NOAA OceanWatch (2023b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz (2022).
+
+__References__  
+NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+
+Sathyendranath et al. (2018): Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>
+
+Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>

@@ -3915,14 +3915,11 @@
     ".Rapp.history": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
-    "Data/Aggregate_Dashboard_Data.Rmd": {
-      "checksum": "bb4345e769e4a22505656919145e9731"
-    },
     "Data/Dashboard_Data_2022.csv": {
       "checksum": "2efc1e7e276f2ed4e0b8db6370526ae4"
     },
     "Data/Dashboard_Map_Data_2022.csv": {
-      "checksum": "7d076193541b453b47acaa1f8b534470"
+      "checksum": "4b279d4fea3bea3d2742e35c2e02f3b7"
     },
     "Data/rnatearth_coast.RData": {
       "checksum": "eba625ba47d18321d11547124b5697b4"
@@ -3936,11 +3933,29 @@
     "Data/TatD_land.RData": {
       "checksum": "04be68e050346ebf9dc3fb176320ca2b"
     },
+    "Descriptions/Chl_description.md": {
+      "checksum": "32f9701f04b27083a92c8aa6c197b43c"
+    },
+    "Descriptions/CO2_description.md": {
+      "checksum": "0980d0256a54bf3f5bfa55a88b6b4278"
+    },
+    "Descriptions/ENSO_description.md": {
+      "checksum": "7a0e6923c7d5d136f9e1e849172ebdf3"
+    },
+    "Descriptions/MD50_description.md": {
+      "checksum": "442a6e1cbc0543906525ad2e4b2da134"
+    },
+    "Descriptions/PDO_description.md": {
+      "checksum": "08e4f16c05086395ec06da257f3aef67"
+    },
+    "Descriptions/pH_description.md": {
+      "checksum": "db26dd06ede5318eb746bca1e50b09ed"
+    },
     "Descriptions/SST_description.md": {
       "checksum": "a33ddfe4465baed3e9c13afa1d0a7cb8"
     },
-    "Descriptions/SST_description.Rmd": {
-      "checksum": "29943d11e01e5585456e821601d078ca"
+    "Descriptions/TatD_description.md": {
+      "checksum": "0786c943ade1bb84b161fb0d674e65b9"
     },
     "Images/Chl-Indicator-Table-2022-Monthly-Variables.png": {
       "checksum": "b9767cc3f00156a3b476658de3a717d8"
@@ -3970,7 +3985,7 @@
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "84efb55e210178fb8bd526e165cc098e"
+      "checksum": "c68f8488680f637b21d322aff395b6b3"
     }
   },
   "users": null

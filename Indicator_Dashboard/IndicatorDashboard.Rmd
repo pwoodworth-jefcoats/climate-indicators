@@ -26,7 +26,14 @@ resource_files:
   - "Images/SST-Indicator-Table-2022-Monthly-Variables.png"
   - "Images/TatD-Indicator-Table-2022-Monthly-Variables.png"
   - "Images/pH-Indicator-Table-2022-Monthly-Variables.png"
+  - "Descriptions/CO2_description.md"
+  - "Descriptions/pH_description.md"
+  - "Descriptions/ENSO_description.md"
+  - "Descriptions/PDO_description.md"
   - "Descriptions/SST_description.md"
+  - "Descriptions/TatD_description.md"
+  - "Descriptions/Chl_description.md"
+  - "Descriptions/MD50_description.md"
 ---
 
 ```{r setup, include = FALSE}

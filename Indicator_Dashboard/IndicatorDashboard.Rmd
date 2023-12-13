@@ -111,10 +111,12 @@ pal <- c(oceans[3], oceans[1], waves[2], coral[3], crustacean[2]) #making some t
 
 Sidebar {.sidebar}
 ======================================================================
-#### __Select an indicator__
+<span style="color:#005AA8"><h4>__Select an indicator <br/>to begin:__</h4></span>
 ```{r}
 # Select indicator to view
-selectInput('indicator', label = ' ', choices = indicator_list, selected = c('SST'))
+div(style = "margin-top: -20px; ",
+  selectInput('indicator', label = ' ', choices = indicator_list, selected = c('SST'))
+)
 
 ```
 

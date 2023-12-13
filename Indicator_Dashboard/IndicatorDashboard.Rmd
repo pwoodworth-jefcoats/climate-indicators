@@ -89,6 +89,8 @@ indicator_map_data <- read_csv(here('Data', 'Dashboard_Map_Data_2022.csv'))
 #Access map base data
 land_proj <- readRDS(here('Data', 'rnatearth_land.RData'))
 coast_proj <- readRDS(here('Data', 'rnatearth_coast.RData'))
+land_proj_enso <- readRDS(here('Data', 'rnatearth_enso_land.RData'))
+coast_proj_enso <- readRDS(here('Data', 'rnatearth_enso_coast.RData'))
 
 ```
 
@@ -538,7 +540,7 @@ output$map <- renderPlotly({
     
     #make base map
     p <- ggplot() + 
-      geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = ext$ymin, ymax = ext$ymax), #rectangle for coloring ocean
+      geom_rect(aes(xmin = ext$xmin, xmax = ext$xmax, ymin = -5, ymax = ext$ymax), #rectangle for coloring ocean
                 color = NA, fill = oceans[1])  +
       geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5) + #ll fishing grounds box
       annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
@@ -597,13 +599,14 @@ output$map <- renderPlotly({
     } else if (input$indicator == "ENSO"){
       
       #show ENSO calculation region
+      #uses different base map to show whole -5 to 5 deg region
       p <- p + 
         geom_rect(aes(xmin = 60, xmax = 10, ymin = -5, ymax = 5), 
                          color = crustacean[3], fill = crustacean[2], 
                          alpha = 0.5, linewidth = 0.5) +
-        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        geom_sf(data = land_proj_enso, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj_enso, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(-5, ext$ymax), expand = F) +
         annotate("text", x = 35, y = 7, label = "Niño 3.4 Region", size = 3.2, color = "black")
       
       #port to plotly

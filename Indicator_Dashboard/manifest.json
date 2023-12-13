@@ -598,11 +598,11 @@
       "description": {
         "Package": "cli",
         "Title": "Helpers for Developing Command Line Interfaces",
-        "Version": "3.6.1",
-        "Authors@R": "c(\nperson(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", role = \"ctb\"),\nperson(\"Kirill\", \"Müller\", role = \"ctb\"),\nperson(\"RStudio\", role = c(\"cph\", \"fnd\"))\n)",
+        "Version": "3.6.2",
+        "Authors@R": "c(\nperson(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", role = \"ctb\"),\nperson(\"Kirill\", \"Müller\", role = \"ctb\"),\nperson(\"Salim\", \"Brüggemann\", , \"salim-b@pm.me\", role = \"ctb\",\ncomment = c(ORCID = \"0000-0002-5329-5987\")),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "A suite of tools to build attractive command line interfaces\n('CLIs'), from semantic elements: headings, lists, alerts, paragraphs,\netc. Supports custom themes via a 'CSS'-like language. It also\ncontains a number of lower level 'CLI' elements: rules, boxes, trees,\nand 'Unicode' symbols with 'ASCII' alternatives. It support ANSI\ncolors and text styles as well.",
         "License": "MIT + file LICENSE",
-        "URL": "https://cli.r-lib.org, https://github.com/r-lib/cli#readme",
+        "URL": "https://cli.r-lib.org, https://github.com/r-lib/cli",
         "BugReports": "https://github.com/r-lib/cli/issues",
         "Depends": "R (>= 3.4)",
         "Imports": "utils",
@@ -610,15 +610,14 @@
         "Config/Needs/website": "r-lib/asciicast, bench, brio, cpp11, decor, desc,\nfansi, prettyunits, sessioninfo, tidyverse/tidytemplate,\nusethis, vctrs",
         "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1.9000",
+        "RoxygenNote": "7.2.3",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-03-22 13:59:32 UTC; gaborcsardi",
-        "Author": "Gábor Csárdi [aut, cre],\nHadley Wickham [ctb],\nKirill Müller [ctb],\nRStudio [cph, fnd]",
+        "Packaged": "2023-12-10 22:38:10 UTC; gaborcsardi",
+        "Author": "Gábor Csárdi [aut, cre],\nHadley Wickham [ctb],\nKirill Müller [ctb],\nSalim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>),\nPosit Software, PBC [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-03-23 12:52:05 UTC",
-        "Built": "R 4.2.0; x86_64-apple-darwin17.0; 2023-03-24 12:19:58 UTC; unix",
-        "Archs": "cli.so.dSYM"
+        "Date/Publication": "2023-12-11 07:40:13 UTC",
+        "Built": "R 4.2.2; x86_64-apple-darwin17.0; 2023-12-13 19:15:17 UTC; unix"
       }
     },
     "clipr": {
@@ -1078,7 +1077,7 @@
         "Package": "fansi",
         "Title": "ANSI Control Sequence Aware String Functions",
         "Description": "Counterparts to R string manipulation functions that account for\nthe effects of ANSI text formatting control sequences.",
-        "Version": "1.0.4",
+        "Version": "1.0.6",
         "Authors@R": "c(\nperson(\"Brodie\", \"Gaslam\", email=\"brodie.gaslam@yahoo.com\",\nrole=c(\"aut\", \"cre\")),\nperson(\"Elliott\", \"Sales De Andrade\", role=\"ctb\"),\nperson(family=\"R Core Team\",\nemail=\"R-core@r-project.org\", role=\"cph\",\ncomment=\"UTF8 byte length calcs from src/util.c\"\n))",
         "Depends": "R (>= 3.1.0)",
         "License": "GPL-2 | GPL-3",
@@ -1087,17 +1086,16 @@
         "VignetteBuilder": "knitr",
         "Suggests": "unitizer, knitr, rmarkdown",
         "Imports": "grDevices, utils",
-        "RoxygenNote": "7.1.1",
+        "RoxygenNote": "7.2.3",
         "Encoding": "UTF-8",
         "Collate": "'constants.R' 'fansi-package.R' 'internal.R' 'load.R' 'misc.R'\n'nchar.R' 'strwrap.R' 'strtrim.R' 'strsplit.R' 'substr2.R'\n'trimws.R' 'tohtml.R' 'unhandled.R' 'normalize.R' 'sgr.R'",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-01-22 17:39:01 UTC; bg",
+        "Packaged": "2023-12-06 00:59:41 UTC; bg",
         "Author": "Brodie Gaslam [aut, cre],\nElliott Sales De Andrade [ctb],\nR Core Team [cph] (UTF8 byte length calcs from src/util.c)",
         "Maintainer": "Brodie Gaslam <brodie.gaslam@yahoo.com>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-01-22 19:20:02 UTC",
-        "Built": "R 4.2.0; x86_64-apple-darwin17.0; 2023-01-23 12:49:22 UTC; unix",
-        "Archs": "fansi.so.dSYM"
+        "Date/Publication": "2023-12-08 03:30:02 UTC",
+        "Built": "R 4.2.2; x86_64-apple-darwin17.0; 2023-12-13 19:15:29 UTC; unix"
       }
     },
     "farver": {
@@ -1338,7 +1336,7 @@
       "Repository": "https://cran.rstudio.com",
       "description": {
         "Package": "ggplot2",
-        "Version": "3.4.2",
+        "Version": "3.4.4",
         "Title": "Create Elegant Data Visualisations Using the Grammar of Graphics",
         "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\",\ncomment = c(ORCID = \"0000-0003-4757-117X\")),\nperson(\"Winston\", \"Chang\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-1576-2126\")),\nperson(\"Lionel\", \"Henry\", role = \"aut\"),\nperson(\"Thomas Lin\", \"Pedersen\", , \"thomas.pedersen@posit.co\", role = c(\"aut\", \"cre\"),\ncomment = c(ORCID = \"0000-0002-5147-4711\")),\nperson(\"Kohske\", \"Takahashi\", role = \"aut\"),\nperson(\"Claus\", \"Wilke\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-7470-9261\")),\nperson(\"Kara\", \"Woo\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-5125-4188\")),\nperson(\"Hiroaki\", \"Yutani\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-3385-7233\")),\nperson(\"Dewey\", \"Dunnington\", role = \"aut\",\ncomment = c(ORCID = \"0000-0002-9415-4582\")),\nperson(\"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "A system for 'declaratively' creating graphics, based on \"The\nGrammar of Graphics\". You provide the data, tell 'ggplot2' how to map\nvariables to aesthetics, what graphical primitives to use, and it\ntakes care of the details.",
@@ -1347,7 +1345,7 @@
         "BugReports": "https://github.com/tidyverse/ggplot2/issues",
         "Depends": "R (>= 3.3)",
         "Imports": "cli, glue, grDevices, grid, gtable (>= 0.1.1), isoband,\nlifecycle (> 1.0.1), MASS, mgcv, rlang (>= 1.1.0), scales (>=\n1.2.0), stats, tibble, vctrs (>= 0.5.0), withr (>= 2.5.0)",
-        "Suggests": "covr, dplyr, ggplot2movies, hexbin, Hmisc, knitr, lattice,\nmapproj, maps, maptools, multcomp, munsell, nlme, profvis,\nquantreg, ragg, RColorBrewer, rgeos, rmarkdown, rpart, sf (>=\n0.7-3), svglite (>= 1.2.0.9001), testthat (>= 3.1.2), vdiffr\n(>= 1.0.0), xml2",
+        "Suggests": "covr, dplyr, ggplot2movies, hexbin, Hmisc, knitr, lattice,\nmapproj, maps, multcomp, munsell, nlme, profvis, quantreg,\nragg, RColorBrewer, rmarkdown, rpart, sf (>= 0.7-3), svglite\n(>= 1.2.0.9001), testthat (>= 3.1.2), vdiffr (>= 1.0.0), xml2",
         "Enhances": "sp",
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "ggtext, tidyr, forcats, tidyverse/tidytemplate",
@@ -1357,12 +1355,12 @@
         "RoxygenNote": "7.2.3",
         "Collate": "'ggproto.R' 'ggplot-global.R' 'aaa-.R'\n'aes-colour-fill-alpha.R' 'aes-evaluation.R'\n'aes-group-order.R' 'aes-linetype-size-shape.R'\n'aes-position.R' 'compat-plyr.R' 'utilities.R' 'aes.R'\n'utilities-checks.R' 'legend-draw.R' 'geom-.R'\n'annotation-custom.R' 'annotation-logticks.R' 'geom-polygon.R'\n'geom-map.R' 'annotation-map.R' 'geom-raster.R'\n'annotation-raster.R' 'annotation.R' 'autolayer.R' 'autoplot.R'\n'axis-secondary.R' 'backports.R' 'bench.R' 'bin.R' 'coord-.R'\n'coord-cartesian-.R' 'coord-fixed.R' 'coord-flip.R'\n'coord-map.R' 'coord-munch.R' 'coord-polar.R'\n'coord-quickmap.R' 'coord-sf.R' 'coord-transform.R' 'data.R'\n'facet-.R' 'facet-grid-.R' 'facet-null.R' 'facet-wrap.R'\n'fortify-lm.R' 'fortify-map.R' 'fortify-multcomp.R'\n'fortify-spatial.R' 'fortify.R' 'stat-.R' 'geom-abline.R'\n'geom-rect.R' 'geom-bar.R' 'geom-bin2d.R' 'geom-blank.R'\n'geom-boxplot.R' 'geom-col.R' 'geom-path.R' 'geom-contour.R'\n'geom-count.R' 'geom-crossbar.R' 'geom-segment.R'\n'geom-curve.R' 'geom-defaults.R' 'geom-ribbon.R'\n'geom-density.R' 'geom-density2d.R' 'geom-dotplot.R'\n'geom-errorbar.R' 'geom-errorbarh.R' 'geom-freqpoly.R'\n'geom-function.R' 'geom-hex.R' 'geom-histogram.R'\n'geom-hline.R' 'geom-jitter.R' 'geom-label.R'\n'geom-linerange.R' 'geom-point.R' 'geom-pointrange.R'\n'geom-quantile.R' 'geom-rug.R' 'geom-sf.R' 'geom-smooth.R'\n'geom-spoke.R' 'geom-text.R' 'geom-tile.R' 'geom-violin.R'\n'geom-vline.R' 'ggplot2-package.R' 'grob-absolute.R'\n'grob-dotstack.R' 'grob-null.R' 'grouping.R' 'guide-bins.R'\n'guide-colorbar.R' 'guide-colorsteps.R' 'guide-legend.R'\n'guides-.R' 'guides-axis.R' 'guides-grid.R' 'guides-none.R'\n'hexbin.R' 'import-standalone-obj-type.R'\n'import-standalone-types-check.R' 'labeller.R' 'labels.R'\n'layer.R' 'layer-sf.R' 'layout.R' 'limits.R' 'margins.R'\n'performance.R' 'plot-build.R' 'plot-construction.R'\n'plot-last.R' 'plot.R' 'position-.R' 'position-collide.R'\n'position-dodge.R' 'position-dodge2.R' 'position-identity.R'\n'position-jitter.R' 'position-jitterdodge.R' 'position-nudge.R'\n'position-stack.R' 'quick-plot.R' 'reshape-add-margins.R'\n'save.R' 'scale-.R' 'scale-alpha.R' 'scale-binned.R'\n'scale-brewer.R' 'scale-colour.R' 'scale-continuous.R'\n'scale-date.R' 'scale-discrete-.R' 'scale-expansion.R'\n'scale-gradient.R' 'scale-grey.R' 'scale-hue.R'\n'scale-identity.R' 'scale-linetype.R' 'scale-linewidth.R'\n'scale-manual.R' 'scale-shape.R' 'scale-size.R' 'scale-steps.R'\n'scale-type.R' 'scale-view.R' 'scale-viridis.R' 'scales-.R'\n'stat-align.R' 'stat-bin.R' 'stat-bin2d.R' 'stat-bindot.R'\n'stat-binhex.R' 'stat-boxplot.R' 'stat-contour.R'\n'stat-count.R' 'stat-density-2d.R' 'stat-density.R'\n'stat-ecdf.R' 'stat-ellipse.R' 'stat-function.R'\n'stat-identity.R' 'stat-qq-line.R' 'stat-qq.R'\n'stat-quantilemethods.R' 'stat-sf-coordinates.R' 'stat-sf.R'\n'stat-smooth-methods.R' 'stat-smooth.R' 'stat-sum.R'\n'stat-summary-2d.R' 'stat-summary-bin.R' 'stat-summary-hex.R'\n'stat-summary.R' 'stat-unique.R' 'stat-ydensity.R'\n'summarise-plot.R' 'summary.R' 'theme-elements.R' 'theme.R'\n'theme-defaults.R' 'theme-current.R' 'utilities-break.R'\n'utilities-grid.R' 'utilities-help.R' 'utilities-matrix.R'\n'utilities-resolution.R' 'utilities-table.R'\n'utilities-tidy-eval.R' 'zxx.R' 'zzz.R'",
         "NeedsCompilation": "no",
-        "Packaged": "2023-03-31 08:04:34 UTC; thomas",
+        "Packaged": "2023-10-11 08:54:22 UTC; thomas",
         "Author": "Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\nWinston Chang [aut] (<https://orcid.org/0000-0002-1576-2126>),\nLionel Henry [aut],\nThomas Lin Pedersen [aut, cre]\n(<https://orcid.org/0000-0002-5147-4711>),\nKohske Takahashi [aut],\nClaus Wilke [aut] (<https://orcid.org/0000-0002-7470-9261>),\nKara Woo [aut] (<https://orcid.org/0000-0002-5125-4188>),\nHiroaki Yutani [aut] (<https://orcid.org/0000-0002-3385-7233>),\nDewey Dunnington [aut] (<https://orcid.org/0000-0002-9415-4582>),\nPosit, PBC [cph, fnd]",
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-04-03 14:10:02 UTC",
-        "Built": "R 4.2.0; ; 2023-04-04 13:14:13 UTC; unix"
+        "Date/Publication": "2023-10-12 11:40:02 UTC",
+        "Built": "R 4.2.0; ; 2023-10-13 04:58:24 UTC; unix"
       }
     },
     "glue": {
@@ -1486,7 +1484,7 @@
       "description": {
         "Package": "gtable",
         "Title": "Arrange 'Grobs' in Tables",
-        "Version": "0.3.3",
+        "Version": "0.3.4",
         "Authors@R": "c(person(given = \"Hadley\",\nfamily = \"Wickham\",\nrole = \"aut\",\nemail = \"hadley@posit.co\"),\nperson(given = \"Thomas Lin\",\nfamily = \"Pedersen\",\nrole = c(\"aut\", \"cre\"),\nemail = \"thomas.pedersen@posit.co\"),\nperson(given = \"Posit Software, PBC\",\nrole = \"cph\"))",
         "Description": "Tools to make it easier to work with \"tables\" of\n'grobs'. The 'gtable' package defines a 'gtable' grob class that specifies a\ngrid along with a list of grobs and their placement in the grid. Further the\npackage makes it easy to manipulate and combine 'gtable' objects so that\ncomplex compositions can be built up sequentially.",
         "License": "MIT + file LICENSE",
@@ -1501,12 +1499,12 @@
         "Config/testthat/edition": "3",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "NeedsCompilation": "no",
-        "Packaged": "2023-03-21 13:17:30 UTC; thomas",
+        "Packaged": "2023-08-21 10:36:53 UTC; thomas",
         "Author": "Hadley Wickham [aut],\nThomas Lin Pedersen [aut, cre],\nPosit Software, PBC [cph]",
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-03-21 14:00:05 UTC",
-        "Built": "R 4.2.0; ; 2023-03-22 12:52:31 UTC; unix"
+        "Date/Publication": "2023-08-21 11:20:02 UTC",
+        "Built": "R 4.2.0; ; 2023-08-22 11:12:00 UTC; unix"
       }
     },
     "haven": {
@@ -1888,8 +1886,8 @@
         "Package": "labeling",
         "Type": "Package",
         "Title": "Axis Labeling",
-        "Version": "0.4.2",
-        "Date": "2020-10-15",
+        "Version": "0.4.3",
+        "Date": "2023-08-29",
         "Author": "Justin Talbot,",
         "Maintainer": "Nuno Sempere <nuno.semperelh@gmail.com>",
         "Description": "Functions which provide a range of axis labeling algorithms.",
@@ -1897,10 +1895,10 @@
         "Collate": "'labeling.R'",
         "NeedsCompilation": "no",
         "Imports": "stats, graphics",
-        "Packaged": "2020-10-18 12:56:46 UTC; nuno",
+        "Packaged": "2023-08-29 21:01:57 UTC; loki",
         "Repository": "CRAN",
-        "Date/Publication": "2020-10-20 07:00:09 UTC",
-        "Built": "R 4.2.0; ; 2022-04-25 03:14:34 UTC; unix"
+        "Date/Publication": "2023-08-29 22:20:02 UTC",
+        "Built": "R 4.2.0; ; 2023-08-30 10:22:49 UTC; unix"
       }
     },
     "later": {
@@ -1992,27 +1990,27 @@
       "description": {
         "Package": "lifecycle",
         "Title": "Manage the Life Cycle of your Package Functions",
-        "Version": "1.0.3",
-        "Authors@R": "c(\nperson(\"Lionel\", \"Henry\", , \"lionel@rstudio.com\", role = c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = \"aut\",\ncomment = c(ORCID = \"0000-0003-4757-117X\")),\nperson(\"RStudio\", role = c(\"cph\", \"fnd\"))\n)",
+        "Version": "1.0.4",
+        "Authors@R": "c(\nperson(\"Lionel\", \"Henry\", , \"lionel@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\",\ncomment = c(ORCID = \"0000-0003-4757-117X\")),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "Manage the life cycle of your exported functions with shared\nconventions, documentation badges, and user-friendly deprecation\nwarnings.",
         "License": "MIT + file LICENSE",
         "URL": "https://lifecycle.r-lib.org/, https://github.com/r-lib/lifecycle",
         "BugReports": "https://github.com/r-lib/lifecycle/issues",
-        "Depends": "R (>= 3.4)",
-        "Imports": "cli (>= 3.4.0), glue, rlang (>= 1.0.6)",
+        "Depends": "R (>= 3.6)",
+        "Imports": "cli (>= 3.4.0), glue, rlang (>= 1.1.0)",
         "Suggests": "covr, crayon, knitr, lintr, rmarkdown, testthat (>= 3.0.1),\ntibble, tidyverse, tools, vctrs, withr",
         "VignetteBuilder": "knitr",
+        "Config/Needs/website": "tidyverse/tidytemplate, usethis",
         "Config/testthat/edition": "3",
-        "Config/Needs/website": "tidyverse/tidytemplate",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.1",
         "NeedsCompilation": "no",
-        "Packaged": "2022-10-07 08:50:55 UTC; lionel",
-        "Author": "Lionel Henry [aut, cre],\nHadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\nRStudio [cph, fnd]",
-        "Maintainer": "Lionel Henry <lionel@rstudio.com>",
+        "Packaged": "2023-11-06 16:07:36 UTC; lionel",
+        "Author": "Lionel Henry [aut, cre],\nHadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2022-10-07 09:50:02 UTC",
-        "Built": "R 4.2.1; ; 2022-10-07 18:46:58 UTC; unix"
+        "Date/Publication": "2023-11-07 10:10:10 UTC",
+        "Built": "R 4.2.2; ; 2023-12-08 00:09:42 UTC; unix"
       }
     },
     "lubridate": {
@@ -2271,31 +2269,31 @@
       "description": {
         "Package": "nmfspalette",
         "Title": "A Color Palette for NOAA Fisheries",
-        "Version": "0.0.0.9000",
-        "Authors@R": "person(given = \"Christine\",\nfamily = \"Stawitz\",\nrole = c(\"aut\", \"cre\"),\nemail = \"christine.stawitz@noaa.gov\")",
-        "Description": "This is a package that implements a color palette in line with the NOAA Fisheries Branding Guide.",
+        "Version": "3.0.0.000",
+        "Authors@R": "person(\"Christine\", \"Stawitz\", , \"christine.stawitz@noaa.gov\", role = c(\"aut\", \"cre\"))",
+        "Description": "This is a package that implements a color palette in line\nwith the NOAA Fisheries Branding Guide.",
         "License": "GPL-3 | file LICENSE",
+        "Imports": "ggplot2",
+        "Suggests": "dplyr, testthat",
+        "Config/Needs/website": "rsconnect, xaringan",
         "Encoding": "UTF-8",
         "Roxygen": "list(markdown = TRUE)",
-        "RoxygenNote": "7.1.2",
-        "Imports": "ggplot2",
-        "Suggests": "testthat, dplyr",
-        "Config/Needs/website": "rsconnect, xaringan",
+        "RoxygenNote": "7.2.3",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteRepo": "nmfspalette",
         "RemoteUsername": "nmfs-fish-tools",
         "RemoteRef": "HEAD",
-        "RemoteSha": "fcba6b0380c5bab0e2e37507ea0d66289e4762bf",
+        "RemoteSha": "26efb448e4cb1539ad70bbbba99a5ef35ceb7500",
         "GithubRepo": "nmfspalette",
         "GithubUsername": "nmfs-fish-tools",
         "GithubRef": "HEAD",
-        "GithubSHA1": "fcba6b0380c5bab0e2e37507ea0d66289e4762bf",
+        "GithubSHA1": "26efb448e4cb1539ad70bbbba99a5ef35ceb7500",
         "NeedsCompilation": "no",
-        "Packaged": "2023-02-22 20:10:25 UTC; phoebe.woodworth",
+        "Packaged": "2023-12-13 19:17:00 UTC; phoebe.woodworth",
         "Author": "Christine Stawitz [aut, cre]",
         "Maintainer": "Christine Stawitz <christine.stawitz@noaa.gov>",
-        "Built": "R 4.2.2; ; 2023-02-22 20:10:25 UTC; unix"
+        "Built": "R 4.2.2; ; 2023-12-13 19:17:01 UTC; unix"
       }
     },
     "openssl": {
@@ -2814,7 +2812,7 @@
       "Repository": "https://cran.rstudio.com",
       "description": {
         "Package": "rlang",
-        "Version": "1.1.1",
+        "Version": "1.1.2",
         "Title": "Functions for Base Types and Core R and 'Tidyverse' Features",
         "Description": "A toolbox for working with base types, core R features\nlike the condition system, and core 'Tidyverse' features like tidy\nevaluation.",
         "Authors@R": "c(\nperson(\"Lionel\", \"Henry\", ,\"lionel@posit.co\", c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", ,\"hadley@posit.co\", \"aut\"),\nperson(given = \"mikefc\",\nemail = \"mikefc@coolbutuseless.com\",\nrole = \"cph\",\ncomment = \"Hash implementation based on Mike's xxhashlite\"),\nperson(given = \"Yann\",\nfamily = \"Collet\",\nrole = \"cph\",\ncomment = \"Author of the embedded xxHash library\"),\nperson(given = \"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
@@ -2832,13 +2830,12 @@
         "Config/testthat/edition": "3",
         "Config/Needs/website": "dplyr, tidyverse/tidytemplate",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-04-28 10:48:43 UTC; lionel",
+        "Packaged": "2023-10-26 16:51:17 UTC; lionel",
         "Author": "Lionel Henry [aut, cre],\nHadley Wickham [aut],\nmikefc [cph] (Hash implementation based on Mike's xxhashlite),\nYann Collet [cph] (Author of the embedded xxHash library),\nPosit, PBC [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-04-28 22:30:03 UTC",
-        "Built": "R 4.2.0; x86_64-apple-darwin17.0; 2023-04-29 12:06:02 UTC; unix",
-        "Archs": "rlang.so.dSYM"
+        "Date/Publication": "2023-11-04 06:30:03 UTC",
+        "Built": "R 4.2.2; x86_64-apple-darwin17.0; 2023-12-08 00:09:19 UTC; unix"
       }
     },
     "rmarkdown": {
@@ -3020,27 +3017,27 @@
       "description": {
         "Package": "scales",
         "Title": "Scale Functions for Visualization",
-        "Version": "1.2.1",
-        "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = c(\"aut\", \"cre\")),\nperson(\"Dana\", \"Seidel\", role = \"aut\"),\nperson(\"RStudio\", role = c(\"cph\", \"fnd\"))\n)",
+        "Version": "1.3.0",
+        "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\")),\nperson(\"Thomas Lin\", \"Pedersen\", , \"thomas.pedersen@posit.co\", role = c(\"cre\", \"aut\"),\ncomment = c(ORCID = \"0000-0002-5147-4711\")),\nperson(\"Dana\", \"Seidel\", role = \"aut\"),\nperson(\"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "Graphical scales map data to aesthetics, and provide methods\nfor automatically determining breaks and labels for axes and legends.",
         "License": "MIT + file LICENSE",
         "URL": "https://scales.r-lib.org, https://github.com/r-lib/scales",
         "BugReports": "https://github.com/r-lib/scales/issues",
-        "Depends": "R (>= 3.2)",
-        "Imports": "farver (>= 2.0.3), labeling, lifecycle, munsell (>= 0.5), R6,\nRColorBrewer, rlang (>= 1.0.0), viridisLite",
-        "Suggests": "bit64, covr, dichromat, ggplot2, hms (>= 0.5.0), stringi,\ntestthat (>= 3.0.0), waldo (>= 0.4.0)",
+        "Depends": "R (>= 3.6)",
+        "Imports": "cli, farver (>= 2.0.3), glue, labeling, lifecycle, munsell (>=\n0.5), R6, RColorBrewer, rlang (>= 1.0.0), viridisLite",
+        "Suggests": "bit64, covr, dichromat, ggplot2, hms (>= 0.5.0), stringi,\ntestthat (>= 3.0.0)",
         "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
         "LazyLoad": "yes",
-        "RoxygenNote": "7.2.1",
-        "Config/testthat/edition": "3",
-        "NeedsCompilation": "no",
-        "Packaged": "2022-08-19 15:35:49 UTC; hadleywickham",
-        "Author": "Hadley Wickham [aut, cre],\nDana Seidel [aut],\nRStudio [cph, fnd]",
-        "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2023-11-27 20:27:59 UTC; thomas",
+        "Author": "Hadley Wickham [aut],\nThomas Lin Pedersen [cre, aut]\n(<https://orcid.org/0000-0002-5147-4711>),\nDana Seidel [aut],\nPosit, PBC [cph, fnd]",
+        "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2022-08-20 00:10:11 UTC",
-        "Built": "R 4.2.0; ; 2022-08-20 12:31:35 UTC; unix"
+        "Date/Publication": "2023-11-28 09:10:06 UTC",
+        "Built": "R 4.2.2; ; 2023-12-08 00:10:07 UTC; unix"
       }
     },
     "selectr": {
@@ -3578,7 +3575,7 @@
       "description": {
         "Package": "utf8",
         "Title": "Unicode Text Processing",
-        "Version": "1.2.3",
+        "Version": "1.2.4",
         "Authors@R": "c(person(given = c(\"Patrick\", \"O.\"),\nfamily = \"Perry\",\nrole = c(\"aut\", \"cph\")),\nperson(given = \"Kirill\",\nfamily = \"M\\u00fcller\",\nrole = \"cre\",\nemail = \"kirill@cynkra.com\"),\nperson(given = \"Unicode, Inc.\",\nrole = c(\"cph\", \"dtc\"),\ncomment = \"Unicode Character Database\"))",
         "Description": "Process and print 'UTF-8' encoded international\ntext (Unicode). Input, validate, normalize, encode, format, and\ndisplay.",
         "License": "Apache License (== 2.0) | file LICENSE",
@@ -3591,13 +3588,12 @@
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.3",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-01-31 05:28:43 UTC; kirill",
+        "Packaged": "2023-10-22 13:43:19 UTC; kirill",
         "Author": "Patrick O. Perry [aut, cph],\nKirill Müller [cre],\nUnicode, Inc. [cph, dtc] (Unicode Character Database)",
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-01-31 18:00:02 UTC",
-        "Built": "R 4.2.0; x86_64-apple-darwin17.0; 2023-02-01 12:50:10 UTC; unix",
-        "Archs": "utf8.so.dSYM"
+        "Date/Publication": "2023-10-22 21:50:02 UTC",
+        "Built": "R 4.2.2; x86_64-apple-darwin17.0; 2023-12-08 00:09:33 UTC; unix"
       }
     },
     "uuid": {
@@ -3628,7 +3624,7 @@
       "description": {
         "Package": "vctrs",
         "Title": "Vector Helpers",
-        "Version": "0.6.3",
+        "Version": "0.6.5",
         "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\"),\nperson(\"Lionel\", \"Henry\", , \"lionel@posit.co\", role = \"aut\"),\nperson(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"data.table team\", role = \"cph\",\ncomment = \"Radix sort based on data.table's forder() and their contribution to R's order()\"),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "Defines new notions of prototype and size that are used to\nprovide tools for consistent and well-founded type-coercion and\nsize-recycling, and are in turn connected to ideas of type- and\nsize-stability useful for analysing function interfaces.",
         "License": "MIT + file LICENSE",
@@ -3644,13 +3640,12 @@
         "Language": "en-GB",
         "RoxygenNote": "7.2.3",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-06-14 21:04:57 UTC; davis",
+        "Packaged": "2023-12-01 16:27:12 UTC; davis",
         "Author": "Hadley Wickham [aut],\nLionel Henry [aut],\nDavis Vaughan [aut, cre],\ndata.table team [cph] (Radix sort based on data.table's forder() and\ntheir contribution to R's order()),\nPosit Software, PBC [cph, fnd]",
         "Maintainer": "Davis Vaughan <davis@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-06-14 23:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-apple-darwin17.0; 2023-06-15 11:16:56 UTC; unix",
-        "Archs": "vctrs.so.dSYM"
+        "Date/Publication": "2023-12-01 23:50:02 UTC",
+        "Built": "R 4.2.2; x86_64-apple-darwin17.0; 2023-12-08 00:09:45 UTC; unix"
       }
     },
     "viridis": {
@@ -3750,8 +3745,8 @@
       "description": {
         "Package": "withr",
         "Title": "Run Code 'With' Temporarily Modified Global State",
-        "Version": "2.5.0",
-        "Authors@R": "c(person(given = \"Jim\",\nfamily = \"Hester\",\nrole = \"aut\"),\nperson(given = \"Lionel\",\nfamily = \"Henry\",\nrole = c(\"aut\", \"cre\"),\nemail = \"lionel@rstudio.com\"),\nperson(given = \"Kirill\",\nfamily = \"Müller\",\nrole = \"aut\",\nemail = \"krlmlr+r@mailbox.org\"),\nperson(given = \"Kevin\",\nfamily = \"Ushey\",\nrole = \"aut\",\nemail = \"kevinushey@gmail.com\"),\nperson(given = \"Hadley\",\nfamily = \"Wickham\",\nrole = \"aut\",\nemail = \"hadley@rstudio.com\"),\nperson(given = \"Winston\",\nfamily = \"Chang\",\nrole = \"aut\"),\nperson(given = \"Jennifer\",\nfamily = \"Bryan\",\nrole = \"ctb\"),\nperson(given = \"Richard\",\nfamily = \"Cotton\",\nrole = \"ctb\"),\nperson(given = \"RStudio\",\nrole = c(\"cph\", \"fnd\")))",
+        "Version": "2.5.2",
+        "Authors@R": "c(person(given = \"Jim\",\nfamily = \"Hester\",\nrole = \"aut\"),\nperson(given = \"Lionel\",\nfamily = \"Henry\",\nrole = c(\"aut\", \"cre\"),\nemail = \"lionel@posit.co\"),\nperson(given = \"Kirill\",\nfamily = \"Müller\",\nrole = \"aut\",\nemail = \"krlmlr+r@mailbox.org\"),\nperson(given = \"Kevin\",\nfamily = \"Ushey\",\nrole = \"aut\",\nemail = \"kevinushey@gmail.com\"),\nperson(given = \"Hadley\",\nfamily = \"Wickham\",\nrole = \"aut\",\nemail = \"hadley@rstudio.com\"),\nperson(given = \"Winston\",\nfamily = \"Chang\",\nrole = \"aut\"),\nperson(given = \"Jennifer\",\nfamily = \"Bryan\",\nrole = \"ctb\"),\nperson(given = \"Richard\",\nfamily = \"Cotton\",\nrole = \"ctb\"),\nperson(given = \"Posit Software, PBC\",\nrole = c(\"cph\", \"fnd\")))",
         "Description": "A set of functions to run code 'with' safely and\ntemporarily modified global state. Many of these functions were\noriginally a part of the 'devtools' package, this provides a simple\npackage with limited dependencies to provide access to these\nfunctions.",
         "License": "MIT + file LICENSE",
         "URL": "https://withr.r-lib.org, https://github.com/r-lib/withr#readme",
@@ -3766,12 +3761,12 @@
         "Config/testthat/edition": "3",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "NeedsCompilation": "no",
-        "Packaged": "2022-03-03 21:13:01 UTC; lionel",
-        "Author": "Jim Hester [aut],\nLionel Henry [aut, cre],\nKirill Müller [aut],\nKevin Ushey [aut],\nHadley Wickham [aut],\nWinston Chang [aut],\nJennifer Bryan [ctb],\nRichard Cotton [ctb],\nRStudio [cph, fnd]",
-        "Maintainer": "Lionel Henry <lionel@rstudio.com>",
+        "Packaged": "2023-10-24 08:50:10 UTC; lionel",
+        "Author": "Jim Hester [aut],\nLionel Henry [aut, cre],\nKirill Müller [aut],\nKevin Ushey [aut],\nHadley Wickham [aut],\nWinston Chang [aut],\nJennifer Bryan [ctb],\nRichard Cotton [ctb],\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2022-03-03 21:50:02 UTC",
-        "Built": "R 4.2.0; ; 2022-04-25 03:06:59 UTC; unix"
+        "Date/Publication": "2023-10-30 09:10:02 UTC",
+        "Built": "R 4.2.2; ; 2023-12-08 00:09:39 UTC; unix"
       }
     },
     "wk": {
@@ -3985,7 +3980,7 @@
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "c68f8488680f637b21d322aff395b6b3"
+      "checksum": "c2cf2ff2fff1fa2b5e0a695a273391fb"
     }
   },
   "users": null

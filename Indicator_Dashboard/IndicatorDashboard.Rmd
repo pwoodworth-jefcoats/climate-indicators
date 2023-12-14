@@ -83,8 +83,8 @@ plot_spacer_2 <- 70 #in pixels - space between horizontal line and next plot
 
 ```{r, include = FALSE, global = TRUE}
 ### Access indicator data
-indicator_data <- read_csv(here('Data', 'Dashboard_Data_2022.csv'))
-indicator_map_data <- read_csv(here('Data', 'Dashboard_Map_Data_2022.csv'))
+indicator_data <- read_csv(here('Data', paste0('Dashboard_Data_', report_year, '.csv')))
+indicator_map_data <- read_csv(here('Data', paste0('Dashboard_Map_Data_', report_year, '.csv')))
 
 #Access map base data
 land_proj <- readRDS(here('Data', 'rnatearth_land.RData'))
@@ -142,7 +142,7 @@ Column
 output$summary_img <- renderImage({
   
   # Select image
-  filename = here('Images', paste0(input$indicator, "-Indicator-Table-2022-Monthly-Variables.png"))
+  filename = here('Images', paste0(input$indicator, "-Indicator-Table-", report_year, "-Monthly-Variables.png"))
 
   #Return a list containing filename and alt text
   list(src = filename,
@@ -1009,17 +1009,29 @@ renderValueBox({
       summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
     monthly_max_PrevYrs <- indicator_data |> filter(Year < (report_year - 1)) |>
       summarise(Value = max(Value, na.rm = TRUE)) |> signif(3) 
+    
+    first_year <- indicator_data |> filter(Year < (report_year - 1)) |>
+      summarise(Year = min(Year, na.rm = TRUE))
+    last_year <- indicator_data |> filter(Year < (report_year - 1)) |>
+      summarise(Year = max(Year, na.rm = TRUE))
+    tmp_caption <- paste(first_year, "\u2013", last_year, "Long-Term Range")
   } else{
     # Monthly min & max for previous years
     #for all other indicators, use report year
     monthly_min_PrevYrs <- indicator_data |> filter(Year < report_year) |>
       summarise(Value = min(Value, na.rm = TRUE)) |> signif(3) 
     monthly_max_PrevYrs <- indicator_data |> filter(Year < report_year) |>
-      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3)  
+      summarise(Value = max(Value, na.rm = TRUE)) |> signif(3) 
+    
+    first_year <- indicator_data |> filter(Year < (report_year)) |>
+      summarise(Year = min(Year, na.rm = TRUE))
+    last_year <- indicator_data |> filter(Year < (report_year)) |>
+      summarise(Year = max(Year, na.rm = TRUE))
+    tmp_caption <- paste(first_year, "\u2013", last_year, "Long-Term Range")
   }
 
   #the "\u2013" here is the unicode m-dash
-  valueBox(value = paste(monthly_min_PrevYrs, "\u2013", monthly_max_PrevYrs), color = pal[1])
+  valueBox(value = paste(monthly_min_PrevYrs, "\u2013", monthly_max_PrevYrs), color = pal[1], caption = tmp_caption)
 })
 ```
 

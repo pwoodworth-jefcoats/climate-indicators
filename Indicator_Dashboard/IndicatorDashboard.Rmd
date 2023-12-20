@@ -239,25 +239,23 @@ div(style = "margin-top: 10px; margin-bottom: -50px;", #adjust plot spacing
 #build time series plot descriptions
 output$ts_desc <- renderUI( 
   
-  #markdown('The __Time Series Plot__ shows monthly values for the indicator along with the annual average, or mean. For variables with a significant and steady (or linear) long-term trend, this is shown as well.')
-  
-  #indicator-specific descriptions for time series plot go here
-  if (input$indicator == "CO2"){
-    markdown("CO2 time series plot description")
-  } else if (input$indicator == "SST"){
-    markdown("SST time series plot description")
-  } else if (input$indicator == "Chl"){
-    markdown("Chl time series plot description")    
-  } else if (input$indicator == "MD50"){
-    markdown("MD50 time series plot description")    
-  } else if (input$indicator == "ENSO"){
-    markdown("ENSO time series plot description")
-  } else if (input$indicator == "PDO"){
-    markdown("PDO time series plot description")
-  } else if (input$indicator == "pH"){
-    markdown("pH time series plot description")
-  } else if (input$indicator == "TatD"){
-    markdown("TatD time series plot description")
+    #indicator-specific descriptions for time series plot go here
+  if (input$indicator == "CO2") {
+    markdown("Monthly and annual atmospheric carbon dioxide (CO2)")
+  } else if (input$indicator == "SST") {
+    markdown("Monthly and annual sea surface temperature (SST), as well as the long-term trend")
+  } else if (input$indicator == "Chl") {
+    markdown("Monthly and annual ocean color, measured as chlorophyll (chl) concentration")    
+  } else if (input$indicator == "MD50") {
+    markdown("Monthly and annual median phytoplankton size (MD50), measured as equvialent spherical diameter (ESD) in micrometers (um), as well as the long-term trend")    
+  } else if (input$indicator == "ENSO") {
+    markdown("Time series of the Oceanic Niño Index (ONI), with El Niño periods in red, La Niña periods in blue, and neutral periods in grey")
+  } else if (input$indicator == "PDO") {
+    markdown("Time series of the Pacific Decadal Oscillation (PDO), with positive phases in red and negative phases in blue")
+  } else if (input$indicator == "pH") {
+    markdown("Monthly and annual pH, as well as the long term trend")
+  } else if (input$indicator == "TatD") {
+    markdown("Monthly and annual temperature at 200 - 300 m depth (TatD), as well as the long-term trend")
   } 
 )
 
@@ -321,17 +319,15 @@ plotlyOutput('anom_ts')
 #build anomaly plot descriptions
 output$anom_desc <- renderUI(
   
-  #markdown('The __Anomaly Time Series Plot__ shows the time series and annual average, or mean, with the seasonal cycle removed. For anomalies with a significant and steady (or linear) long-term trend, this is shown as well.')
-
-  #indicator-specific descriptions for anomaly plot
-  if (input$indicator == "CO2"){
-    markdown("CO2 anomaly plot description")
-  } else if (input$indicator == "SST"){
-    markdown("SST anomaly plot description")
-  } else if (input$indicator == "Chl"){
-    markdown("Chl anomaly plot description")    
-  } else if (input$indicator == "MD50"){
-    markdown("MD50 anomaly plot description")    
+    #indicator-specific descriptions for anomaly plot
+  if (input$indicator == "CO2") {
+    markdown("Monthly and annual CO2 with the seasonal cycle removed")
+  } else if (input$indicator == "SST") {
+    markdown("Monthly and annual SST with the seasonal cycle removed, as well as the long-term trend in this anomaly time series")
+  } else if (input$indicator == "Chl") {
+    markdown("Monthly and annual chl with the seasonal cycle removed, as well as the long-term trend in this anomaly time series")    
+  } else if (input$indicator == "MD50") {
+    markdown("Monthly and annual MD50 with the seasonal cycle removed, as well as the long-term trend in this anomaly series")    
   }
 )
 
@@ -414,25 +410,23 @@ div(style = paste0("margin-bottom: ", plot_spacer_1, "px"),
 #build seasonal cycle plot descriptions
 output$season_desc <- renderUI(
   
-  #markdown('The __Seasonal Plot__ shows the indicator values by month.  The cycle plot shows all the values for a given month in order by year. The points plot stacks them vertically.')
-  
   #indicator-specific descriptions for seasonal plot
-  if (input$indicator == "CO2"){
-    markdown("CO2 seasonal plot description")
-  } else if (input$indicator == "pH"){
-    markdown("pH seasonal plot description")
-  } else if (input$indicator == "ENSO"){
-    markdown("ENSO seasonal plot description")
-  } else if (input$indicator == "PDO"){
-    markdown("PDO seasonal plot description")
-  } else if (input$indicator == "SST"){
-    markdown("SST seasonal plot description")
-  } else if (input$indicator == "TatD"){
-    markdown("TatD seasonal plot description")    
-  } else if (input$indicator == "Chl"){
-    markdown("Chl seasonal plot description")    
-  } else if (input$indicator == "MD50"){
-    markdown("MD50 seasonal plot description")    
+  if (input$indicator == "CO2") {
+    markdown("The seasonal cycle plot shows atmospheric carbon dioxide over time by month.  The horizontal black lines are the time series average for each month.  This figure clearly shows that atmospheric carbon dioxide is increasing over time in all months of the year.")
+  } else if (input$indicator == "pH") {
+    markdown("The seasonal cycle plot shows oceanic pH over time by month.  The horizontal black lines are the time series average for each month.  This figure clearly shows that oceanic pH is decreasing over time in all months of the year.")
+  } else if (input$indicator == "ENSO") {
+    markdown("The seasonal cycle plot shows Oceanic Niño Index (ONI) values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in ONI values and that values tend to be closes to zero in May.")
+  } else if (input$indicator == "PDO") {
+    markdown("The seasonal cycle plot show PDO values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in PDO values.")
+  } else if (input$indicator == "SST") {
+    markdown("The seasonal cycle plot shows SST over time by month.  The horizontal black lines are the time series average for each month.  This figure shows both the annual SST cycle (coolest in March, warmest in September) and that SST is increasing over time in all months of the year.")
+  } else if (input$indicator == "TatD") {
+    markdown("The seasonal cycle plot shows temperature at depth over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is little seasonal cycle at this depth and no clear trend over time in any month of the year.")    
+  } else if (input$indicator == "Chl") {
+    markdown("The seasonal cycle plot shows ocean color over time by month.  The horizontal black lines are the time series average for each month.  This figure shows the annual ocean color cycle (greatest in February, least in August).")     
+  } else if (input$indicator == "MD50") {
+    markdown("The seasonal cycle plot shows median phytoplankton size over time by month.  The horizontal black lines are the time series average for each month.  This figure shows the annual cycle for phytoplankton size (largest in February, smallest in September) and illustrates the small decline in median phytoplankton size across months. ")    
   }
 )
 
@@ -655,25 +649,23 @@ plotlyOutput('map') #render map
 
 #build map descriptions
 output$map_desc <- renderUI( 
-  #markdown('This __Map__ shows the climatological average for this variable.  The data in the graphs above is averaged over the longline fishing grounds as indicated on this map.')
-  
   #indicator-specific descriptions for map
-  if (input$indicator == "CO2"){
-    markdown("CO2 map description")
-  } else if (input$indicator == "pH"){
-    markdown("pH map description")
-  } else if (input$indicator == "ENSO"){
-    markdown("ENSO map description")
-  } else if (input$indicator == "PDO"){
-    markdown("PDO map description")
-  } else if (input$indicator == "SST"){
-    markdown("SST map description")
-  } else if (input$indicator == "TatD"){
-    markdown("TatD map description")    
-  } else if (input$indicator == "Chl"){
-    markdown("Chl map description")    
-  } else if (input$indicator == "MD50"){
-    markdown("MD50 map description")    
+  if (input$indicator == "CO2") {
+    markdown("Atmospheric CO2 data are gathered at the Mauna Loa Observatory on the island of Hawaiʻi.  The longline fishing grounds are also shown for reference. ")
+  } else if (input$indicator == "pH") {
+    markdown("Oceanic pH data are gathered at Station ALOHA, north of the island of Oahu.  The longline fishing grounds are also shown for reference.")
+  } else if (input$indicator == "ENSO") {
+    markdown("The Oceanic Niño Index is measured across the Niño 3.4 Region.  The longline fishing grounds are also shown for reference.")
+  } else if (input$indicator == "PDO") {
+    markdown("The Pacific Decadal Index is measured across the North Pacific basin, north of 20°N.  The longline fishing grounds are also shown for reference.")
+  } else if (input$indicator == "SST") {
+    markdown("This map shows the climatological average SST (1985-2021).  The data in the graphs above is averaged over the longline fishing grounds.")
+  } else if (input$indicator == "TatD") {
+    markdown("This map shows the climatological average temperature at depth (1980-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
+  } else if (input$indicator == "Chl") {
+    markdown("This map shows the climatological average ocean color (1998-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
+  } else if (input$indicator == "MD50") {
+    markdown("This map shows the climatological average median phytoplankton size (1998-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
   }  
 )
 
@@ -747,17 +739,15 @@ plotlyOutput('anom_map')
 #build anomaly map descriptions
 output$anom_map_desc <- renderUI(
   
-  #markdown('This __Anomaly Map__ shows the difference between the latest full year and the climatological average.  Positive values show that the indicator is greater than averarage in that location and negative values show that is lower than average.')
-  
   #indicator-specific descriptions for seasonal plot
-  if (input$indicator == "SST"){
-    markdown("SST map description")
-  } else if (input$indicator == "TatD"){
-    markdown("TatD map description")    
-  } else if (input$indicator == "Chl"){
-    markdown("Chl map description")    
-  } else if (input$indicator == "MD50"){
-    markdown("MD50 map description")    
+  if (input$indicator == "SST") {
+    markdown("This anomaly map shows the difference between SST in the report year (2022) and the long-term average (1985-2021).  Areas that were warmer in 2022 are red and areas that were cooler are blue.")
+  } else if (input$indicator == "TatD") {
+    markdown("This anomaly map shows the difference between temperature at depth in the report year (2022) and the long-term average (1980-2021).  Areas that were warmer in 2022 are red and areas that were cooler are blue.")    
+  } else if (input$indicator == "Chl") {
+    markdown("This anomaly map shows the difference between ocean color in the report year (2022) and the long-term average (1998-2021).  Areas with greater chl concentration in 2022 are red and areas with lower chl concentrations are blue.")    
+  } else if (input$indicator == "MD50") {
+    markdown("This anomaly map shows the difference between median phytoplankton size in the report year (2022) and the long-term average (1998-2021).  Areas with larger phytplankotn in 2022 are red and areas with smaller phytoplankton are blue.")    
   }  
   
 )

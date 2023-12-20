@@ -3919,6 +3919,12 @@
     "Data/rnatearth_coast.RData": {
       "checksum": "eba625ba47d18321d11547124b5697b4"
     },
+    "Data/rnatearth_enso_coast.RData": {
+      "checksum": "0bb4feba92bcb2094f8b3d039e610b22"
+    },
+    "Data/rnatearth_enso_land.RData": {
+      "checksum": "8a1d2ad1c855f455d9cfbad4894410fb"
+    },
     "Data/rnatearth_land.RData": {
       "checksum": "04be68e050346ebf9dc3fb176320ca2b"
     },
@@ -3980,7 +3986,7 @@
       "checksum": "593224fe34ceb85c0e765b8cc394a744"
     },
     "IndicatorDashboard.Rmd": {
-      "checksum": "c2cf2ff2fff1fa2b5e0a695a273391fb"
+      "checksum": "d1db884a50f85b5e8dfbd231d6dad994"
     }
   },
   "users": null

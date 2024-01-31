@@ -378,7 +378,8 @@ output$seasonal_cycle <- renderPlotly({
                 hovermode = "x unified", xaxis = list(title = ""), showlegend = TRUE) |>
          add_segments(x = min(Seasonal$Year), xend = max(Seasonal$Year), y = ~Mean_Val, yend = ~Mean_Val,
                 line = list(color = "black", width = 2), name = "Monthly Mean", showlegend = (.y == 1)) |>
-         colorbar(title = indicator_data$Units[1], len = 0.7, x = 1, y = 0.8, limits = c(min(Seasonal$Value), max(Seasonal$Value)))}) |>
+         colorbar(title = indicator_data$Units[1], len = 0.7, x = 1, y = 0.8, 
+                  limits = c(min(Seasonal$Value, na.rm = TRUE), max(Seasonal$Value, na.rm = TRUE)))}) |>
     subplot(nrows = 1, shareX = TRUE, shareY = TRUE, margin = 0.005) |> #add subplots
     layout(title = list(text = "Seasonal Cycle Plot", x = 0.01, font = plot_title_font), #add title
            paper_bgcolor='transparent', plot_bgcolor='transparent') #transparent background

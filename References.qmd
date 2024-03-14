@@ -6,7 +6,7 @@ format:
     reference-doc: SAFE-Reference-Doc.docx
 ---
 
-## References
+## References 
 This list includes the full references for all the sources in the pelagic ocean and climate indicators, by indicator.
 
 ### Global

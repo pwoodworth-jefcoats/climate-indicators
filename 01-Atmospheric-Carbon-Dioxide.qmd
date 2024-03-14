@@ -21,7 +21,7 @@ library(nmfspalette)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 
 # Set path to variable: Atmospheric_CO2
 # This is where the data are and where the plots will go
@@ -31,14 +31,15 @@ Dir <- here("Atmospheric_CO2")
 ```{r}
 #| include: false
 ### Load data
+# Note that the number of lines to skip changes each year, which is frustrating.
 # Monthly CO2 concentration
-atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 56)
+atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 40)
 
 # Annual Growth Rates
-ann_gr <- read_csv(file = paste(Dir, '/co2_gr_mlo_', RptYr, '.csv', sep = ""), skip = 61)
+ann_gr <- read_csv(file = paste(Dir, '/co2_gr_mlo_', RptYr, '.csv', sep = ""), skip = 45)
 
 # Annual concentrations, so that we're not providing a potentially different value
-ann_co2 <- read_csv(file = paste(Dir, '/co2_annmean_mlo_', RptYr, '.csv', sep = ""), skip = 59)
+ann_co2 <- read_csv(file = paste(Dir, '/co2_annmean_mlo_', RptYr, '.csv', sep = ""), skip = 43)
 ```
 
 ```{r}
@@ -65,7 +66,7 @@ if (monthly_max_PrevYrs > monthly_max_RptYr) {
   print('The highest monthly value was prior to the report year.')
 }
 
-# Confirm current text has changed for some reason
+# Confirm current text hasn't changed for some reason
 pass_350 <- which(ann_co2$mean >= 350)
 pass_400 <- which(ann_co2$mean >= 400)
 
@@ -90,13 +91,13 @@ CO2_ylim <- c(300, 430)
 
 # Create color palette for easy reference 
 oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
-secondary <- nmfspalette::nmfs_palette("secondary")(4) # 4 = seasonally adj
+seasonadj <- nmfspalette::nmfs_cols("supdkgray") # seasonally adj
 coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-pal <- c(oceans[3], oceans[1], secondary[4], coral[3])
+pal <- c(oceans[3], oceans[1], seasonadj, coral[3])
 
 # Plot
 pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-plot(atm_co2$`decimal date`[all_yrs], atm_co2$deseasonalized[all_yrs], type = "l", lwd = 2, col = secondary[4], 
+plot(atm_co2$`decimal date`[all_yrs], atm_co2$deseasonalized[all_yrs], type = "l", lwd = 2, col = seasonadj, 
      xlim = CO2_xlim, ylim = CO2_ylim, xlab = "Year", ylab = "Parts per Million (ppm)", 
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
 par(new = TRUE)
@@ -129,7 +130,7 @@ dev.off()
 
 
 pdf(paste(Dir, '/AtmosphericCO2growth_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
-plot(ann_gr$year, ann_gr$`ann inc`, type = "l", lwd = 2, col = secondary[4], 
+plot(ann_gr$year, ann_gr$`ann inc`, type = "l", lwd = 2, col = seasonadj, 
      xlim = c(min(ann_gr$year), RptYr), ylim = c(0, 3.5),
      xlab = "Year", ylab = "Parts per Million (ppm)", 
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
@@ -171,19 +172,19 @@ Rationale: Atmospheric carbon dioxide is a measure of what human activity has al
 
 Status: Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ is increasing more quickly over time. In `r RptYr`, the annual mean concentration of CO~2~ was `r ann_mean` ppm.  This is the highest annual value recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` ppm. In 1959, the first year full of the time series, the atmospheric concentration of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
 
-Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The observed increase in monthly average carbon dioxide concentration is primarily due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the atmosphere for a very long time, and emissions from any location mix throughout the atmosphere in approximately one year. The annual variations at Mauna Loa, Hawaiʻi are due to the seasonal imbalance between the photosynthesis and respiration of terrestrial plants. During the summer growing season, photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In the winter (outside the growing season), respiration exceeds photosynthesis, and CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern hemisphere because of its larger land mass. Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations starting in December 2022 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  
+Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The observed increase in monthly average carbon dioxide concentration is primarily due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the atmosphere for a very long time, and emissions from any location mix throughout the atmosphere in approximately one year. The annual variations at Mauna Loa, Hawaiʻi are due to the seasonal imbalance between the photosynthesis and respiration of terrestrial plants. During the summer growing season, photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In the winter (outside the growing season), respiration exceeds photosynthesis, and CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern hemisphere because of its larger land mass.  
 
 Timeframe: Annual, monthly.  
 
-Region/Location: Mauna Loa, Hawaiʻi, but representative of global atmospheric carbon dioxide concentration.  
+Region/Location: Mauna Loa, Hawaiʻi, but representative of global atmospheric carbon dioxide concentration.  Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations starting in December 2022 to 4 July 2023 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  Mauna Loa observations resumed in July 2023.
 
 Measurement Platform: *In-situ* station.  
 
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
 
-Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2023a).  
+Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2024a).  
 
-Graphics produced in part using Stawitz 2022.
+Graphics produced in part using Stawitz 2023.
 
 ## Additional Information
 

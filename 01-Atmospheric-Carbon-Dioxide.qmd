@@ -138,7 +138,6 @@ coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
 ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
 seagrass <- nmfs_palette("seagrass")(3)
-# pal <- c(oceans[3], oceans[1], waves[2], coral[3], crustacean[2])
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
 # Formatting

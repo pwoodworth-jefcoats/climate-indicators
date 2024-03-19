@@ -47,5 +47,6 @@ TA_DIC_match <- inner_join(TA, DIC, by = c("crn #", "date mmddyy", "julian day")
 # One with the date information for plotting (.csv)
 # One without the date information for calculating pH (.dat)
 write_csv(TA_DIC_match, file = paste(Dir, '/TA_DIC_', RptYr, '_withDate.csv', sep = ""))
-write_delim(TA_DIC_match[,4:5], file = paste(Dir, '/TA_DIC_', RptYr, '.dat', sep = ""), col_names = FALSE)
+# write_delim(TA_DIC_match[,4:5], file = paste(Dir, '/TA_DIC_', RptYr, '.dat', sep = ""), col_names = FALSE) # removing this because it results in an error in Matlab after latest update
+write_csv(TA_DIC_match[,4:5], file = paste(Dir, '/TA_DIC_', RptYr, '.csv', sep = ""), col_names = FALSE)
 ```

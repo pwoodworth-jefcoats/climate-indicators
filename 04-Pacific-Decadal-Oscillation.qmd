@@ -68,72 +68,6 @@ if (monthly_max_RptYr > monthly_max_PrevYrs) {
 
 ```{r}
 #| include: false
-### Create plot for report
-# x-axes
-# Identify time period from Jan 2000 forward
-x_2000 <- which(year(PDO_full$Date) >= 2000 & year(PDO_full$Date) <=  RptYr)
-x_all <- which(year(PDO_full$Date) <= RptYr)
-
-# Create axes limit values, to make things simpler
-PDO_xlim_full <- c(min(PDO_full$Date[x_all]), max(PDO_full$Date[x_all]))
-PDO_xlim_2000 <- c(min(PDO_full$Date[x_2000]), max(PDO_full$Date[x_2000]))
-PDO_ylim <- c(-5, 5)
-
-# Identify positive and negative values
-pos_PDO_full = which(PDO_full$PDO[x_all] > 0)
-pos_PDO_2000 = which(PDO_full$PDO[x_2000] > 0)
-neg_PDO_full = which(PDO_full$PDO[x_all] < 0)
-neg_PDO_2000 = which(PDO_full$PDO[x_2000] < 0)
-
-# Write a function to make a stem plot
-stem <- function(x, y, stemcol, x_lim, y_lim, x_lab = " ", y_lab = " ") {
-  for (m in seq(1, length(x), 1)) {
-    plot(c(x[m], x[m]), c(0, y[m]), type = "l", lwd = 1, col = stemcol,
-                          xlim = x_lim, ylim = y_lim, xlab = x_lab, ylab = y_lab, 
-                          xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-    par(new = TRUE)
-  }
-}
-# Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/ for inspiration!
-  
-# Plot
-pdf(paste(Dir, '/PDO_ts_full_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-stem(PDO_full$Date[x_all[pos_PDO_full]], PDO_full$PDO[x_all[pos_PDO_full]], "red", 
-     PDO_xlim_full, PDO_ylim)
-par(new = TRUE)
-stem(PDO_full$Date[x_all[neg_PDO_full]], PDO_full$PDO[x_all[neg_PDO_full]], "blue", 
-     PDO_xlim_full, PDO_ylim)
-par(new = TRUE)
-plot(PDO_xlim_full, c(0, 0), type = "l", lwd = 1, col = "black", 
-     xlim = PDO_xlim_full, ylim = PDO_ylim, xlab = 'Year', ylab = 'Pacific Decadal Oscillation (PDO)',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = make_date(c(1854, seq(1860, 2020, 20), RptYr)), tck = 0.025, labels = year(make_date(c(1854, seq(1860, 2020, 20), RptYr))))
-axis((2), at = c(seq(-5, 5, 1)), tck = 0.025, las = 1)
-axis((3), at = make_date(c(1854, seq(1860, 2020, 20), RptYr)), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(-5, 5, 1)), tck = 0.025, labels = FALSE)
-dev.off()
-
-pdf(paste(Dir, '/PDO_ts_2000s_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-stem(PDO_full$Date[x_2000[pos_PDO_2000]], PDO_full$PDO[x_2000[pos_PDO_2000]], "red", 
-     PDO_xlim_2000, PDO_ylim)
-par(new = TRUE)
-stem(PDO_full$Date[x_2000[neg_PDO_2000]], PDO_full$PDO[x_2000[neg_PDO_2000]], "blue", 
-     PDO_xlim_2000, PDO_ylim)
-par(new = TRUE)
-plot(PDO_xlim_2000, c(0, 0), type = "l", lwd = 1, col = "black", 
-     xlim = PDO_xlim_2000, ylim = PDO_ylim, xlab = 'Year', ylab = 'Pacific Decadal Oscillation (PDO)',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = make_date(c(seq(2000, 2020, 5), RptYr)), tck = 0.025, labels = year(make_date(c(seq(2000, 2020, 5), RptYr))))
-axis((2), at = c(seq(-5, 5, 1)), tck = 0.025, las = 1)
-axis((3), at = make_date(c(seq(2000, 2020, 5), RptYr)), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(-5, 5, 1)), tck = 0.025, labels = FALSE)
-dev.off()
-# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
-# bty = "n" removes the box around the legend
-```
-
-```{r}
-#| include: false
 # Write csv for dashboard
 # Note that dashboard output has its own folder
 # Thanks to Emily Conklin for this chunk of code!
@@ -149,6 +83,50 @@ PDO_dashboard <- PDO_full %>%
   filter(Year <= RptYr) 
 
 write_csv(PDO_dashboard, file = here("Indicator_Dashboard", "Data", paste('PDO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
+```{r}
+#| include: false
+# Borrowing code from the dashboard for this chunk
+# so that figures look the same across products
+indicator_data <- PDO_dashboard |>
+  filter(Year <= RptYr)
+
+# Create color palette for easy reference 
+oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = Negative PDO, 3 = previous years
+crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfs_palette("coral")(3) # 2 = Positive PDO,  3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+
+# Formatting
+plot_title_font <- list(size = 14)
+plot_height <- 350 #in pixels
+
+indicator_data <- indicator_data |>
+  mutate(Units = "Pacific Decal Oscillation (PDO)")
+      
+#color-coded bar chart for PDO
+p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
+              height = plot_height,
+              name = ~ifelse(Value > 0, yes = "Positive PDO", no = "Negative PDO"),
+              color = ~Value > 0, colors = c(oceans[2], coral[2]))
+
+#return plot - oddly works in R but results in an error when rendering
+save_image(p1, paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""))
+
+# Handy reference, in case this doesn't work in the future
+# from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
+# install.packages('reticulate')
+# reticulate::install_miniconda()
+# reticulate::conda_install('r-reticulate', 'python-kaleido')
+# reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
+# reticulate::use_miniconda('r-reticulate')
+# To export:
+# library(plotly)
+# kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
 Rationale: The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. 

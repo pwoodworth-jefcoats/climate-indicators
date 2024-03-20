@@ -137,77 +137,6 @@ if (monthly_max_RptYr > monthly_max_PrevYrs) {
 
 ```{r}
 #| include: false
-### Create plot for report
-# Note: plotting the neutral phases is just an error check, not part of the final figure
-
-# x-axes
-# Identify time period from Jan 2000 forward
-x_2000 <- which(ONI_full$YR >= 2000)
-x_all <- which(ONI_full$YR <= RptYr)
-
-# Create axes limit values, to make things simpler
-ONI_xlim_full <- c(1, length(ONI_rounded))
-ONI_xlim_2000 <- c(min(x_2000), max(x_2000))
-ONI_ylim <- c(-3, 3)
-
-# Plot
-pdf(paste(Dir, '/ONI_ts_full_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-plot(x_all, ONI_rounded[x_all], type = "l", lwd = 2, col = "#D0D0D0", 
-     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(x_all, ElNino[x_all], type = "l", lwd = 2, col = "red", 
-     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(x_all, LaNina[x_all], type = "l", lwd = 2, col = "blue", 
-     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-# par(new = TRUE)
-# plot(x_all, Neutral[x_all], type = "l", lwd = 2, col = "yellow", 
-#      xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(c(min(x_all), max(x_all)), c(0, 0), type = "l", lwd = 1, col = "black", 
-     xlim = ONI_xlim_full, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(1, max(x_all) - 35, 120), max(x_all) - 11), tck = 0.025, labels = c(seq(1950, 2020, 10), 2022))
-axis((2), at = c(seq(-3, 3, 1)), tck = 0.025, las = 1)
-axis((3), at = c(seq(1, max(x_all) - 35, 120), max(x_all) - 11), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(-3, 3, 1)), tck = 0.025, labels = FALSE)
-dev.off()
-
-pdf(paste(Dir, '/ONI_ts_2000s_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-plot(x_2000, ONI_rounded[x_2000], type = "l", lwd = 2, col = "#D0D0D0", 
-     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = 'Year', ylab = 'Oceanic Niño Index (ONI)',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(x_2000, ElNino[x_2000], type = "l", lwd = 2, col = "red", 
-     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(x_2000, LaNina[x_2000], type = "l", lwd = 2, col = "blue", 
-     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-# par(new = TRUE)
-# plot(x_2000, Neutral[x_2000], type = "l", lwd = 2, col = "yellow", 
-#     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-#     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(c(min(x_2000), max(x_2000)), c(0, 0), type = "l", lwd = 1, col = "black", 
-     xlim = ONI_xlim_2000, ylim = ONI_ylim, xlab = ' ', ylab = ' ',
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(min(x_2000), max(x_2000) - 35, 60), max(x_2000) - 11), tck = 0.025, labels = c(seq(2000, 2020, 5), 2022))
-axis((2), at = c(seq(-3, 3, 1)), tck = 0.025, las = 1)
-axis((3), at = c(seq(min(x_2000), max(x_2000) - 35, 60), max(x_2000) - 11), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(-3, 3, 1)), tck = 0.025, labels = FALSE)
-dev.off()
-# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
-# bty = "n" removes the box around the legend
-```
-
-```{r}
-#| include: false
 # Write csv for dashboard
 # Note that dashboard output has its own folder
 # Thanks to Emily Conklin for this chunk of code!
@@ -223,8 +152,61 @@ ENSO_dashboard <- ONI_full %>%
   select(Date_Time, Year = YR, Month, Value = ANOM, Anom, ID, Value_lm, Anom_lm, Units) |>
   filter(Year <= RptYr)
 
-
 write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
+```{r}
+#| include: false
+# Borrowing code from the dashboard for this chunk
+# so that figures look the same across products
+indicator_data <- ENSO_dashboard |>
+  filter(Year <= RptYr)
+
+# Create color palette for easy reference 
+oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = La Niña, 3 = previous years
+crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfs_palette("coral")(3) # 2 = El Niño,  3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+
+# Formatting
+plot_title_font <- list(size = 14)
+plot_height <- 350 #in pixels
+
+#calculate pos/neg/neutral ENSO values 
+#needs to be greater than 0.5 or less than -0.5 for at least five consecutive seasons
+indicator_data <- indicator_data |> mutate(Sign = sign(Value)) |>
+  mutate(Sign = ifelse(test = (Value < 0.5 & Value > -0.5), yes = 0, no = Sign)) |> #positive or negative?
+  group_by(Sign, Group = with(rle(Sign), rep(seq_along(lengths), lengths))) |> #how many seasons in a row?
+  ungroup() |>
+  add_count(Group) |>
+  mutate(ENSO = "Neutral") |>
+  mutate(Units = "Oceanic Niño Index (ONI)")
+    
+#add ENSO category
+indicator_data[which(indicator_data$Sign == -1 & indicator_data$n >= 5),]$ENSO <- "La Niña"
+indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <- "El Niño"
+
+#color-coded bar chart for ENSO
+p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
+              height = plot_height, name = ~ENSO, color = ~ENSO, 
+              colors = c(coral[2], oceans[2], ann_grey))
+
+#return plot - oddly works in R but results in an error when rendering
+save_image(p1, paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
+
+# Handy reference, in case this doesn't work in the future
+# from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
+# install.packages('reticulate')
+# reticulate::install_miniconda()
+# reticulate::conda_install('r-reticulate', 'python-kaleido')
+# reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
+# reticulate::use_miniconda('r-reticulate')
+# To export:
+# library(plotly)
+# kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
 Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries. 

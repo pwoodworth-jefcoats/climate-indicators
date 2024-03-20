@@ -24,10 +24,10 @@ library(reticulate)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-# Note that there's a one year lag for HOTS data
+# Note that there's a one year lag for HOT data
 RptYr <- 2023
 
-# Set path to variable: Atmospheric_CO2
+# Set path to variable: Oceanic_pH
 # This is where the data are and where the plots will go
 Dir <- here("Oceanic_pH")
 ```

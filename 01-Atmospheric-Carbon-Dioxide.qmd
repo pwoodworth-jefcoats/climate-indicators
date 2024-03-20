@@ -214,7 +214,7 @@ Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.
 
 Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2024a).  
 
-Graphics produced in part using Stawitz 2023.
+Graphics produced in part using Stawitz (2023).
 
 ## Additional Information
 

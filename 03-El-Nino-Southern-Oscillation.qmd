@@ -17,13 +17,15 @@ library(here)
 library(stringr)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
+library(plotly)
+library(reticulate)
 ```
 
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
 # Note that there's a one year lag for HOTS data
-RptYr <- 2022
+RptYr <- 2023
 
 # Set path to variable: Atmospheric_CO2
 # This is where the data are and where the plots will go
@@ -141,7 +143,7 @@ if (monthly_max_RptYr > monthly_max_PrevYrs) {
 # x-axes
 # Identify time period from Jan 2000 forward
 x_2000 <- which(ONI_full$YR >= 2000)
-x_all <- which(ONI_full$YR <= 2022)
+x_all <- which(ONI_full$YR <= RptYr)
 
 # Create axes limit values, to make things simpler
 ONI_xlim_full <- c(1, length(ONI_rounded))
@@ -227,7 +229,7 @@ write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO
 
 Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries. 
 
-Status: The Oceanic Niño Index (ONI) indicated La Niña conditions throughout `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
+Status: The Oceanic Niño Index (ONI) indicated a transition from La Niña to El Niño conditions in `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
 
 Description: The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.
 
@@ -239,9 +241,9 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at: <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>. 
 
-Sourced from NOAA CPC (2023).
+Sourced from NOAA CPC (2024).
 
-Graphics produced in part using Stawitz (2022).
+Graphics produced in part using Stawitz (2023).
 
 ## Additional Information
 

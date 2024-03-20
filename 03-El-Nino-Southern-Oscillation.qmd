@@ -24,10 +24,9 @@ library(reticulate)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-# Note that there's a one year lag for HOTS data
 RptYr <- 2023
 
-# Set path to variable: Atmospheric_CO2
+# Set path to variable: El_Nino_Southern_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("El_Nino_Southern_Oscillation")
 ```

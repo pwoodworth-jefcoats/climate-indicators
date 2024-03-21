@@ -18,6 +18,12 @@ library(here)
 library(nmfspalette)
 library(plotly)
 library(reticulate)
+
+# reticulate::install_miniconda()
+# reticulate::conda_install('r-reticulate', 'python-kaleido')
+# reticulate::py_install("packaging")
+# reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
+reticulate::use_miniconda('r-reticulate')
 ```
 
 ```{r}
@@ -169,10 +175,10 @@ p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
             name = "Annual Mean") |>
   add_trace(given_yr, x = dmy_hm(given_yr$Date_Time), y = given_yr$Value,
             type = "scatter", mode = "lines", line = list(color = pal[2]),
-            name = ~ID[1], height = plot_height) |>
+            name = ~ID[1]) |>
   add_trace(given_yr_ann, x = dmy_hm(given_yr_ann$Date_Time), y = given_yr_ann$Value,
             type = "scatter", mode = "lines", line = list(color = pal[4]),
-            name = ~ID[1], height = plot_height)
+            name = ~ID[1])
 
 #apply same layout parameters for all plots
 p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
@@ -184,6 +190,7 @@ p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font =
 #return plot - oddly works in R but results in an error when rendering
 save_image(p1, paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
 
+# NOTE - added below in the library import chunk at the top
 # Handy reference, in case this doesn't work in the future
 # from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
 # install.packages('reticulate')

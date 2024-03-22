@@ -175,6 +175,21 @@ coast_proj_enso <- world_coasts %>%
                        xmax = max_x, ymax = max_y)) %>% #crop to area
   st_cast(., "MULTILINESTRING") #recast for plotting
 
+#base maps for Tropical Cyclones
+land_proj_tcs <- world_countries %>% 
+  st_break_antimeridian(lon_0 = 180) %>% #trim out dateline to avoid artifacts
+  st_transform(crs = plot_crs) %>% #adjust CRS for Pacific
+  st_crop(x = ., y = c(xmin = 90, ymin = -50, 
+                       xmax = 280, ymax = 50)) %>% #crop to area
+  st_cast(., "MULTIPOLYGON") #recast for plotting
+
+coast_proj_tcs <- world_coasts %>% 
+  st_break_antimeridian(lon_0 = 180) %>% #trim out dateline to avoid artifacts
+  st_transform(crs = plot_crs) %>% #adjust CRS for Pacific
+  st_crop(x = ., y = c(xmin = 90, ymin = -50, 
+                       xmax = 280, ymax = 50)) %>% #crop to area
+  st_cast(., "MULTILINESTRING") #recast for plotting
+
 #quick test
 ggplot() + geom_sf(data = land_proj, color = "grey", fill = "grey") +
   geom_sf(data = coast_proj, color = "black")
@@ -182,9 +197,15 @@ ggplot() + geom_sf(data = land_proj, color = "grey", fill = "grey") +
 ggplot() + geom_sf(data = land_proj_enso, color = "grey", fill = "grey") +
   geom_sf(data = coast_proj_enso, color = "black")
 
-#save data
-saveRDS(land_proj, "Indicator_Dashboard/Data/rnatearth_land.RData")
-saveRDS(coast_proj, "Indicator_Dashboard/Data/rnatearth_coast.RData")
+ggplot() + geom_sf(data = land_proj_tcs, color = "grey", fill = "grey") +
+  geom_sf(data = coast_proj_tcs, color = "black")
 
-saveRDS(land_proj_enso, "Indicator_Dashboard/Data/rnatearth_enso_land.RData")
-saveRDS(coast_proj_enso, "Indicator_Dashboard/Data/rnatearth_enso_coast.RData")
+#save data
+# saveRDS(land_proj, "Indicator_Dashboard/Data/rnatearth_land.RData")
+# saveRDS(coast_proj, "Indicator_Dashboard/Data/rnatearth_coast.RData")
+# 
+# saveRDS(land_proj_enso, "Indicator_Dashboard/Data/rnatearth_enso_land.RData")
+# saveRDS(coast_proj_enso, "Indicator_Dashboard/Data/rnatearth_enso_coast.RData")
+
+saveRDS(land_proj_tcs, "Indicator_Dashboard/Data/rnatearth_tcs_land.RData")
+saveRDS(coast_proj_tcs, "Indicator_Dashboard/Data/rnatearth_tcs_coast.RData")

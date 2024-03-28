@@ -179,15 +179,15 @@ coast_proj_enso <- world_coasts %>%
 land_proj_tcs <- world_countries %>% 
   st_break_antimeridian(lon_0 = 180) %>% #trim out dateline to avoid artifacts
   st_transform(crs = plot_crs) %>% #adjust CRS for Pacific
-  st_crop(x = ., y = c(xmin = 90, ymin = -50, 
-                       xmax = 280, ymax = 50)) %>% #crop to area
+  st_crop(x = ., y = c(xmin = -90, ymin = -50, 
+                       xmax = 100, ymax = 50)) %>% #crop to area
   st_cast(., "MULTIPOLYGON") #recast for plotting
 
 coast_proj_tcs <- world_coasts %>% 
   st_break_antimeridian(lon_0 = 180) %>% #trim out dateline to avoid artifacts
   st_transform(crs = plot_crs) %>% #adjust CRS for Pacific
-  st_crop(x = ., y = c(xmin = 90, ymin = -50, 
-                       xmax = 280, ymax = 50)) %>% #crop to area
+  st_crop(x = ., y = c(xmin = -90, ymin = -50, 
+                       xmax = 100, ymax = 50)) %>% #crop to area
   st_cast(., "MULTILINESTRING") #recast for plotting
 
 #quick test

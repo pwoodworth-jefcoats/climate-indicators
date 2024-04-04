@@ -1,0 +1,55 @@
+! The purpose of this script is to look at 200 - 300 m temperature for the SAFE report
+
+! Load data
+use http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp
+
+! Years of interest
+! 1 = Jan 1980
+! 360 = Dec 2009
+! 480 = Dec 2019
+! 481 = Jan 2020
+! 492 = Dec 2020
+! 493 = Jan 2021
+! 504 = Dec 2021
+! 505 = Jan 2022
+! 516 = Dec 2022
+! 517 = Jan 2023
+! 528 = Dec 2023
+
+! Area of interest
+! 15 - 45 N, 180 - 120 W, 195 - 303 m
+! x = 180:120W, y = 15:45N, k = 20:26@ave
+
+! Full time series, spatially averaged
+let LLTatD = POTDSL[x = 180:120W@ave, y = 15:45N@ave, k = 20:26@ave, l = 1:528]-273.15
+list/CLOBBER/FILE=T_at_200300_ts.dat/FORMAT=comma LLTatD
+
+! Climo, 1980 - 2009
+! You should only need to do this once since the baseline no longer changes from year to year
+shade POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 1:360@ave]-273.15
+let TatD_climo = POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 1:360@ave]-273.15
+list/FILE=T_at_200300_climo_1980thru2009.nc/FORMAT=cdf TatD_climo
+
+! Current year for anomaly calculation, 2023
+shade POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 517:528@ave]-273.15
+let TatD_2023 = POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 517:528@ave]-273.15
+list/FILE=T_at_200300_yr2023.nc/FORMAT=cdf TatD_2023
+
+! Test things out
+! use T200300_climo.nc
+! use T200300_yr2020.nc
+
+! shade/palette=ocean_blue TATD_climo[d=1]
+! contour/over/levels=0.5DC TATD_2020[d=2]-TATD_climo[d=1]
+! go fland
+! go land
+
+
+! SET REGION/X=120:260/Y=0:55/L=1
+! go mp_orthographic 195 30
+! set GRID TATD_climo[d=1]
+! go mp_aspect
+! shade/palette=ocean_blue TATD_climo[d=1]
+! contour/over/levels=0.5DC TATD_2020[d=2]-TATD_climo[d=1]
+! go fland
+! go land

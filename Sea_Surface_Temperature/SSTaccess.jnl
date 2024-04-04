@@ -1,0 +1,63 @@
+! The purpose of this script is to look at SST for the SAFE report
+
+! Load data
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly
+
+! Years of interest
+! 1 = Jan 1985
+! 420 = Dec 2019
+! 421 = Jan 2020
+! 432 = Dec 2020
+! 433 = Jan 2021
+! 444 = Dec 2021
+! 445 = Jan 2022
+! 456 = Dec 2022
+! 457 = Jan 2023
+! 468 = Dec 2023
+
+! Area of interest
+! 15 - 45N, 180 - 120W
+! x=180:120W, y=15:45N
+
+! Full time series, spatially averaged
+! Doing this in stages, since memory is an issue
+! After doing this once, only the most recent file needs to be downloaded each year
+let sst_ts_8590 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=1:72]
+let sst_ts_9195 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=73:132]
+let sst_ts_9600 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=133:192]
+let sst_ts_0105 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=193:252]
+let sst_ts_0610 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=253:312]
+let sst_ts_1115 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=313:372]
+let sst_ts_1620 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=373:432]
+let sst_ts_2123 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=433:468]
+
+list/FILE=sst_ts_8590.dat/FORMAT=comma sst_ts_8590
+list/FILE=sst_ts_9195.dat/FORMAT=comma sst_ts_9195
+list/FILE=sst_ts_9600.dat/FORMAT=comma sst_ts_9600
+list/FILE=sst_ts_0105.dat/FORMAT=comma sst_ts_0105
+list/FILE=sst_ts_0610.dat/FORMAT=comma sst_ts_0610
+list/FILE=sst_ts_1115.dat/FORMAT=comma sst_ts_1115
+list/FILE=sst_ts_1620.dat/FORMAT=comma sst_ts_1620
+list/FILE=sst_ts_2123.dat/FORMAT=comma sst_ts_2123
+
+cancel data/all
+cancel var/all
+
+! Climo, 1985 - 2009, regridded to 0.1 degree resolution to try to decrease file size
+! Now that we've standarized this climatological period, this should only have to be done once, ever
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim
+! shade/palette=ocean_blue SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+let sst_climo = SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+list/CLOBBER/FILE=sst_climo.nc/FORMAT=cdf sst_climo
+
+cancel data/all
+cancel var/all
+
+! Current year, 2023, for anomaly calculation regridded to a 0.1 degree resolution to try to decrease file size
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2023-clim
+! shade/palette=ocean_blue SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+let sst_2023 = SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+list/FILE=sst_yr2023.nc/FORMAT=cdf sst_2023
+
+cancel data/all
+cancel var/all

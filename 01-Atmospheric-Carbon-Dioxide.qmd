@@ -192,7 +192,7 @@ date_axis <- c(first_date,
 p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
                    xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
                    #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
-                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'), #add units and round values in hover display
+                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(300, 430), tickvals = list(300, 320, 340, 360, 380, 400, 420, 430)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
                    paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
                    hovermode = "x unified", #show data for all traces simultaneously
                    hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length

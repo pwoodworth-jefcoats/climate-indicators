@@ -17,13 +17,17 @@ library(here)
 library(stringr)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
+library(plotly)
+library(reticulate)
+
+reticulate::use_miniconda('r-reticulate')
 ```
 
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
 # Note that there's a one year lag for HOTS data
-RptYr <- 2022
+RptYr <- 2023
 
 # Set path to variable: Sea_Surface_Temperature
 # This is where the data are and where the plots will go
@@ -120,99 +124,6 @@ if (monthly_min_RptYr < monthly_min_PrevYrs) {
 
 ```{r}
 #| include: false
-### Create plot for report
-# Create a vector that repeats the annual mean the same number of times as there are obs for the latest year
-# (although there are other ways to plot this piece)
-ann_mean_x12 <- rep(ann_mean_RptYr,length(yr_of_int))
-ann_anom_x12 <- rep(ann_anom_RptYr,length(yr_of_int))
-
-# Create axes limit values, to make things simpler
-TatD_xlim <- c(min(dmy_hm(TatD_full$Date_Time)), max(dmy_hm(TatD_full$Date_Time)))
-ts_ylim <- c(10.8, 11.7)
-anom_ylim <- c(-0.5, 0.5)
-
-# Create color palette for easy reference 
-oceans <- nmfspalette::nmfs_palette("oceans")(3) # 1 = RptYr, 3 = previous years
-crustacean <- nmfspalette::nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfspalette::nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
-pal <- c(oceans[3], oceans[1], ann_grey, coral[3], crustacean[1])
-
-# Plot
-pdf(paste(Dir, '/TempAtDepth_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-plot(ymd_hm(paste(ann_TatD$Year, '0601 00:00', sep = "")), ann_TatD$TatD_degC, type = "l", lwd = 2, col = ann_grey,
-     xlim = TatD_xlim, ylim = ts_ylim, xlab = "Year", ylab = "200-300m Temperature (Deg C)",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
-     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_full$TatD_degC[all_yrs], type = "l", lwd = 2, col = oceans[3],      xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), TatD_full$TatD_degC[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
-     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), ann_mean_x12, type = "l", lwd = 2, col = coral[3], 
-     xlim = TatD_xlim, ylim = ts_ylim, xlab = " ", ylab = " ", 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1980, 2022, 1))))
-axis((2), at = seq(10.8, 11.7, 0.1), tck = 0.025, las = 1)
-axis((3), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
-axis((4), at = seq(10.8, 11.7, 0.1), tck = 0.025, labels = FALSE)
-legend(x = "bottomright", 
-       legend = c(paste("Monthly average, 1980 - ", RptYr - 1, sep = ""), 
-                  paste("Monthly average, ", RptYr, sep = ""),
-                  paste("Annual average, 1980 - ", RptYr - 1, sep = ""), 
-                  paste("Annual average, ", RptYr, sep = ""),
-                  "Long-term trend"), 
-       lty = 1, lwd = 2,
-       col = pal, 
-       bty = "n")
-dev.off()
-
-pdf(paste(Dir, '/TempAtDepth_anom_ts_', RptYr, '.pdf', sep = ""), width = 7, height = 4.5)
-plot(ymd_hm(paste(ann_anom$Year, '0601 00:00', sep = "")), ann_anom$Anom, type = "l", lwd = 2, col = ann_grey,
-     xlim = TatD_xlim, ylim = anom_ylim, xlab = "Year", ylab = "200-300m Temperature Anomaly (Deg C)",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_anom_lm$fitted.values, type = "l", lwd = 2, col = crustacean[1], 
-     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[all_yrs]), TatD_full$Anom[all_yrs], type = "l", lwd = 2, col = oceans[3], 
-     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i") 
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), TatD_full$Anom[yr_of_int], type = "l", lwd = 2, col = oceans[1], 
-     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(dmy_hm(TatD_full$Date_Time[yr_of_int]), ann_anom_x12, type = "l", lwd = 2, col = coral[3], 
-     xlim = TatD_xlim, ylim = anom_ylim, xlab = " ", ylab = " ", 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = year(make_date(seq(1980, 2022, 1))))
-axis((2), at = seq(-0.5, 0.5, 0.1), tck = 0.025, las = 1)
-axis((3), at = ymd_hm(paste(ann_TatD$Year, '0101 00:00', sep = "")), tck = 0.025, labels = FALSE)
-axis((4), at = seq(-0.5, 0.5, 0.1), tck = 0.025, labels = FALSE)
-legend(x = "bottomright", 
-       legend = c(paste("Monthly average, 1980 - ", RptYr - 1, sep = ""), 
-                  paste("Monthly average, ", RptYr, sep = ""),
-                  paste("Annual average, 1980 - ", RptYr - 1, sep = ""), 
-                  paste("Annual average, ", RptYr, sep = ""),
-                  "Long-term trend"), 
-       lty = 1, lwd = 2,
-       col = pal, 
-       bty = "n")
-dev.off()
-# _axt = "n" removes tick labels, _axs = "i" removes whitespace beyond axes maxima
-# bty = "n" removes the box around the legend
-```
-
-```{r}
-#| include: false
 # Write csv for portal
 # Note that output csvs go in their own folder
 ann_TatD <- rename(ann_TatD, `Degrees C` = TatD_degC)
@@ -256,19 +167,119 @@ TatD_dashboard <- rename(TatD_dashboard, Units = ...9)
 write_csv(TatD_dashboard, file = here("Indicator_Dashboard", "Data", paste('TatD_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
-Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.
+```{r}
+#| include: false
+# Borrowing code from the dashboard for this chunk
+# so that figures look the same across products
+indicator_data <- TatD_dashboard |>
+  filter(Year <= RptYr)
 
-Status: In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r signif(delta_TatD_lm, 1)` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures north of about 30°N 0–0.5 °C above average. 
+# Create color palette for easy reference 
+oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
+crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-Description: Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats. 
+# Formatting
+plot_title_font <- list(size = 14)
+plot_height <- 350 #in pixels
 
-Timeframe: Annual, monthly.
+# Calculate annual means 
+ann_vals <- indicator_data |>
+  group_by(Year) |>
+  summarise(Value = mean(Value, na.rm = TRUE))
 
-Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.
+# Identify the current year, to overlay on plot
+given_yr <- indicator_data |>
+  filter(Year == RptYr)
 
-Measurement Platform: In-situ sensors, model.
+given_yr_ann <- bind_cols(rep(ann_vals$Value[dim(ann_vals)[1]]),
+                          given_yr$Date_Time)
+given_yr_ann <- rename(given_yr_ann, Value = ...1)
+given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
 
-Sourced from: NOAA (2023d) and APDRC (2023).  Graphics produced in part using Stawitz (2022).
+p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
+              type = "scatter", mode = "lines", line = list(color = pal[1]),
+              name = ~ID[1], height = plot_height) |>
+  add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value_lm,
+            type = "scatter", mode = "lines", line = list(color = pal[5]),
+            name = "Long-term Trend") |>
+  add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Value,
+            type = "scatter", mode = "lines", line = list(color = pal[3]),
+            name = "Annual Mean") |>
+  add_trace(given_yr, x = dmy_hm(given_yr$Date_Time), y = given_yr$Value,
+            type = "scatter", mode = "lines", line = list(color = pal[2]),
+            name = ~ID[1], height = plot_height) |>
+  add_trace(given_yr_ann, x = dmy_hm(given_yr_ann$Date_Time), y = given_yr_ann$Value,
+            type = "scatter", mode = "lines", line = list(color = pal[4]),
+            name = ~ID[1], height = plot_height)
+
+#apply same layout parameters for all plots
+
+#custom x axis (min, every decade, report year)
+all_years <- unique(indicator_data$Year)
+first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
+date_axis <- c(first_date, 
+              all_years[which(all_years %% 10 == 0)], 
+              RptYr - 1)
+
+p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
+                   xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
+                   #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
+                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(10.8, 11.7), tickvals = list(10.8, 10.9, 11, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
+                   paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
+                   hovermode = "x unified", #show data for all traces simultaneously
+                   hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+  
+# return plot 
+save_image(p1, paste(Dir, '/TempAtDepth_ts_', RptYr, '.pdf', sep = ""))
+
+### Anomaly plot
+# Calculate annual means
+ann_vals <- indicator_data |>
+  group_by(Year) |>
+  summarise(Anom = mean(Anom, na.rm = TRUE)) 
+  
+p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,
+                type = "scatter", mode = "lines", line = list(color = pal[1]),
+                name = "Monthly Anomaly") |>
+    add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom_lm,
+              type = "scatter", mode = "lines", line = list(color = pal[5]),
+              name = "Long-term Trend") |>
+    add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Anom,
+              type = "scatter", mode = "lines", line = list(color = pal[3]),
+              name = "Annual Mean") |>
+    layout(xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
+           yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f'), #add units and round values in hover display
+           title = list(text = "Anomaly Time Series", x = 0.01, font = plot_title_font), #add title 
+           paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
+           hovermode = "x unified", #show data for all traces simultaneously
+           hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+  
+# return plot
+save_image(p2, paste(Dir, '/TempAtDepth_anom_ts_', RptYr, '.pdf', sep = ""))
+```
+
+Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.  
+\
+Status: In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r signif(delta_TatD_lm, 1)` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures north of about 30°N 0–0.5 °C above average.   
+\
+Description: Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats.   
+\
+Timeframe: Annual, monthly.  
+\
+Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.  
+\
+Measurement Platform: _In-situ_ sensors, model.  
+\
+Sourced from: NOAA (2024d) and APDRC (2024).  Graphics produced in part using Stawitz (2023).
 
 ## Additional Information
-A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~0.4 max) than negative (~-0.3 min). The residuals for the anomaly model were also fairly evenly distributed in terms of values.  Both sets of residual exhibited periodicity that closely track the time series pattern.
+Temperature-at-depth data are geographically subset and spatially averaged using the pyFerret script `TatDepth_access.jnl` which can be found in the Temperature_at_Depth folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
+\
+A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~0.4 max) than negative (~-0.3 min). The residuals for the anomaly model were also fairly evenly distributed in terms of values.  Both sets of residual exhibited periodicity that closely track the time series pattern.  
+\
+To prepare the spatial data for mapping, you'll need to run `map_data_for_dashboard.R`, which can be found in the [PreProcessing](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard/PreProcessing) folder of the [Indicator_Dashboard](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard) folder in this repository.

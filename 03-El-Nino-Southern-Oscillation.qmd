@@ -19,6 +19,8 @@ library(stringr)
 library(nmfspalette)
 library(plotly)
 library(reticulate)
+
+reticulate::use_miniconda('r-reticulate')
 ```
 
 ```{r}
@@ -193,7 +195,24 @@ p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, 
               height = plot_height, name = ~ENSO, color = ~ENSO, 
               colors = c(coral[2], oceans[2], ann_grey))
 
-#return plot - oddly works in R but results in an error when rendering
+#apply same layout parameters for all plots
+
+#custom x axis (min, every decade, report year)
+all_years <- unique(indicator_data$Year)
+first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
+date_axis <- c(first_date, 
+              all_years[which(all_years %% 10 == 0)], 
+              RptYr)
+
+p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
+                   xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
+                   #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
+                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-3, 3), tickvals = list(-3, -2, -1, 0, 1, 2, 3)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
+                   paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
+                   hovermode = "x unified", #show data for all traces simultaneously
+                   hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+
+#return plot
 save_image(p1, paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
 
 # Handy reference, in case this doesn't work in the future

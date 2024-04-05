@@ -27,15 +27,15 @@ Feely et al. (2016): Feely, R.A., Alin, S.R., Carter, B., Bednarsek, N., Hales, 
 Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii Ocean Time-series (HOT) program: Background,
 rationale and field implementation. Deep-Sea Research II, 43(2-3): 129-156.
 
-HOT 2023: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 23 February 2023.
+HOT 2024: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 18 MArch 2024.
 
 Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code available at: <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>, Accessed: 21 March 2023.
 
 ### El Niño - Southern Oscillation
-NOAA CPC (2023): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 22 March 2023.
+NOAA CPC (2024): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19 March 2024.
 
 ### Pacific Decadal Oscillation
-NOAA (2023b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 27 March 2023
+NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079. 
 
@@ -44,22 +44,22 @@ Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E.
 ### Tropical Cyclones
 Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1
 
-Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 14 March 2022].
+Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 19 March 2024].
 
-NOAA (2023c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 29 March 2023, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>
+NOAA (2024c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 19 March 2024, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>
 
 ### Sea Surface Temperature
-NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 3 April 2024
 
 ### Temperature at 200-300 m Depth
-APDRC (2023): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2023. 
+APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024. 
 
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
 
-NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2023.
+NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April 2024.
 
 ### Ocean Color
-NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 4 April 2024 & 3 May 2023.
 
 Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>
 
@@ -75,9 +75,8 @@ Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. 
 ### Estimated Median Phytoplankton Size
 Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088
 
-NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4 April 2024
 
-NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
 
 
 

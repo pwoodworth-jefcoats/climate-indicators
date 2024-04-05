@@ -7,6 +7,7 @@ library(sf)
 library(scales)
 library(nmfspalette)
 library(terra)
+library(here)
 
 #function to calculate anomaly, recenter data over Pacific, crop to size, downsample, and trim whitespace
 prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_y, max_y, target_res){
@@ -34,7 +35,7 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
     raster::rotate(.) 
   
   #downsample if needed, otherwise just reproject
-  if (res(raster_ann)[1] < target_res){
+  if (res(raster_ann)[1] < target_res) {
     raster_w <- raster_w %>% projectRaster(., crs = plot_crs, res = target_res)
     raster_e <- raster_e %>% projectRaster(., crs = plot_crs, res = target_res)
     raster_anom_w <- raster_anom_w %>% projectRaster(., crs = plot_crs, res = target_res)
@@ -85,19 +86,19 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
 }
 
 #read in raster data
-tatd_2022 <- raster("T_at_200300_yr2022.nc")
-tatd_clim <- raster("T_at_200300_climo_1980thru2021.nc")
-sst_2022 <- raster("CRW_sst_v3_1_2022-clim_9b86_1fd9_bbd5_U1699483388394.nc")
-sst_clim <- raster("CRW_sst_v3_1_1985-2021-clim_437a_63a6_52e7_U1699483412096.nc")
-chl_2022 <- raster("esa-cci-chla-2022-clim_v6-0_6f24_0a8d_aa83_U1699486681824.nc",
-                   varname = "chlor_a")
-chl_clim <- raster("esa-cci-chla-1998-2021-clim-v6-0_5cd0_57c8_f0c8_U1699486666335.nc",
-                   varname = "chlor_a")
-md50_2022 <- raster("md50_exp-2022-clim_61be_da6b_0507_U1699492344974.nc")
-md50_clim <- raster("md50_exp-1998-2021-clim_61be_da6b_0507_U1699492333044.nc")
+tatd_2023 <- raster(here("Temperature_at_Depth","T_at_200300_yr2023.nc"))
+tatd_clim <- raster(here("Temperature_at_Depth", "T_at_200300_climo_1980thru2009.nc"))
+sst_2023 <- raster(here("Sea_Surface_Temperature", "sst_yr2023.nc"))
+sst_clim <- raster(here("Sea_Surface_Temperature", "sst_climo.nc"))
+chl_2023 <- raster(here("Ocean_Color", "chl_yr2023.nc")) #,
+                  #  varname = "CHL_2023")
+chl_clim <- raster(here("Ocean_Color", "chl_climo.nc")) #,
+                   # varname = "CHL_CLIMO")
+md50_2023 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2023.nc"))
+md50_clim <- raster(here("Median_Phytoplankton_Size", "medphyto_climo.nc"))
 
 #get lat coordinates from raw data
-original_bbox <- bbox(tatd_2022)
+original_bbox <- bbox(tatd_2023) 
 min_x <- original_bbox[1,1] 
 max_x <- original_bbox[1,2]
 min_y <- original_bbox[2,1]
@@ -108,13 +109,13 @@ target_res <- 0.5
 
 #get prepped data 
 #you will get warnings here - they are ignoreable!
-tatd_out <- prep_map_data("TatD", tatd_2022, tatd_clim, min_x, max_x,
+tatd_out <- prep_map_data("TatD", tatd_2023, tatd_clim, min_x, max_x,
                           min_y, max_y, target_res)
-sst_out <- prep_map_data("SST", sst_2022, sst_clim, min_x, max_x,
+sst_out <- prep_map_data("SST", sst_2023, sst_clim, min_x, max_x,
                          min_y, max_y, target_res)
-chl_out <- prep_map_data("Chl", chl_2022, chl_clim, min_x, max_x,
+chl_out <- prep_map_data("Chl", chl_2023, chl_clim, min_x, max_x,
                          min_y, max_y, target_res)
-md50_out <- prep_map_data("MD50", md50_2022, md50_clim, min_x, max_x,
+md50_out <- prep_map_data("MD50", md50_2023, md50_clim, min_x, max_x,
                           min_y, max_y = 45, target_res) #note - different max y 
 
 #quick tests - annual maps
@@ -131,7 +132,7 @@ plot(md50_out[[2]])
 
 #combine data and write to file
 raster_df_all <- bind_rows(tatd_out[[3]], sst_out[[3]], chl_out[[3]], md50_out[[3]])
-write.csv(raster_df_all, "Indicator_Dashboard/Data/Dashboard_Map_Data_2022.csv")
+write.csv(raster_df_all, "Indicator_Dashboard/Data/Dashboard_Map_Data_2023.csv")
 
 #get lon coordinates from cropped data
 cropped_bbox <- bbox(tatd_out[[1]])

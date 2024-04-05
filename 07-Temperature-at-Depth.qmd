@@ -26,7 +26,6 @@ reticulate::use_miniconda('r-reticulate')
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-# Note that there's a one year lag for HOTS data
 RptYr <- 2023
 
 # Set path to variable: Sea_Surface_Temperature

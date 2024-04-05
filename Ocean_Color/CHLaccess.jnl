@@ -1,0 +1,76 @@
+! The purpose of this script is to look at chl-a data for the SAFE report
+
+! Load data
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
+
+! Years of interest
+! 1 = Sep 1997
+! 5 = Jan 1998
+! 268 = Dec 2019
+! 269 = Jan 2020
+! 280 = Dec 2020
+! 281 = Jan 2021
+! 292 = Dec 2021
+! 293 = Jan 2022
+! 304 = Dec 2022
+! 305 = Jan 2023
+! 316 = Dec 2023
+
+! Area of interest
+! 15 - 45N, 180 - 120W
+! x=180:120W, y=15:45N
+
+! Full time series, spatially averaged
+! This dataset is reprocessed each year, so it's probably a good idea to redownload this each year.
+!let chl_ts = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=5:280]
+! Okay, memory is an issue here, so we're going to do this in stages
+let chl_ts_9802 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=5:64]
+let chl_ts_0307 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=65:124]
+let chl_ts_0812 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=125:184]
+let chl_ts_1317 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=185:244]
+let chl_ts_1822 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=245:304]
+let chl_ts_23 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=305:316]
+
+list/CLOBBER/FILE=chl_ts_9802.dat/FORMAT=comma chl_ts_9802
+list/CLOBBER/FILE=chl_ts_0307.dat/FORMAT=comma chl_ts_0307
+list/CLOBBER/FILE=chl_ts_0812.dat/FORMAT=comma chl_ts_0812
+list/CLOBBER/FILE=chl_ts_1317.dat/FORMAT=comma chl_ts_1317
+list/CLOBBER/FILE=chl_ts_1822.dat/FORMAT=comma chl_ts_1822
+list/CLOBBER/FILE=chl_ts_23.dat/FORMAT=comma chl_ts_23
+
+cancel data/all
+cancel var/all
+
+! Climo, 1998 - 2009, regridded to 0.1 degree resolution to try to decrease file size
+! Because this dataset is reprocessed each year, it makes sense to redo this each year
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1])
+let chl_climo = CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+list/CLOBBER/FILE=chl_climo.nc/FORMAT=cdf chl_climo
+
+cancel data/all
+cancel var/all
+
+! Current year for anomaly calculation, 2023, regridded to 0.1 degree resolution to try to decrease file size
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2023-clim_v6-0
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1])
+let chl_2023 = CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+list/FILE=chl_yr2023.nc/FORMAT=cdf chl_2023
+
+! Test everything out
+! use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2019-clim-v5-0
+! use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2020-clim-v5-0
+
+! shade/palette=cmocean_algae ln(CHLOR_A[d=1,x=120E:100W, y=0:55N])
+! contour/over/levels=0.5DC CHLOR_A[d=2,x=120E:100W,y=0:55N,l=1]-CHLOR_A[d=1,x=120E:100W,y=0:55N,l=1]
+
+! shade/palette=cmocean_balance CHLOR_A[d=2,x=120E:100W,y=0:55N,l=1]-CHLOR_A[d=1,x=120E:100W,y=0:55N,l=1]
+
+! SET REGION/X=120:260/Y=0:55/L=1
+! go mp_orthographic 195 30
+! set GRID TATD_climo[d=1]
+! go mp_aspect
+! shade/palette=ocean_blue TATD_climo[d=1]
+! contour/over/levels=0.5DC TATD_2020[d=2]-TATD_climo[d=1]
+! go fland
+! go land

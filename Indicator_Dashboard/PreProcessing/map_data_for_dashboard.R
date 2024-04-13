@@ -97,26 +97,38 @@ chl_clim <- raster(here("Ocean_Color", "chl_climo.nc")) #,
 md50_2023 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2023.nc"))
 md50_clim <- raster(here("Median_Phytoplankton_Size", "medphyto_climo.nc"))
 
-#get lat coordinates from raw data
-original_bbox <- bbox(tatd_2023) 
-min_x <- original_bbox[1,1] 
-max_x <- original_bbox[1,2]
-min_y <- original_bbox[2,1]
-max_y <- original_bbox[2,2]
+# get lat coordinates from raw data
+# Different data sources have different bounds
+reanalysis_bbox <- bbox(tatd_2023) 
+satellite_bbox <- bbox(sst_2023)
+r_min_x <- reanalysis_bbox[1,1] 
+r_max_x <- reanalysis_bbox[1,2]
+r_min_y <- reanalysis_bbox[2,1]
+r_max_y <- reanalysis_bbox[2,2]
+s_min_x <- satellite_bbox[1,1] 
+s_max_x <- satellite_bbox[1,2]
+s_min_y <- satellite_bbox[2,1]
+s_max_y <- satellite_bbox[2,2]
 
 #set target resolution in degrees
 target_res <- 0.5
 
+# Workaround for missing information
+srs <- tatd_2023@srs
+sst_2023@srs <- srs
+chl_2023@srs <- srs
+md50_2023@srs <- srs
+
 #get prepped data 
 #you will get warnings here - they are ignoreable!
-tatd_out <- prep_map_data("TatD", tatd_2023, tatd_clim, min_x, max_x,
-                          min_y, max_y, target_res)
-sst_out <- prep_map_data("SST", sst_2023, sst_clim, min_x, max_x,
-                         min_y, max_y, target_res)
-chl_out <- prep_map_data("Chl", chl_2023, chl_clim, min_x, max_x,
-                         min_y, max_y, target_res)
-md50_out <- prep_map_data("MD50", md50_2023, md50_clim, min_x, max_x,
-                          min_y, max_y = 45, target_res) #note - different max y 
+tatd_out <- prep_map_data("TatD", tatd_2023, tatd_clim, r_min_x, r_max_x,
+                          r_min_y, r_max_y, target_res)
+sst_out <- prep_map_data("SST", sst_2023, sst_clim, s_min_x, s_max_x,
+                         s_min_y, s_max_y, target_res)
+chl_out <- prep_map_data("Chl", chl_2023, chl_clim, s_min_x, s_max_x,
+                         s_min_y, s_max_y, target_res)
+md50_out <- prep_map_data("MD50", md50_2023, md50_clim, s_min_x, s_max_x,
+                          s_min_y, s_max_y, target_res) #note - different max y 
 
 #quick tests - annual maps
 plot(tatd_out[[1]])
@@ -132,7 +144,11 @@ plot(md50_out[[2]])
 
 #combine data and write to file
 raster_df_all <- bind_rows(tatd_out[[3]], sst_out[[3]], chl_out[[3]], md50_out[[3]])
-write.csv(raster_df_all, "Indicator_Dashboard/Data/Dashboard_Map_Data_2023.csv")
+write.csv(raster_df_all, here("Indicator_Dashboard", "Data", "Dashboard_Map_Data_2023.csv"))
+write.csv(tatd_2023[[3]], here("Temperature_at_Depth", "TempAtDepth_map_data_2023.csv"))
+write.csv(sst_out[[3]], here("Sea_Surface_Temperature", "SST_map_data_2023.csv"))
+write.csv(chl_out[[3]], here("Ocean_Color", "Chl_map_data_2023.csv"))
+write.csv(md50_out[[3]], here("Median_Phytoplankton_Size", "Median_Phyto_map_data_2023.csv"))
 
 #get lon coordinates from cropped data
 cropped_bbox <- bbox(tatd_out[[1]])

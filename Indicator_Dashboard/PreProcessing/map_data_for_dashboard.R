@@ -145,7 +145,7 @@ plot(md50_out[[2]])
 #combine data and write to file
 raster_df_all <- bind_rows(tatd_out[[3]], sst_out[[3]], chl_out[[3]], md50_out[[3]])
 write.csv(raster_df_all, here("Indicator_Dashboard", "Data", "Dashboard_Map_Data_2023.csv"))
-write.csv(tatd_2023[[3]], here("Temperature_at_Depth", "TempAtDepth_map_data_2023.csv"))
+write.csv(tatd_out[[3]], here("Temperature_at_Depth", "TempAtDepth_map_data_2023.csv"))
 write.csv(sst_out[[3]], here("Sea_Surface_Temperature", "SST_map_data_2023.csv"))
 write.csv(chl_out[[3]], here("Ocean_Color", "Chl_map_data_2023.csv"))
 write.csv(md50_out[[3]], here("Median_Phytoplankton_Size", "Median_Phyto_map_data_2023.csv"))

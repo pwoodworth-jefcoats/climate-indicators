@@ -302,3 +302,56 @@ Ocean color data are geographically subset and spatially averaged using the pyFe
 A plot of the residuals from the linear model showed that they were evenly distributed, although were more negative (~-0.39 min) than positive (~0.35 max). The residuals for the anomaly model were also fairly evenly distributed between -0.1 and 0.1.  
 \
 To prepare the spatial data for mapping, you'll need to run `map_data_for_dashboard.R`, which can be found in the [PreProcessing](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard/PreProcessing) folder of the [Indicator_Dashboard](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard) folder in this repository.
+
+```{r}
+#| include: FALSE
+# # After running the chunks above and prepping the map data, you can uncomment and run this chunk.
+# 
+# # Load basemap data
+# land_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_land.RData'))
+# coast_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_coast.RData'))
+# 
+# # Load data
+# maps <- read.csv(paste(Dir, '/Median_Phyto_map_data_', RptYr, '.csv', sep = ""))
+# 
+# # Filter to the given year and the anomaly
+# maps_RptYr <- maps |> filter(ID == "MD50")
+# maps_anom <- maps |> filter(ID == "MD50_anom")
+# 
+# # Map elements and aesthetics
+# seagrass <- nmfs_palette("seagrass")(3)
+# pal <- seagrass
+# ll_rect_color <- "black" #outline for ll fishing grounds box
+# fill_scale <- scale_fill_gradientn(name = "MD50", colors = pal, limits = c(0, 8.25))
+# 
+# # Create map
+# p <- ggplot() +
+#   geom_raster(data = maps_RptYr, mapping = aes(x = x, y = y, fill = layer)) + #data as raster
+#   geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
+#   annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
+#   fill_scale + #indicator-dependent color and scale from above
+#   geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) + #base map background
+#   geom_sf(data = coast_proj) + #base map outline
+#   coord_sf(expand = F) + #don't expand past x/y limits
+#   xlab("") + ylab("") +
+#   theme_bw() + theme(panel.grid = element_line(color = "black", linewidth = 0.1),
+#                      legend.background = element_rect(fill = 'transparent'))
+# # Add anomaly
+# p <- p +
+#   geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer),
+#                breaks = c(seq(floor(min(maps_anom$layer)), -0.1, 0.1)),
+#                color = "black", linetype = 3) # Dotted negative contours
+# p <- p +
+#   geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), breaks = c(0),
+#                color = "black", lwd = 1) # heavy zero line
+# p <- p +
+#   geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer),
+#                breaks = c(seq(0.1, ceiling(max(maps_anom$layer)), 0.1)),
+#                color = "black", lwd = 0.5) # solid positive contours
+# 
+# p
+# 
+# pdf(paste(Dir, '/Median_Phyto_Size_map_', RptYr, '.pdf', sep = ""))
+# print(p)
+# dev.off()
+```

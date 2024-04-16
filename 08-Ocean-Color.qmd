@@ -19,6 +19,7 @@ library(stringr)
 library(nmfspalette)
 library(plotly)
 library(reticulate)
+library(scales)
 
 reticulate::use_miniconda('r-reticulate')
 ```
@@ -274,7 +275,7 @@ save_image(p2, paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""))
 
 Rationale: Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.  
 \
-Status: The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r abs(signif(delta_Chl_anom_lm, 1))` mg chl m^-^^3^.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30 - 35°N.  
+Status: The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r abs(signif(delta_Chl_anom_lm, 1))` mg chl m^-^^3^.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30–35°N.  
 \
 Description: Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).  
 \
@@ -294,3 +295,55 @@ Ocean color data are geographically subset and spatially averaged using the pyFe
 A plot of the residuals from the linear model for the anomalies showed that they were evenly distributed, although were more positive (~0.03 max) than negative (~-0.02 min). These residual exhibited periodicity that closely track the time series pattern.  
 \
 To prepare the spatial data for mapping, you'll need to run `map_data_for_dashboard.R`, which can be found in the [PreProcessing](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard/PreProcessing) folder of the [Indicator_Dashboard](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard) folder in this repository.
+
+```{r}
+#| include: FALSE
+# After running the chunks above and prepping the map data, you can uncomment and run this chunk.
+
+# Load basemap data
+land_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_land.RData'))
+coast_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_coast.RData'))
+
+# Load data
+maps <- read.csv(paste(Dir, '/Chl_map_data_', RptYr, '.csv', sep = ""))
+
+# Filter to the given year and the anomaly
+maps_RptYr <- maps |> filter(ID == "Chl")
+maps_anom <- maps |> filter(ID == "Chl_anom")
+
+# Map elements and aesthetics
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- seagrass
+ll_rect_color <- "white" #outline for ll fishing grounds box
+fill_scale <- scale_fill_gradientn(name = "Chl", trans = log10_trans(),
+                                   colors = pal, limits = c(0.01, 10), oob = squish) #log scale
+
+# Create map
+p <- ggplot() +
+  geom_raster(data = maps_RptYr, mapping = aes(x = x, y = y, fill = layer)) + #data as raster
+  geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
+  annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
+  fill_scale + #indicator-dependent color and scale from above
+  geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) + #base map background
+  geom_sf(data = coast_proj) + #base map outline
+  coord_sf(expand = F) + #don't expand past x/y limits
+  xlab("") + ylab("") +
+  theme_bw() + theme(panel.grid = element_line(color = "black", linewidth = 0.1),
+                     legend.background = element_rect(fill = 'transparent'))
+# Add anomaly
+p <- p +
+  geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), breaks = c(-0.02),
+               color = "black", linetype = 3) # Dotted negative contour
+p <- p +
+  geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), breaks = c(0),
+               color = "black", lwd = 1) # heavy zero line
+p <- p +
+  geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), breaks = c(0.02),
+               color = "black", lwd = 0.5) # solid positive contour
+
+p
+
+pdf(paste(Dir, '/Chl_map_', RptYr, '.pdf', sep = ""))
+print(p)
+dev.off()
+```

@@ -1,0 +1,297 @@
+---
+title: "Size frequency (CPUE) distributions for SAFE report"
+author: Johanna Wren
+date: April 4, 2018
+output:
+  html_notebook:
+    theme: flatly
+    toc: true
+    toc_float:
+      collapsed: false
+      tod_depth: 3
+---
+
+<script>
+$(document).ready(function() {
+  $items = $('div#TOC li');
+  $items.each(function(idx) {
+    num_ul = $(this).parentsUntil('#TOC').length;
+    $(this).css({'text-indent': num_ul * 10, 'padding-left': 0});
+  });
+
+});
+</script>
+
+# Description
+
+*UPDATE: in April 2023 we separated the data download from the data analysis. This script is data analysis and plot making only. The data used here is downloaded from NOAA PIFSC fisheries servers using the SAFE_LogDeal_DataDownload.Rmd script.*
+
+This script is a rework of RI_SizeFreqHist.Rmd from the bigeye recruitment index paper. This script has been updated to download data from oracle directly
+
+This script can be used to update the size frequency each quarter so that we can monitor eventual new recruitment pulses and keep the council etc. updated. 
+
+# Prepare workspace
+```{r message=FALSE}
+# Clear workspace
+rm(list=ls())
+
+# Set working directory
+mainDir <- '~/Documents/SAFEindicators/RAnalysis_SAFE/'
+
+# Load libraries
+library(tidyverse)
+library(lubridate)
+library(rje)
+library(zoo)
+```
+
+# Import data
+
+Define what year you are working on here and you don't have to change it anywhere else in the script
+```{r}
+# The last full year included in the analysis
+yr = 2023
+```
+
+Here we import data saved locally and filter out only bigeye tuna (coded as species 6 in the dealer dataset) for deep-set trips onlu and that we don't include trips in the current year. 
+```{r}
+# Import the data from saved files
+setwd(file.path(mainDir, 'Data'))
+dealerRaw <- readRDS(paste0('SAFE_dealer_', yr, '.rds'))
+logbookRaw <- readRDS(paste0('SAFE_logbook_', yr, '.rds'))
+
+# Filter data to bigeye only for deep set trips before 2023
+dealerRaw <- dealerRaw %>%
+  filter(REPORT_DATE < as.Date(paste0(yr+1, '-01-01')),
+         SPECIES_FK == 6, 
+         SET_TYPE == 'D')
+
+# Make sure we only have information from the Hawaii fleet for trips spanning 2000- 2023
+logbookRaw <- logbookRaw %>%
+  filter(LANDYR >= 2000,  LANDYR <= yr, FLEET == 'HI', )
+```
+
+# Analyze data
+
+## Convert weights from gilld & gutted to whole fish weights
+
+Dealer weights are reported in lbs for gilled and gutted fresh, chilled fish. Here we convert their weight to whole fish weight using a non-linear conversion from *Langley et al. 2006* table 8. 
+
+NOTE: Dealer data comes with a conversion factor (I kept it in the raw dataset) but it's fixed and for multiple entries it's quite complicated. I opted to use the Langley conversion here rather than the standard conversion factor reported because I felt it was most consistent and a better fit. 
+
+NOTE 2: in 2024 Removing any records of negative NUM_SOLD. Total of 28 records, all in 2023.
+```{r}
+dealer <- dealerRaw %>%
+  filter(NUM_SOLD >= 0) %>% 
+  mutate(Weight_GilGut=MEAN_SOLD_WEIGHT/2.204624, 
+         Weight_Whole=1.274959*round(Weight_GilGut)^0.960613, 
+         Year=year(REPORT_DATE), 
+         Quarter=quarter(REPORT_DATE)) %>%
+  uncount(NUM_SOLD) %>%   # unbin the binned records
+  mutate(NUM_SOLD=1) %>%  # make a num sold column since it was removed during the uncount operation
+  select(TRIP_NUM, REPORT_DATE, NUM_SOLD, Weight_Whole, Year, Quarter) %>%
+  mutate(Weight_Whole=ifelse(Weight_Whole > 100, 100, Weight_Whole))
+
+```
+
+## Calculate Age
+This is only used to mark the dashed age lines in the figure
+
+Here we calculate the age of fish from the weight. First we use a Richards growth parameterization from an intergrated analysis in Aires-da-Silva et al. 2015 getting an length from age information:
+
+$$L_a=L_\infty(1+\frac{1}{p}e^{-K(a-t_0)})^{-p}$$
+where $L_\infty$ is the asymptotic length, $K$ is the growth coefficient, $t_0$ is the inflection point on the curve, and $p$ is the shape parameter related to the ratio $L_a/L_\infty$
+
+Then we convert the length given from the growth equation above to a weight using data from Phoebe that she derived based on the Hawaii deep-set fishery. 
+```{r}
+# using Aires-da-Silva 2015 Richard growth model using integrated data
+a <- 1:7   # age in years
+Linf <- 200.8               # asymptotic length
+K <- 0.44                   # growth coefficient
+t0 <- 1.26                  # inflexion point on the curve
+p <- -4.27                  # shape parameter related to the ratio La/Linf
+La <- Linf*(1+(1/p)*exp(-K*(a-t0)))^(-p)
+
+# Convert from Length to weight using Phoebe's numbers for the Hawaii fishery
+Weight <- 0.0187*La^2.9605  # these numbers are from phoebe
+WeightAge <- round(Weight)/1000
+```
+
+## Calculate effort
+Calculating both climatological quarterly efforts and annual quarter efforts.
+```{r}
+# Make a trip level dataset
+logbook <- logbookRaw %>% 
+  mutate(Quarter=quarter(LANDMON), Year=LANDYR) %>%
+  filter(!RSCH_EXPMTL_CODE %in% c('R', 'X'), FLEET == 'HI', SET_TYPE == 'D')
+  
+# Calculate quarterly climatology effort
+efrtTot <-  logbook %>%
+  filter(Year <= 2009) %>%
+  group_by(Quarter) %>%
+  summarise(EffortClim=sum(HOOKSSET/1000, na.rm=T))
+ 
+# Calculate quarterly annual efforts 
+efrtYr <- logbook %>%
+  group_by(Year, Quarter) %>%
+  summarise(Effort=sum(HOOKSSET/1000, na.rm=T))
+```
+
+## Histograms
+Calculating quarterly climatological histograms for use in the figures. Calculate these outside the loop since they are the same for each quarter. 
+```{r}
+# Calculate quarterly climatology histograms
+cCPUE <- list()
+for (q in 1:4) {
+  cCPUE[[q]] <- dealer %>% 
+    filter(Quarter==q, Year <= 2009) %>% 
+    select(Weight_Whole) %>% 
+    lapply(hist, plot=F)
+  cCPUE[[q]]$Weight_Whole$CPUE <- cCPUE[[q]]$Weight_Whole$counts/efrtTot$EffortClim[q]
+}
+```
+
+# Plot
+This script plots two different figures. The first one is the size-CPUE distribution by quarter for the past two years along with the climatology. the second figure is the CPUE timeseries for all and small bigeye along with weight per unit effort. 
+
+## Size-CPUE distribution
+### Define plotting variables
+```{r}
+# Define the center bin locations for plotting
+cXpos <- cCPUE[[1]]$Weight_Whole$mids
+# Write out quarter names for plotting
+qName <- c('First', 'Second', 'Third', 'Fourth')
+# Set color palette
+pal <- rev(cubeHelix(8, start=0, r=-0.1, gamma=1, hue=0.8))
+```
+
+Define the year range you want to plot
+```{r}
+# Set years you want to plot
+yrRange <- (yr-2):yr
+# Isolate the number of panels you want to plot so we get the quarters right
+efrtPlot <- efrtYr %>% 
+  filter(Year %in% yrRange)
+```
+
+### Plot the data
+Here we plot and save the data in the output folder. 
+```{r}
+# Load Fisheries Data
+setwd(file.path(mainDir, 'Output'))
+# Start plotting
+# Save file
+png(paste0('SAFE_SizeFreqHist_', yr, '.png'), height=8, width=5.5, unit='in', res=300)
+# Set plot dimensions
+nPanels <- nrow(efrtPlot)
+m <- matrix(c(rep(nPanels+1,nPanels+2),nPanels+2,1:nPanels,nPanels+3),nrow=nPanels+2, ncol=2)
+layout(m, height=c(2,rep(3,nPanels),2), widths = c(0.5,10))
+# loop for year and quarter
+for (y in yrRange) {
+  qIdx <- efrtPlot %>% filter(Year == y)
+  for (q in qIdx$Quarter) {
+    qEffort <- efrtYr %>% filter(Quarter==q, Year==y)
+    qWeight <- dealer %>% filter(Quarter==q, Year==y) %>% select(Weight_Whole) %>% lapply(hist, plot=F)
+    qCPUE <- qWeight$Weight_Whole$counts/qEffort$Effort
+    qCPUE[is.infinite(qCPUE)] <- rep(0, 20)
+    
+    par(mar=c(0.25,3,0,1))
+    plot(cCPUE[[q]]$Weight_Whole$mids, cCPUE[[q]]$Weight_Whole$CPUE, type='l', lwd=2, col='gray50', xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
+         xlim=c(0,100), ylim=c(0,1.1))
+    par(new=T)
+    plot(qWeight$Weight_Whole$mids, qCPUE, type='l', lwd=3, col=pal[q+2], xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
+         xlim=c(0,100), ylim=c(0,1.1))
+    axis(2, las=1, at=c(0,0.5,1,1.1), labels=F)
+    abline(v=WeightAge, lty=2, col='gray50')
+    legend('topright', legend=c(paste(qName[q], 'Quarter', y, sep=' '), paste('Climatology', min(efrtYr$Year), '-', 2009, sep=' ')), col=c(pal[5], 'gray50'), lwd=2, bg='white', box.col='white')
+    box()
+    if (y == min(yrRange) & q == 1) {
+      axis(2, las=1, at=c(0,0.5,1,1.1))
+      axis(side=3, at = WeightAge, labels = c(1:7))
+      mtext(side=3, line=2, text='Age (year)', cex=0.8)
+    }
+  }
+}
+# Add axis labels
+axis(1)
+mtext(side=1, line=2.25, 'Whole Fish Weight (kg)', cex=0.8)
+axis(2, las=1, at=c(0,0.5,1,1.1))
+par(mar=c(1,0,1,0))
+plot(x=0.5,y=8,type='n', ylim=c(0,16), xlim=c(0,1), axes=F, xlab=NA, ylab=NA)
+text(x=1,y=8, 'CPUE (no. fish/1000 hooks)', srt=90, cex=1.2, xpd=NA)
+dev.off()
+```
+## Recruitment index
+Make the running mean recruitment index plot
+
+### Calculate plot variables
+Summarize the logbook and dealer data on trip level and calculate number of small bigeye per trip
+```{r}
+logbookTrip <- logbook %>% 
+  mutate(TRIP_NUM=as.numeric(paste(LANDYR, sprintf("%04d", TRIPNUM),sep=''))) %>%
+  group_by(TRIP_NUM) %>%
+  summarize(HOOKSSET=sum(HOOKSSET), LANDYR=unique(LANDYR), LANDMON=max(unique(LANDMON)))
+
+# This splits up large and small bigeye and groups by trip number
+dealer$Num_Small <- ifelse(dealer$Weight_Whole <= 15, dealer$NUM_SOLD, 0)
+
+dealer2 <- dealer %>% 
+  group_by(TRIP_NUM) %>% 
+  summarise_at(.vars=c('NUM_SOLD', 'Num_Small', 'Weight_Whole'), .funs=sum)
+```
+
+### Merge and save dealer and logbook datasets
+Now we merge the dealer and logbook (logData) datasets since we only really need the effort information from the logbook.
+
+I did an `inner_join` here because I wanted to avoid having weight for sold fish (from dealer data) but no effort information for them (logbook data) or vice versa. 
+```{r}
+# merge dealer and logbook since we only really need the hooksset info
+dealerFinal <- full_join(dealer2, logbookTrip, by='TRIP_NUM')
+
+# Check output
+dealerFinal
+```
+### Summarize by year
+Summarizing the joined dealer-logbook data by year and calculating running mean. Here we use a three year running mean that is centered on the middle year. 
+```{r}
+# Raw data
+dealerYear <- dealerFinal %>%
+  filter(LANDYR >= 2000, LANDYR <= yr) %>%
+  group_by(LANDYR) %>%
+  summarize_at(c('Num_Small', 'NUM_SOLD', 'Weight_Whole', 'HOOKSSET'), sum, na.rm=T) %>%
+  mutate(CPUEsmall=Num_Small/(HOOKSSET/1000), CPUEall= NUM_SOLD/(HOOKSSET/1000), WPUE=Weight_Whole/(HOOKSSET/1000))
+```
+
+### Plot the data
+Make plot that is color coded and axes are colored as well
+```{r}
+# Change working directory
+setwd(file.path(mainDir, 'Output'))
+# Calculate plot range
+idx <- range(dealerYear$CPUEall, na.rm=T)
+mn <- signif(idx[1], digits=2)-0.1
+mx <- signif(idx[2], digits=2)
+stp <- round((mx-mn)/6,digits=1)
+
+# Make plot
+png(paste0('RecIndexRaw_', yr, '.png'), height=6, width=11, res=300, unit='in')
+# Make raw plot
+par(mar=c(5,9,1,4.5))
+with(dealerYear, plot(LANDYR, CPUEsmall, type='l', lwd=3, lty=1, col='gray40', ylab=NA, xlab='Year', axes=F, xaxs='i'))
+axis(1, at=seq(2000,yr,1))
+axis(2, las=1)
+mtext(side=2,line=3, expression("Bigeye Tuna "<=15 ~"kg CPUE (# fish/1000 hks)"))
+box()
+par(new=T)
+with(dealerYear, plot(LANDYR, CPUEall, type='l', lwd=3, lty=2, col='#A3218E', ylab=NA, xlab=NA, ylim=c(mn,mx), axes=F, xaxs='i'))
+axis(2, line=5, at=seq(mn,mx,stp), las=1, col='#A3218E', col.axis='#A3218E')
+mtext(side=2, line=7.5, col='#A3218E', 'Bigeye Tuna CPUE (# fish /1000 hks)')
+par(new=T)
+with(dealerYear, plot(LANDYR, WPUE, type='l', lwd=3, lty=3, col='#00ACAC', ylab=NA, xlab=NA, axes=F, xaxs='i'))
+axis(4, las=1, col='#00ACAC', col.axis='#00ACAC')
+mtext(side=4, line=3, col='#00ACAC', 'Bigeye  biomass CPUE (kg/1000 hks)')
+legend(2003.5, 172, legend=c(expression("CPUE Bigeye Tuna "<=15 ~"kg"), 'CPUE All Bigeye Tuna', 'Biomass CPUE All Bigeye Tuna'), lty=1:3, col=c('gray30', '#A3218E' , '#00ACAC'), bty='n', lwd=3)
+
+dev.off()
+
+```

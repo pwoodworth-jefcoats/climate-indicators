@@ -1,0 +1,140 @@
+---
+title: "Logbook and Dealer data download for use in the SAFE report"
+author: Johanna Wren
+date: April 14, 2023
+output:
+  html_notebook:
+    theme: flatly
+    toc: true
+    toc_float:
+      collapsed: false
+      tod_depth: 3
+---
+
+<script>
+$(document).ready(function() {
+  $items = $('div#TOC li');
+  $items.each(function(idx) {
+    num_ul = $(this).parentsUntil('#TOC').length;
+    $(this).css({'text-indent': num_ul * 10, 'padding-left': 0});
+  });
+
+});
+</script>
+
+# Description
+
+*UPDATE: This script was updated in April 2023 to use ROracle to access the logbook database and to split the SAFE_SizeFreqHist.Rmd notebook into two parts: one that downloads the data only (this script) and one that processes the data and makes the figures (SAFE_SizeFreqHist_analysisOnly.Rmd and SAFEindicatorsWeightDist.R).*
+
+This script downloads logbook and dealer data for use in the annual SAFE report. We access the data using ROracle and the data are saved locally for use in analysis and figure generation. 
+
+# Prepare workspace
+```{r message=FALSE}
+# Clear workspace
+rm(list=ls())
+
+# Set working directory
+mainDir <- '~/Documents/SAFEindicators/RAnalysis_SAFE/'
+
+# Load libraries
+library(tidyverse)
+library(lubridate)
+library(rje)
+library(ROracle)
+library(zoo)
+```
+
+# Access and download data 
+Access data from Oracle using ROracle. 
+
+Put in your own credentials at the prompt. You have to have access to the dataset in question, here "Karen's data" which refers to the LLDS data, to be able to access it.
+
+```{r eval=FALSE}
+# Put in your own credentials at the prompt. You have to have access to the dataset in question to be able to access it.
+# Explore the data tables. This doesn't have to be done every time but it's helpful the first time and when trying to figure out what data are needed and available. 
+
+# Establish connection with the database
+con <- dbConnect(dbDriver("Oracle"),
+                 username = rstudioapi::askForPassword("Oracle user name"),
+                 password = rstudioapi::askForPassword("Oracle password"), 
+                 dbname = "PIC")
+
+# Name schema to use
+shma_log <- 'LLDS'
+shma_deal <- 'WP_HAWAII'
+
+# Look at what views are available in schema.
+# We want the DR_113292_SEAHUNT_MARIEM view
+table_log <- dbListTables(con, schema=shma_log)
+table_log
+table_deal <- dbListTables(con, schema=shma_deal)
+table_deal
+
+# Define table name
+tname_log <- paste(tolower(shma_log),table_log[10], sep='.')  # this is the HDR table, not the DETAIL
+tname_deal <- paste(tolower(shma_deal),table_deal[2], sep='.')
+
+# Look at column names available in the table
+tableInfo_log <- dbListFields(con, schema=shma_log, name=table_log[10])
+tableInfo_log
+tableInfo_deal <- dbListFields(con, schema=shma_deal, name=table_deal[2])
+tableInfo_deal
+
+```
+
+Download the datasets and save to your local computer. 
+
+We are getting data from the logbook so we can calculate effort so we don't need a lot of fields here. We want to make sure that we are only getting non-experimental fields and data starting in 2000
+
+```{r eval=FALSE}
+# Download the LOGBOOK data
+# Download (logbook) data from Karen's view to get effort
+# Query the database
+res <- dbSendQuery(con, paste("SELECT TRIPNUM, HOOKSSET, LANDYR, LANDMON, FLEET, RSCH_EXPMTL_CODE, SET_TYPE",
+                              "FROM", tname_log,
+                              "WHERE LANDYR >= '2000' AND RSCH_EXPMTL_CODE IS NULL")) 
+
+logbookRaw <- dbFetch(res)
+
+# Check data to make sure it's want you need
+dim(logbookRaw)
+head(logbookRaw)
+str(logbookRaw)  # It looks like a lot of the numeric fields are read in as characters
+
+# Convert character fields to numeric
+logbookRaw <- logbookRaw %>% 
+  mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON'), as.numeric)
+str(logbookRaw)
+
+# Save dataset
+saveRDS(object = logbookRaw, file = 'Data/SAFE_logbook_2024.rds')
+
+# Clear your query results
+dbClearResult(res)
+```
+
+Dealer data is used for weight-per-unit-effort (WPUE) calculations so we need species information, weights, and which year they were landed. We match this up with the effort information from the logbook data. 
+
+```{r}
+# Download the DEALER data
+# Dealer data from the integrated dealer table
+# Query the database
+res <- dbSendQuery(con, paste("SELECT REPORT_DATE, SPECIES_FK, NUM_SOLD, LBS_SOLD, MEAN_SOLD_WEIGHT, FISH_CONDITION, SET_TYPE, TRIP_NUM, LANDING_PORT",
+                              "FROM", tname_deal)) 
+dealerRaw <- dbFetch(res)
+
+# Check data to make sure it's want you need
+dim(dealerRaw)
+head(dealerRaw)
+str(dealerRaw) 
+
+# Save dataset
+saveRDS(object = dealerRaw, file = 'Data/SAFE_dealer_2024.rds')
+
+# Clear your query results
+dbClearResult(res)
+
+# Close connection
+dbDisconnect(con)
+```
+

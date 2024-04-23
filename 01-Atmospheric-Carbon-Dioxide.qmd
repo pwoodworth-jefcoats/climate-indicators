@@ -216,21 +216,21 @@ save_image(p1, paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
 ```
 
 Rationale: Atmospheric carbon dioxide is a measure of what human activity has already done to affect the climate system through greenhouse gas emissions. It provides quantitative information in a simplified, standardized format that decision makers can easily understand. This indicator demonstrates that the concentration (and, in turn, warming influence) of greenhouse gases in the atmosphere has increased substantially over the last several decades.  
-
+\
 Status: Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ is increasing more quickly over time. In `r RptYr`, the annual mean concentration of CO~2~ was `r ann_mean` ppm.  This is the highest annual value recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` ppm. In 1959, the first year full of the time series, the atmospheric concentration of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
-
+\
 Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The observed increase in monthly average carbon dioxide concentration is primarily due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the atmosphere for a very long time, and emissions from any location mix throughout the atmosphere in approximately one year. The annual variations at Mauna Loa, Hawaiʻi are due to the seasonal imbalance between the photosynthesis and respiration of terrestrial plants. During the summer growing season, photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In the winter (outside the growing season), respiration exceeds photosynthesis, and CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern hemisphere because of its larger land mass.  
-
+\
 Timeframe: Annual, monthly.  
-
-Region/Location: Mauna Loa, Hawaiʻi, but representative of global atmospheric carbon dioxide concentration.  Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations starting in December 2022 to 4 July 2023 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  Mauna Loa observations resumed in July 2023.
-
+\
+Region/Location: Mauna Loa, Hawaiʻi, but representative of global atmospheric carbon dioxide concentration.  Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations from December 2022 to 4 July 2023 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  Mauna Loa observations resumed in July 2023.  
+\
 Measurement Platform: *In-situ* station.  
-
+\
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
-
+\
 Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2024a).  
-
+\
 Graphics produced in part using Stawitz (2023).
 
 ## Additional Information

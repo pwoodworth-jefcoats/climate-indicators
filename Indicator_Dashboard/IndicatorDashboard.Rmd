@@ -173,7 +173,7 @@ output$ts <- renderPlotly({
   if (input$indicator == "PDO"){ #PDO-specific plot
     
       indicator_data <- indicator_data |>
-        mutate(Units = "Pacific Decal Oscillation (PDO)")
+        mutate(Units = "Pacific Decadal Oscillation (PDO)")
       
       #color-coded bar chart for PDO
       p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar", height = plot_height,

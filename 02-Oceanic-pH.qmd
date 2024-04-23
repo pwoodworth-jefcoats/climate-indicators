@@ -221,24 +221,24 @@ save_image(p1, paste(Dir, '/Oceanic_pH_ts_', RptYr, '.pdf', sep = ""))
 # kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
-Rationale: Oceanic pH is a measure of how greenhouse gas emissions have already impacted the ocean. This indicator demonstrates that oceanic pH has decreased significantly over the past several decades (i.e., the ocean has become more acidic). Increasing ocean acidification limits the ability of marine organisms to build shells and other calcareous structures. Recent research has shown that pelagic organisms such as pteropods and other prey for commercially valuable fish species are already being negatively impacted by increasing acidification (Feely et al. 2016). The full impact of ocean acidification on the pelagic food web is an area of active research (Fabry et al. 2008).
-
-Status: The ocean is roughly `r signif(delta_pH_pct, 3)`% more acidic than it was 30 years ago at the start of this time series. Over this time, pH has declined by `r abs(signif(delta_pH_lm, 2))` at a constant rate. In `r RptYr-1`, the most recent year for which data are available, the average pH was `r signif(ann_mean_RptYr, 3)`. Additionally, for the `r n_yrs_below`th year, small variations seen over the course of the year are outside the range seen in the first year of the time series. The highest pH value reported for the most recent year (`r signif(ann_max_RptYr, 4)`) is lower than the lowest pH value reported in the first year of the time series (`r signif(yr1_min, 4)`).
-
-Description: Trends in surface (5 m) pH at Station ALOHA, north of Oahu (22.75°N, 158°W), collected by the Hawaiʻi Ocean Time-Series (HOT) from October 1988 to `r RptYr - 1` (`r RptYr` data are not yet available). Oceanic pH is a measure of ocean acidity, which increases as the ocean absorbs carbon dioxide from the atmosphere. Lower pH values represent greater acidity. Oceanic pH is calculated from total alkalinity (TA) and dissolved inorganic carbon (DIC). Total alkalinity represents the ocean’s capacity to resist acidification as it absorbs CO~2~ and the amount of CO~2~ absorbed is captured through measurements of DIC. The multi-decadal time series at Station ALOHA represents the best available documentation of the significant downward trend in oceanic pH since the time series began in 1988. Oceanic pH varies over both time and space, though the conditions at Station ALOHA are considered broadly representative of those across the Western and Central Pacific’s pelagic fishing grounds.
-
-Timeframe: Monthly.
-
-Region/Location: Station ALOHA: 22.75°N, 158°W.
-
-Measurement Platform: *In-situ* station.
-
-Data available at: <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>. 
-
+Rationale: Oceanic pH is a measure of how greenhouse gas emissions have already impacted the ocean. This indicator demonstrates that oceanic pH has decreased significantly over the past several decades (i.e., the ocean has become more acidic). Increasing ocean acidification limits the ability of marine organisms to build shells and other calcareous structures. Recent research has shown that pelagic organisms such as pteropods and other prey for commercially valuable fish species are already being negatively impacted by increasing acidification (Feely et al. 2016). The full impact of ocean acidification on the pelagic food web is an area of active research (Fabry et al. 2008).  
+\
+Status: The ocean is roughly `r signif(delta_pH_pct, 3)`% more acidic than it was 30 years ago at the start of this time series. Over this time, pH has declined by `r abs(signif(delta_pH_lm, 2))` at a constant rate. In `r RptYr-1`, the most recent year for which data are available, the average pH was `r signif(ann_mean_RptYr, 3)`. Additionally, for the `r n_yrs_below`th year, small variations seen over the course of the year are outside the range seen in the first year of the time series. The highest pH value reported for the most recent year (`r signif(ann_max_RptYr, 4)`) is lower than the lowest pH value reported in the first year of the time series (`r signif(yr1_min, 4)`).  
+\
+Description: Trends in surface (5 m) pH at Station ALOHA, north of Oahu (22.75°N, 158°W), collected by the Hawaiʻi Ocean Time-Series (HOT) from October 1988 to `r RptYr - 1` (`r RptYr` data are not yet available). Oceanic pH is a measure of ocean acidity, which increases as the ocean absorbs carbon dioxide from the atmosphere. Lower pH values represent greater acidity. Oceanic pH is calculated from total alkalinity (TA) and dissolved inorganic carbon (DIC). Total alkalinity represents the ocean’s capacity to resist acidification as it absorbs CO~2~ and the amount of CO~2~ absorbed is captured through measurements of DIC. The multi-decadal time series at Station ALOHA represents the best available documentation of the significant downward trend in oceanic pH since the time series began in 1988. Oceanic pH varies over both time and space, though the conditions at Station ALOHA are considered broadly representative of those across the Western and Central Pacific’s pelagic fishing grounds.  
+\
+Timeframe: Monthly.  
+\
+Region/Location: Station ALOHA: 22.75°N, 158°W.  
+\
+Measurement Platform: *In-situ* station.  
+\
+Data available at: <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>.  
+\
 Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi Ocean Time-Series as described in Karl and Lukas (1996) and on its website (HOT 2024) using the methodology provided by Zeebe and Wolf-Gladrow (2001).
 
-Graphics produced in part using Stawitz (2023).
-
+Graphics produced in part using Stawitz (2023).  
+\
 ## Additional Information
 
 The following variables (listed as operators on the web interface) were downloaded from <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>:

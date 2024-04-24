@@ -257,7 +257,7 @@ Other options on the web interface were set to:
 - Output type: text
 
 Data were manually copied and pasted into .csvs.  In this process, the 2-line header was combined 
-into a 1-line header.  These variables were then matched by date in `pH_prep.Rmd` and used to run 
+into a 1-line header.  These variables were then matched by date in `pH_prep.Rmd` (which can be found in the [Oceanic_pH](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Oceanic_pH) folder) and used to run 
 csysUI.m with the default options, and a comma-delimited input file (TA_DIC_`r RptYr`.csv):
 
 - Temperature = 25 C (reasonable up until maybe the most recent year)

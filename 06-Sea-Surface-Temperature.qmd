@@ -300,7 +300,7 @@ Sourced from: NOAA OceanWatch (2024a). Graphics produced in part using Stawitz (
 \  
 
 ## Additional Information
-SST data are geographically subset and spatially averaged using the pyFerret script `SSTaccess.jnl` which can be found in the Sea_Surface_Temperature folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
+SST data are geographically subset and spatially averaged using the pyFerret script `SSTaccess.jnl` which can be found in the [Sea_Surface_Temperature folder](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Sea_Surface_Temperature).  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
 \
 A plot of the residuals from the linear model showed that they were evenly distributed, although were more positive (~4.0 max) than negative (~-3.0 min). The residuals for the anomaly model were also fairly evenly distributed in terms of values, however they did appear to exhibit some periodicity.  
 \

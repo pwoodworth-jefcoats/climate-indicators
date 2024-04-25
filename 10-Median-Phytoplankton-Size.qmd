@@ -332,7 +332,7 @@ To prepare the spatial data for mapping, you'll need to run `map_data_for_dashbo
 #   fill_scale + #indicator-dependent color and scale from above
 #   geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) + #base map background
 #   geom_sf(data = coast_proj) + #base map outline
-#   coord_sf(expand = F) + #don't expand past x/y limits
+#   coord_sf(xlim = c(60, 0), ylim = c(15, 45), expand = F) + #don't expand past x/y limits
 #   xlab("") + ylab("") +
 #   theme_bw() + theme(panel.grid = element_line(color = "black", linewidth = 0.1),
 #                      legend.background = element_rect(fill = 'transparent'))

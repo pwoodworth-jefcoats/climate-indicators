@@ -271,7 +271,7 @@ p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, h
             type = "scatter", mode = "lines", line = list(color = pal[4]),
             name = ~ID[1], height = plot_height) |>
     layout(xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
-           yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-0.035, 0.035), tickvals = list(-0.035, -0.025, -0.015, 0, 0.015, 0.025, 0.035)), #add units and round values in hover display
+           yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-0.035, 0.035), tickvals = list(-0.035, -0.025, -0.015, -0.005, 0, 0.005, 0.015, 0.025, 0.035)), #add units and round values in hover display
            title = list(text = "Anomaly Time Series", x = 0.01, font = plot_title_font), #add title 
            paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
            hovermode = "x unified", #show data for all traces simultaneously

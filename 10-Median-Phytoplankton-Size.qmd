@@ -305,7 +305,7 @@ Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>, 
 Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2024c). Graphics produced in part using Stawitz (2023).  
 \
 ## Additional Information
-Ocean color data are geographically subset and spatially averaged using the pyFerret script `MedPhytoSize_access.jnl` which can be found in the [Median_Phytoplankton_Size folder](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Median_Phytoplankton_Size).  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
+Median phytoplankton size data are geographically subset and spatially averaged using the pyFerret script `MedPhytoSize_access.jnl` which can be found in the [Median_Phytoplankton_Size folder](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Median_Phytoplankton_Size).  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
 \
 A plot of the residuals from the linear model showed that they were evenly distributed, although were more negative (~-0.39 min) than positive (~0.35 max). The residuals for the anomaly model were also fairly evenly distributed between -0.1 and 0.1.  
 \

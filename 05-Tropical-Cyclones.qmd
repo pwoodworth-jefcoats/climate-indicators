@@ -245,25 +245,25 @@ EP_ns_lm <- lm(EP_counts$NumberNamed ~ EP_counts$Year)  # p-value: 0.739
 EP_htc_lm <- lm(EP_counts$NumberCyclones ~ EP_counts$Year)  # p-value: 0.4953
 EP_maj_lm <- lm(EP_counts$NumberMajor ~ EP_counts$Year)  # p-value: 0.8463
 EP_tot_lm <- lm(rowSums(EP_counts[,2:4]) ~ EP_counts$Year)  # p-value: 0.9799
-EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  # p-value: 0.3812
+EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  # p-value: 0.163
 
 CP_ns_lm <- lm(CP_counts$NumberNamed ~ CP_counts$Year)  # p-value: 0.4082
 CP_htc_lm <- lm(CP_counts$NumberCyclones ~ CP_counts$Year)  # p-value: 0.9244
 CP_maj_lm <- lm(CP_counts$NumberMajor ~ CP_counts$Year)  # p-value: 0.4548
 CP_tot_lm <- lm(rowSums(CP_counts[,2:4]) ~ CP_counts$Year)  # p-value: 0.7836
-CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  # p-value: 0.5027
+CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  # p-value: 0.662
 
-WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.1809
-WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.1147
-WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  # p-value: 0.8666
-WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.2203
-WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  # p-value: 0.3346
+WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.03345
+WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.007472
+WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  # p-value: 0.688
+WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.03563
+WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  # p-value: 0.09269
 
 SP_ns_lm <- lm(SP_counts$NumberNamed ~ SP_counts$Year)  # p-value: 0.1809 
 SP_htc_lm <- lm(SP_counts$NumberCyclones ~ SP_counts$Year)  # p-value: 0.1147
 SP_maj_lm <- lm(SP_counts$NumberMajor ~ SP_counts$Year)  # p-value: 0.8666
 SP_tot_lm <- lm(rowSums(SP_counts[,2:4]) ~ SP_counts$Year)  # p-value: 0.2203
-SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  # p-value: 0.3346
+SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  # p-value: 0.2479
 ```
 
 ```{r}
@@ -479,40 +479,40 @@ axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
 dev.off()
 ```
 
-Rationale: The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.
-
+Rationale: The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.  
+\
 Status:
 *Eastern North Pacific.* Tropical cyclone activity was slightly above average in the Eastern Pacific in `r RptYr`.  There were `r EP_counts$NumberNamed[which(EP_counts$Year == RptYr)]` named storms, `r EP_counts$NumberCyclones[which(EP_counts$Year == RptYr)]` of which were hurricanes.  There were `r EP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` major hurricanes (category 3 or higher).  The number of named and major storms, as well as Accumulated Cyclone Energy (ACE), were slightly the above 1991–2020 average.  
-
-*Central North Pacific.*  In July, Hurricane Calvin became a major hurricane as it moved from Mexico towards Hawaiʻi. Calvin led to tropical storm warnings in Hawaiʻi but caused minimal damage. Of note in `r RptYr` was Hurricane Dora, which formed in the Eastern Pacific on 31 July 2023, crossed into the Central Pacific on 6 August 2023, and carried on westward into the Western Pacific on 12 August 2023.  Overall, Central Pacific tropical cyclone activity was below the 1991–2020 average in `r RptYr`. There were `r CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]` named storms, one of which—Dora—reached hurricane status and became a major hurricane. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was slightly above the 1991–2020 average. Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202307>. 
-
-*Western North Pacific.* Typhoon Mawar, which formed in May, was just the third category 4 (winds ≥130 mph) typhoon to pass within 100 miles of Guam in the Western Pacific. It was the first major typhoon in that area since Mangkut in 2018. Mawar resulted in heavy rainfall and widespread power outages on the island.  Despite Typhoon Mawar, tropical cyclone activity in the Western Pacific was below average. The Western Pacific saw the second-fewest named storms since 1951, with only `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` forming in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` were major typhoons.   These counts were all below average (1991–2020), as was the ACE.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202305>, and
-<https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202313>.
-
+\
+*Central North Pacific.*  In July, Hurricane Calvin became a major hurricane as it moved from Mexico towards Hawaiʻi. Calvin led to tropical storm warnings in Hawaiʻi but caused minimal damage. Of note in `r RptYr` was Hurricane Dora, which formed in the Eastern Pacific on 31 July 2023, crossed into the Central Pacific on 6 August 2023, and carried on westward into the Western Pacific on 12 August 2023.  Overall, Central Pacific tropical cyclone activity was below the 1991–2020 average in `r RptYr`. There were `r CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]` named storms, one of which—Dora—reached hurricane status and became a major hurricane. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was slightly above the 1991–2020 average. Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202307>.  
+\
+*Western North Pacific.* Typhoon Mawar, which formed in May, was just the third category 4 (winds ≥130 mph) typhoon to pass within 100 miles of Guam in the Western Pacific. It was the first major typhoon in that area since Mangkut in 2018. Mawar resulted in heavy rainfall and widespread power outages on the island.  Despite Typhoon Mawar, tropical cyclone activity in the Western Pacific was below average. The Western Pacific saw the second-fewest named storms since 1951, with only `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` forming in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` became major typhoons.   These counts were all below average (1991–2020), as was the ACE.  Since 1980, the number of named storms and typhoons has decreased slightly at a rate of about 1 storm per decade.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202305>, and
+<https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202313>.  
+\
 *South Pacific.* South Pacific tropical cyclone activity was below average in `r RptYr`.  There were `r SP_counts$NumberNamed[which(SP_counts$Year == RptYr)]` named storms, `r SP_counts$NumberCyclones[which(SP_counts$Year == RptYr)]` of which became cyclones and `r SP_counts$NumberMajor[which(SP_counts$Year == RptYr)]`  major cyclones.  The `r RptYr` ACE was less than the 1991–2020 average.  
-
-Description: This indicator uses historical data from the NOAA National Climate Data Center (NCDC) International Best Track Archive for Climate Stewardship to track the number of tropical cyclones in the western, central, eastern, and southern Pacific basins. This indicator also monitors the Accumulated Cyclone Energy (ACE) Index and the Power Dissipation Index which are two ways of monitoring the frequency, strength, and duration of tropical cyclones based on wind speed measurements.
-
-The annual frequency of storms passing through each basin is tracked and Figure 166 shows the representative breakdown of Saffir-Simpson hurricane categories. 
-
-Every cyclone has an ACE Index value, which is a number based on the maximum wind speed measured at six-hourly intervals over the entire time that the cyclone is classified as at least a tropical storm (wind speed of at least 34 knots; 39 mph). Therefore, a storm’s ACE Index value accounts for both strength and duration. Figure 166 shows the ACE values for each hurricane/typhoon season and has a horizontal line representing the average annual ACE value. 
-
-Timeframe: Annual.
-
+\
+Description: This indicator uses historical data from the NOAA National Climate Data Center (NCDC) International Best Track Archive for Climate Stewardship to track the number of tropical cyclones in the western, central, eastern, and southern Pacific basins. This indicator also monitors the Accumulated Cyclone Energy (ACE) Index and the Power Dissipation Index which are two ways of monitoring the frequency, strength, and duration of tropical cyclones based on wind speed measurements.  
+\
+The annual frequency of storms passing through each basin is tracked and Figure 166 shows the representative breakdown of Saffir-Simpson hurricane categories.  
+\
+Every cyclone has an ACE Index value, which is a number based on the maximum wind speed measured at six-hourly intervals over the entire time that the cyclone is classified as at least a tropical storm (wind speed of at least 34 knots; 39 mph). Therefore, a storm’s ACE Index value accounts for both strength and duration. Figure 166 shows the ACE values for each hurricane/typhoon season and has a horizontal line representing the average annual ACE value.  
+\
+Timeframe: Annual.  
+\
 Region/Location: 
 	Eastern North Pacific: east of 140° W, north of the equator.
 	Central North Pacific: 180° - 140° W, north of the equator.
 	Western North Pacific: west of 180°, north of the equator.
-	South Pacific: south of the equator.
-
-Measurement Platform: Satellite.
-
-Data available at: <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv>. 
-
-Sourced from: Knapp et al. (2010), Knapp et al. (2018), and NOAA (2024c).
-
-Graphics produced in part using Stawitz (2023).
-
+	South Pacific: south of the equator.  
+\
+Measurement Platform: Satellite.  
+\
+Data available at: <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv>.  
+\
+Sourced from: Knapp et al. (2010), Knapp et al. (2018), and NOAA (2024c).  
+\
+Graphics produced in part using Stawitz (2023).  
+\
 ## Additional Information
 
 The ibtracs.since1980.list.v04r00.csv file downloaded and manually renamed to include `r paste(RptYr, 'full', sep ='')`.  All columns except:  

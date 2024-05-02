@@ -7,76 +7,197 @@ format:
 ---
 
 ## References 
-This list includes the full references for all the sources in the pelagic ocean and climate indicators, by indicator.
+This list includes the full references for all the sources in the pelagic ocean and climate indicators, by indicator.  
+\
+**Atmospheric Carbon Dioxide**  
+Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551  
+\
+NOAA (2024a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 13 March 2024.  
+\
+Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565  
+\
+**Oceanic pH**  
+Fabry et al. (2008): Fabry, V.J., Seibel, B.A., Feely, R.A., and J.C. Orr, 2008. Impacts of ocean acidification on marine fauna and ecosystem processes. ICES Journal of Marine Science, 65(3), pp. 414-432.  
+\
+Feely et al. (2016): Feely, R.A., Alin, S.R., Carter, B., Bednarsek, N., Hales, B., Chan, F., Hill, T.M., Gaylord, B., Sanford, E., Byrne, R.H., Sabine, C.L., Greeley, D., and L. Juranek, 2016. Chemical and biological impacts of ocean acidification along the west coast of North America. Estuarine, Coastal and Shelf Science, 183, pp. 260-270. doi: 10.1016/j.ecss.2016.08.04  
+\
+Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii Ocean Time-series (HOT) program: Background, rationale and field implementation. Deep-Sea Research II, 43(2-3): 129-156.  
+\
+HOT 2024: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 18 MArch 2024.  
+\
+Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code available at: <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>, Accessed: 21 March 2023.  
+\
+**El Niño - Southern Oscillation**  
+NOAA CPC (2024): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19 March 2024.  
+\
+**Pacific Decadal Oscillation**  
+NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.  
+\
+Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079.   
+\
+Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1  
+\
+**Tropical Cyclones**  
+Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1  
+\
+Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 19 March 2024].  
+\
+NOAA (2024c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 19 March 2024, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
+\
+**Sea Surface Temperature**
+NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 3 April 2024.  
+\
+**Temperature at 200-300 m Depth**  
+APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024.   
+\
+Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.  
+\
+NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April 2024.  
+\
+**Ocean Color**  
+NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 4 April 2024 & 3 May 2023.  
+\
+Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>  
+\
+**North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)**  
+Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson, C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004. On the seasonal and interannual migrations of the transition zone chlorophyll front. Geophysical Research Letters, 31, L17204. doi: 10.1029/2004GL020637.  
+\
+NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 18 April 2024.  
+\
+NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 18 April 2024.  
+\
+Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic global feature defining migration and forage habitat for marine resources. Progress in Oceanography, 49, pp. 469-483.  
+\
+**Estimated Median Phytoplankton Size**  
+Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088  
+\
+NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4 April 2024.  
+\
+**Fish Community Size Structure**  
+Pacific Islands Fisheries Science Center (PIFSC), 2024a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+\
+Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+\
+Farley et al. (2018): Farley J, Eveson P, Krusic-Golub K, Sanchez C, Roupsard F, McKechnie S, Nicol S, Leroy B, Smith N, Chang SK. 2018. Project 35: Age, growth and maturity of bigeye tuna in the western and central Pacific Ocean. WCPFC Scientific Committee, 13th meeting, Rarotonga, Cook Islands, 9 – 17 August 2017, WCPFC-SC13-2017/SA-WP-01, 45p.  
+\
+Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
+\
+**Bigeye Weight-Per-Unit-Effort**  
+Pacific Islands Fisheries Science Center (PIFSC), 2024a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+\
+Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+\
+Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
+\
+**Bigeye Recruitment Index**  
+Pacific Islands Fisheries Science Center (PIFSC), 2024: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+\
+Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+\
+Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
+\
+**Bigeye Tuna Catch Rate Forecast**  
+Pacific Islands Fisheries Science Center (PIFSC), 2024: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024 and 30 April 2024.  
+\
+Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024 and 30 April 2024.  
+\
+Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
+\
+NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 30 April 2024.  
+\
+Woodworth-Jefcoats and Wren (2020): Woodworth-Jefcoats P, Wren J. 2020. Toward an environmental predictor of tuna recruitment. Fish Oceanogr, 29(5):436-441. <https://doi.org/10.1111/fog.12487>.   
+\
+**Software**  
+R is used in creating all indicators.
+R Core Team (2022). R: A language and environment for statistical computing. R Foundation   for Statistical Computing, Vienna, Austria. URL <https://www.R-project.org/>.  
+  \
+PyFerret is used in creating the Sea Surface Temperature, Temperature at 200–300 m Depth, Ocean Color, Estimated Median Phytoplankton Size, and Bigeye Tuna Catch Rate Forecast indicators.
+PyFerret. (2021). PyFerret: Version 7.64 [Software]. Github. <https://github.com/NOAA-PMEL/PyFerret>  
+\
+Matlab is used in creating the Oceanic pH indicator.
+The MathWorks Inc. (2022). MATLAB version: 23.2.0.2428915 (R2023b) Update 4, Natick, Massachusetts: The MathWorks Inc. <https://www.mathworks.com>  
+\
+The following R packages are used to calculate the oceanic and climate indicators:  
+|         | CO~2~ | pH | ENSO | PDO | TCs | SST | Temp at Depth | Chl | Fronts | Phyto Size | Fish Size | WPUE | Recruitment | Forecast |
+|---------|:-----:|:--:|:----:|:---:|:---:|:---:|:-------------:|:---:|:------:|:----------:|:---------:|:----:|:-----------:|:--------:|
+|tidyverse| X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |  X        | X    | X           |  X       |
+|lubridate| X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |  X        | X    | X           |  X       |
+|here     | X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             |  X       |
+|nmfspalette| X   | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             |  X       |
+|plotly   | X     | X  |  X   | X   |     | X   | X             | X   |        |  X         |           |      |             |          |
+|reticulate| X    | X  |  X   | X   |     | X   | X             | X   |        |  X         |           |      |             |          |
+|stringr  |       | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             | X        |
+|sf       |       |    |      |     | X   |     |               |     |        |            |           |      |             |          |
+|scales   |       |    |      |     |     |     |               | X   |        |            | X         |      |             |          |
+|raster   |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|rasterVis|       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|mapdata  |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|maptools |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|cmocean  |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|RColorBrewer|    |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|latticeExtra|    |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|grid     |       |    |      |     |     |     |               |     | X      |            | X         |      |             |          |
+|rerddap  |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|terra    |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
+|rje      |       |    |      |     |     |     |               |     |        |            | X         | X    | X           | X        |
+|ROracle  |       |    |      |     |     |     |               |     |        |            | X         | X    | X           | X        |
+|zoo      |       |    |      |     |     |     |               |     |        |            | X         | X    | X           | X        |
+|ggplot2  |       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
+|gridExtra|       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
+|dplyr    |       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
+|png      |       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
 
-### Global
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>
-
-### Atmospheric Carbon Dioxide
-Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551
-
-NOAA (2024a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 13 March 2024.
-
-Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565
-
-### Oceanic pH
-Fabry et al. (2008): Fabry, V.J., Seibel, B.A., Feely, R.A., and J.C. Orr, 2008. Impacts of ocean acidification on marine fauna and ecosystem processes. ICES Journal of Marine Science, 65(3), pp. 414-432.
-
-Feely et al. (2016): Feely, R.A., Alin, S.R., Carter, B., Bednarsek, N., Hales, B., Chan, F., Hill, T.M., Gaylord, B., Sanford, E., Byrne, R.H., Sabine, C.L., Greeley, D., and L. Juranek, 2016. Chemical and biological impacts of ocean acidification along the west coast of North America. Estuarine, Coastal and Shelf Science, 183, pp. 260-270. doi: 10.1016/j.ecss.2016.08.04
-
-Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii Ocean Time-series (HOT) program: Background,
-rationale and field implementation. Deep-Sea Research II, 43(2-3): 129-156.
-
-HOT 2024: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 18 MArch 2024.
-
-Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code available at: <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>, Accessed: 21 March 2023.
-
-### El Niño - Southern Oscillation
-NOAA CPC (2024): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19 March 2024.
-
-### Pacific Decadal Oscillation
-NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.
-
-Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079. 
-
-Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1
-
-### Tropical Cyclones
-Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1
-
-Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 19 March 2024].
-
-NOAA (2024c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 19 March 2024, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>
-
-### Sea Surface Temperature
-NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 3 April 2024
-
-### Temperature at 200-300 m Depth
-APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024. 
-
-Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
-
-NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April 2024.
-
-### Ocean Color
-NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 4 April 2024 & 3 May 2023.
-
-Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>
-
-### North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)
-Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson, C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004. On the seasonal and interannual migrations of the transition zone chlorophyll front. Geophysical Research Letters, 31, L17204. doi: 10.1029/2004GL020637.
-
-NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
-
-NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
-
-Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic global feature defining migration and forage habitat for marine resources. Progress in Oceanography, 49, pp. 469-483.
-
-### Estimated Median Phytoplankton Size
-Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088
-
-NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4 April 2024
-
-
-
-
+tidyverse: Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL,   Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H   (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686   <https://doi.org/10.21105/joss.01686>.  
+\
+lubridate: Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3),   1-25. URL https://www.jstatsoft.org/v40/i03/.  
+\
+here:  Müller K (2020). _here: A Simpler Way to Find Your Files_. R package version 1.0.1,   <https://CRAN.R-project.org/package=here>.  
+\
+nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>  
+\
+plotly: C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.  
+\
+reticulate: Ushey K, Allaire J, Tang Y (2023). _reticulate: Interface to 'Python'_. R package version 1.31,   <https://CRAN.R-project.org/package=reticulate>.  
+\
+stringr: Wickham H (2022). _stringr: Simple, Consistent Wrappers for Common String Operations_. R package version 1.5.0,   <https://CRAN.R-project.org/package=stringr>.  
+\
+sf: 
+Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
+  and
+Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446,   <https://doi.org/10.32614/RJ-2018-009>  
+\
+scales: Wickham H, Pedersen T, Seidel D (2023). _scales: Scale Functions for Visualization_. R package version 1.3.0,   <https://CRAN.R-project.org/package=scales>.  
+\
+raster: Hijmans R (2023). _raster: Geographic Data Analysis and Modeling_. R package version 3.6-23,   <https://CRAN.R-project.org/package=raster>.  
+\
+rasterVis: Oscar Perpinan Lamigueiro and Robert Hijmans (2023), rasterVis. R package version 0.51.5.  
+\
+mapdata: Becker OScbRA, Brownrigg. ARWRvbR (2022). _mapdata: Extra Map Databases_. R package version 2.3.1,   <https://CRAN.R-project.org/package=mapdata>.  
+\
+maptools: Bivand R, Lewin-Koh N (2023). _maptools: Tools for Handling Spatial Objects_. R package version 1.1-8,   <https://CRAN.R-project.org/package=maptools>.  
+\
+cmocean: Thyng K, Greene C, Hetland R, Zimmerle H, DiMarco S (2016). “True colors of oceanography: Guidelines for effective and accurate colormap selection.” _Oceanography_, *29*(3). doi:10.5670/oceanog.2016.66 <https://doi.org/10.5670/oceanog.2016.66>.  
+\
+RColorBrewer: Neuwirth E (2022). _RColorBrewer: ColorBrewer Palettes_. R package version 1.1-3,   <https://CRAN.R-project.org/package=RColorBrewer>.  
+\
+latticeExtra: Sarkar D, Andrews F (2022). _latticeExtra: Extra Graphical Utilities Based on Lattice_. R package version 0.6-30,   <https://CRAN.R-project.org/package=latticeExtra>.  
+\
+grid: <https://cran.r-project.org/package=grid>  
+\
+rerddapL Chamberlain S (2023). _rerddap: General Purpose Client for 'ERDDAP' Servers_. R package version 1.0.3, <https://CRAN.R-project.org/package=rerddap>.   
+\
+terra: Hijmans R (2023). _terra: Spatial Data Analysis_. R package version 1.7-39, <https://CRAN.R-project.org/package=terra>.  
+\
+rje: Evans R (2022). _rje: Miscellaneous Useful Functions for Statistics_. R package version 1.12.1,   <https://CRAN.R-project.org/package=rje>.  
+\
+ROracle: Mukhin D, James DA, Luciani J (2021). _ROracle: OCI Based Oracle Database Interface for R_. R package version 1.3-1.1,   <https://CRAN.R-project.org/package=ROracle>.  
+\
+zoo: Zeileis A, Grothendieck G (2005). “zoo: S3 Infrastructure for Regular and Irregular Time Series.” _Journal of Statistical   Software_, *14*(6), 1-27. doi:10.18637/jss.v014.i06 <https://doi.org/10.18637/jss.v014.i06>.  
+\
+ggplot2: H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.  
+\
+gridExtra: Auguie B (2017). _gridExtra: Miscellaneous Functions for "Grid" Graphics_. R package version 2.3,   <https://CRAN.R-project.org/package=gridExtra>.  
+\
+dplyr: Wickham H, François R, Henry L, Müller K, Vaughan D (2023). _dplyr: A Grammar of Data Manipulation_. R package version 1.1.2,   <https://CRAN.R-project.org/package=dplyr>.  
+\
+png: Urbanek S (2022). _png: Read and write PNG images_. R package version 0.1-8, <https://CRAN.R-project.org/package=png>.  

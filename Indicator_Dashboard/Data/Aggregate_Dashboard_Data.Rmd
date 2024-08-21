@@ -19,7 +19,7 @@ library(here)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 ```
 
 ```{r}

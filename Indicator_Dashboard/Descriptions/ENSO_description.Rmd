@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 
 # Identify the variable we're focused on
 var <- 'ENSO'
@@ -27,7 +27,7 @@ var <- 'ENSO'
 
 ```{r, include = FALSE, global = TRUE}
 # Access indicator data
-indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # And just use our variable of interest
 indicator_data <- indicator_data |> filter(ID == var)
@@ -74,7 +74,7 @@ The Oceanic Niño Index (ONI) is a measure of ENSO phase that focuses on ocean t
 Understanding the effects of natural climate variability like ENSO on the ocean, marine ecosystems, and fisheries is an active area of research.
 
 __Status of the Indicator__  
-The Oceanic Niño Index (ONI) indicated La Niña conditions throughout `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
+The Oceanic Niño Index (ONI) indicated a transition from La Niña to El Niño conditions in `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
 
 __Indicator Data__  
 Description: The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.
@@ -87,9 +87,9 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at:  <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>. 
 
-Sourced from: NOAA CPC (2023). Graphics produced in part using Stawitz (2022).
+Sourced from NOAA CPC (2024). Graphics produced in part using Stawitz (2023).
 
 __References__  
-NOAA CPC (2023): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 22 March 2023.
+NOAA CPC (2024): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19 March 2024. 
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>

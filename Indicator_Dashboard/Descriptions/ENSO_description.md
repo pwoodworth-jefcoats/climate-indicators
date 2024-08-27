@@ -15,9 +15,10 @@ the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
 **Status of the Indicator**  
-The Oceanic Niño Index (ONI) indicated La Niña conditions throughout
-2022. In 2022, the ONI ranged from -1.06 to -0.81. This is within the
-range of values observed previously in the time series.
+The Oceanic Niño Index (ONI) indicated a transition from La Niña to El
+Niño conditions in 2023. In 2023, the ONI ranged from -0.68 to 1.95.
+This is within the range of values observed previously in the time
+series.
 
 **Indicator Data**  
 Description: The three-month running mean (referred to as a season) of
@@ -40,14 +41,14 @@ Measurement Platform: *In-situ* station, satellite, model.
 Data available at:
 <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>.
 
-Sourced from: NOAA CPC (2023). Graphics produced in part using Stawitz
-(2022).
+Sourced from NOAA CPC (2024). Graphics produced in part using Stawitz
+(2023).
 
 **References**  
-NOAA CPC (2023):
-<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 22
-March 2023.
+NOAA CPC (2024):
+<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19
+March 2024.
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 0.0.0.9000.
+nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA
+Fisheries. R package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

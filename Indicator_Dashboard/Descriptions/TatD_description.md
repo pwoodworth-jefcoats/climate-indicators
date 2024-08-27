@@ -19,14 +19,14 @@ at 200–300 m below the surface where the bigeye fishery sets their
 hooks. However, this relationship has yet to be established.
 
 **Status of the Indicator**  
-In 2022, 200–300 m temperatures ranged from 11.11–11.25 °C with an
-average value of 11.19 °C. These temperatures are within the range of
+In 2023, 200–300 m temperatures ranged from 11.1–11.23 °C with an
+average value of 11.16 °C. These temperatures are within the range of
 temperatures experienced over the past several decades (10.87–11.59 °C)
 and are within the bounds of bigeye tuna’s preferred deep daytime
-thermal habitat (8–14 °C). Over the period of record (1980–2022),
-200–300 m temperatures have declined by -0.09 °C. The spatial pattern of
+thermal habitat (8–14 °C). Over the period of record (1980–2023),
+200–300 m temperatures have declined by 0.1 °C. The spatial pattern of
 temperature anomalies was mixed with temperatures at depth around the
-main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures
+main Hawaiian Islands roughly 0.5–1.5 °C below average, and temperatures
 north of about 30°N 0–0.5 °C above average.
 
 **Indicator Data**  
@@ -42,24 +42,24 @@ Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.
 
 Measurement Platform: In-situ sensors, model.
 
-Sourced from: NOAA (2023d) and APDRC (2023). Graphics produced in part
-using Stawitz (2022).
+Sourced from: NOAA (2024d) and APDRC (2024). Graphics produced in part
+using Stawitz (2023).
 
 **References**  
-APDRC (2023):
+APDRC (2024):
 <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp>
-Accessed 10 April 2023.
+Accessed 4 April 2024.
 
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010.
 Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior
 in the central North Pacific Ocean. Progress in Oceanography, 86,
 pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
 
-NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth
+NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth
 System Research Laboratories’ Physical Sciences Laboratory,
-<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April
-2023.
+<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April
+2024.
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 0.0.0.9000.
+Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
+package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

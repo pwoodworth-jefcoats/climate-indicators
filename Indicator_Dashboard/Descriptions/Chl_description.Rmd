@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 
 # Identify the variable we're focused on
 var <- 'Chl'
@@ -27,7 +27,7 @@ var <- 'Chl'
 
 ```{r, include = FALSE, global = TRUE}
 # Access indicator data
-indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+indicator_data <- read_csv(here('Indicator_Dashboard', 'Data', paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # And just use our variable of interest
 indicator_data <- indicator_data |> filter(ID == var)
@@ -74,7 +74,7 @@ Climate change is projected to lead to lower phytoplankton abundance. Combined, 
 Understanding the effects of natural climate variability and anthropogenic climate change on the ocean, marine ecosystems, and the fishery is an active area of research.
 
 __Status of the Indicator__  
-The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r signif(delta_Chl_anom_lm, 1)`.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30 - 35°N.
+The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  There has been no significant trend in monthly average chlorophyll concentration over the time period, however chlorophyll anomalies have declined by `r abs(signif(delta_Chl_anom_lm, 1))` mg chl m^-^^3^.  Chlorophyll concentrations were fairly average across the southern portion of the longline fishing grounds and a little below average north of 30–35°N.
 
 __Indicator Data__  
 Description: Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).
@@ -85,13 +85,13 @@ Region/Location: Hawaii longline region: 5° – 45°N, 180° – 120°W
 
 Measurement Platform: Satellite
 
-Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2023-clim_v6-0>.  
 
-Sourced from: NOAA OceanWatch (2023b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz (2022).
+Sourced from: NOAA OceanWatch (2024b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz (2023).  
 
 __References__  
-NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
+NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 4 April 2024 & 3 May 2024.  
 
-Sathyendranath et al. (2018): Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>
+Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>  
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/> 

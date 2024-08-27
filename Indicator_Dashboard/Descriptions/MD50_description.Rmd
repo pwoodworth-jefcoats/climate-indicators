@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 
 # Identify the variable we're focused on
 var <- 'MD50'
@@ -27,7 +27,7 @@ var <- 'MD50'
 
 ```{r, include = FALSE, global = TRUE}
 # Access indicator data
-indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # And just use our variable of interest
 indicator_data <- indicator_data |> filter(ID == var)
@@ -87,15 +87,13 @@ Region: Hawaii longline region: 15° – 45°N, 180° – 120°W
 
 Measurement Platform: Satellite
 
-Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>
+Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-1998-2009-clim>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2023-clim>.  
 
-Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2023c). Graphics produced in part using Stawitz (2022).
+Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2024c). Graphics produced in part using Stawitz (2023). 
 
 __References__  
-Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088
+Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088  
 
-NOAA OceanWatch (2023a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2023
+NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4 April 2024. 
 
-NOAA OceanWatch (2023b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 10 April 2023 & 3 May 2023.
-
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>

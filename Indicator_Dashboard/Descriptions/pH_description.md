@@ -19,16 +19,16 @@ acidification on the pelagic food web is an area of active research
 The ocean is roughly 10.9% more acidic than it was 30 years ago at the
 start of this time series. Over this time, pH has declined by 0.045 at a
 constant rate. In 2021, the most recent year for which data are
-available, the average pH was 8.05. Additionally, for the 6th year,
-small variations seen over the course of the year are outside the range
-seen in the first year of the time series. The highest pH value reported
-for the most recent year (8.077) is lower than the lowest pH value
-reported in the first year of the time series (8.083).
+available, the average pH was NaN. Additionally, for the 6th year, small
+variations seen over the course of the year are outside the range seen
+in the first year of the time series. The highest pH value reported for
+the most recent year (8.069) is lower than the lowest pH value reported
+in the first year of the time series (8.083).
 
 **Indicator Data**  
 Description: Trends in surface (5 m) pH at Station ALOHA, north of Oahu
 (22.75°N, 158°W), collected by the Hawaiʻi Ocean Time Series (HOT) from
-October 1988 to 2020 (2021 data are not yet available). Oceanic pH is a
+October 1988 to 2021 (2022 data are not yet available). Oceanic pH is a
 measure of ocean acidity, which increases as the ocean absorbs carbon
 dioxide from the atmosphere. Lower pH values represent greater acidity.
 Oceanic pH is calculated from total alkalinity (TA) and dissolved
@@ -49,12 +49,12 @@ Region/Location: Station ALOHA: 22.75°N, 158°W.
 Measurement Platform: *In-situ* station.
 
 Data available at:
-<https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>
-
+<https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>.  
+  
 Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi
-Ocean Time Series as described in Karl and Lukas (1996) and on its
-website (HOT 2023) using the methodology provided by Zeebe and
-Wolf-Gladrow (2001). Graphics produced in part using Stawitz (2022).
+Ocean Time-Series as described in Karl and Lukas (1996) and on its
+website (HOT 2024) using the methodology provided by Zeebe and
+Wolf-Gladrow (2001). Graphics produced in part using Stawitz (2023).
 
 **References**  
 Fabry et al. (2008): Fabry, V.J., Seibel, B.A., Feely, R.A., and J.C.
@@ -72,16 +72,16 @@ Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii
 Ocean Time-series (HOT) program: Background, rationale and field
 implementation. Deep-Sea Research II, 43(2-3): 129-156.
 
-HOT 2023: Hawaii Ocean Time-series Data Organization & Graphical System
+HOT 2024: Hawaii Ocean Time-series Data Organization & Graphical System
 (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>,
-Accessed: 23 February 2023.
+Accessed: 18 March 2024.
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 0.0.0.9000.
+Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
+package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>
 
 Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in
 Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code
 available at:
 <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>,
-Accessed: 21 March 2023.
+Accessed: 21 March 2024.

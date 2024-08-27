@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2022
+RptYr <- 2023
 
 # Identify the variable we're focused on
 var <- 'TatD'
@@ -27,7 +27,7 @@ var <- 'TatD'
 
 ```{r, include = FALSE, global = TRUE}
 # Access indicator data
-indicator_data <- read_csv(here('Indicator_Dashboard','Data', 'Dashboard_Data_2022.csv'))
+indicator_data <- read_csv(here('Indicator_Dashboard','Data', paste('Dashboard_Data_', RptYr, '.csv', sep = "")))
 
 # And just use our variable of interest
 indicator_data <- indicator_data |> filter(ID == var)
@@ -74,7 +74,7 @@ Climate change will eventually affect temperatures at depth.  Over time, rising 
 It's possible that natural climate variability influences temperatures at 200–300 m below the surface where the bigeye fishery sets their hooks.  However, this relationship has yet to be established.
 
 __Status of the Indicator__  
-In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r signif(delta_TatD_lm, 1)` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1 °C below average, and temperatures north of about 30°N 0–0.5 °C above average.
+In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r abs(signif(delta_TatD_lm, 1))` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1.5 °C below average, and temperatures north of about 30°N 0–0.5 °C above average.
 
 __Indicator Data__  
 Description: Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats. 
@@ -85,13 +85,13 @@ Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.
 
 Measurement Platform: In-situ sensors, model.
 
-Sourced from: NOAA (2023d) and APDRC (2023).  Graphics produced in part using Stawitz (2022).
+Sourced from: NOAA (2024d) and APDRC (2024).  Graphics produced in part using Stawitz (2023).
 
 __References__  
-APDRC (2023): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2023. 
+APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024.   
 
-Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
+Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.  
 
-NOAA (2023d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2023.
+NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April 2024.  
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R package version 0.0.0.9000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>

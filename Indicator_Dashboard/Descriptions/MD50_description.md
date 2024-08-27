@@ -21,14 +21,14 @@ they influence fish abundance and size structure are areas of active
 research.
 
 **Status of the Indicator**  
-The mean monthly phytoplankton cell size was 1.5 *μ*m Equivalent
-Spherical Diameter (ESD) in 2022. Monthly mean cell size ranged from
-1.18–1.75 *μ*m ESD during the year, within the range of values observed
+The mean monthly phytoplankton cell size was 1.54 *μ*m Equivalent
+Spherical Diameter (ESD) in 2023. Monthly mean cell size ranged from
+1.19–1.88 *μ*m ESD during the year, within the range of values observed
 over the period of record (1.15–1.89 *μ*m ESD). Over the period of
 record, there has been weakly significant decline in monthly median
 phytoplankton size. Over the time series, median phytoplankton size has
-declined by 0.087 *μ*m ESD, or by 5.4%. The monthly anomaly has declined
-as well, by 0.07 *μ*m ESD. Average estimated median phytoplankton size
+declined by 0.084 *μ*m ESD, or by 5.3%. The monthly anomaly has declined
+as well, by 0.069 *μ*m ESD. Average estimated median phytoplankton size
 was below average across much of the fishing grounds.
 
 **Indicator Data**  
@@ -47,10 +47,13 @@ Region: Hawaii longline region: 15° – 45°N, 180° – 120°W
 Measurement Platform: Satellite
 
 Data available at:
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>,
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-1998-2009-clim>,
+and
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2023-clim>.
 
-Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2023c). Graphics
-produced in part using Stawitz (2022).
+Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2024c). Graphics
+produced in part using Stawitz (2023).
 
 **References**  
 Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A.,
@@ -59,14 +62,10 @@ community size structure form empirical relationships with remotely
 sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi:
 10.1093/plankt/fbq088
 
-NOAA OceanWatch (2023a):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>
-Accessed: 10 April 2023
+NOAA OceanWatch (2024c):
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4
+April 2024.
 
-NOAA OceanWatch (2023b):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
-Accessed: 10 April 2023 & 3 May 2023.
-
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 0.0.0.9000.
+nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA
+Fisheries. R package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

@@ -7,18 +7,18 @@ typically last 20 - 30 years, are known to impact Pacific fisheries,
 including tuna fisheries, because they cause interannual changes in sea
 surface temperature and phytoplankton abundance.
 
-The Pacific Decadal Oscillation (PDO) was initially named by fisheries
-scientist Steven Hare in 1996 while researching connections between
-Alaska salmon production cycles and Pacific climate. The climatic
-fingerprints of the PDO are most visible in the Northeastern Pacific,
-but secondary signatures exist in the tropics.
+The PDO was initially named by fisheries scientist Steven Hare in 1996
+while researching connections between Alaska salmon production cycles
+and Pacific climate. The climatic fingerprints of the PDO are most
+visible in the Northeastern Pacific, but secondary signatures exist in
+the tropics.
 
 Understanding the effects of natural climate variability like the PDO on
 the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
 **Status of the Indicator**  
-The PDO was negative in 2022. The index ranged from -2.22 to -1.35 over
+The PDO was negative in 2023. The index ranged from -2.47 to -0.949 over
 the course of the year. This is within the range of values observed
 previously in the time series.
 
@@ -36,7 +36,7 @@ has a positive value. When the climate patterns are reversed, with warm
 SST anomalies in the interior and cool SST anomalies along the North
 American coast, or above average sea level pressures over the North
 Pacific, the PDO has a negative value. Description inserted from NOAA
-(2023b).
+(2024b).
 
 Timeframe: Monthly.
 
@@ -44,14 +44,14 @@ Region/Location: Pacific Basin north of 20°N.
 
 Measurement Platform: *In-situ* station, satellite, model.
 
-Data available at: <https://psl.noaa.gov/pdo/>.
-
-Sourced from NOAA (2023b), Mantua (1997), and Newman (2016). Graphics
-produced in part using Stawitz (2022).
+Data available at: <https://psl.noaa.gov/pdo/>.  
+  
+Sourced from NOAA (2024b), Mantua (1997), and Newman (2016). Graphics
+produced in part using Stawitz (2023).
 
 **References**  
-NOAA (2023b): NOAA Physical Science Laboratory. Pacific Decadal
-Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 27 March 2023
+NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal
+Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R.
 C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with
@@ -63,6 +63,6 @@ Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and
 C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim.,
 DOI: 10.1175/JCLI-D-15-0508.1
 
-Stawitz C (2022): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 0.0.0.9000.
+Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
+package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

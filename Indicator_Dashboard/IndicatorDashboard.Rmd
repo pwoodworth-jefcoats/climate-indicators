@@ -13,19 +13,19 @@ output:
       
 runtime: shiny
 resource_files:
-  - "Data/Dashboard_Data_2022.csv"
-  - "Data/Dashboard_Map_Data_2022.csv"
+  - "Data/Dashboard_Data_2023.csv"
+  - "Data/Dashboard_Map_Data_2023.csv"
   - "Data/rnatearth_coast.RData"
   - "Data/rnatearth_land.RData"
-  - "Images/Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/CO2-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/Chl-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/ENSO-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/MD50-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/PDO-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/SST-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/TatD-Indicator-Table-2022-Monthly-Variables.png"
-  - "Images/pH-Indicator-Table-2022-Monthly-Variables.png"
+  - "Images/Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/CO2-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/Chl-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/ENSO-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/MD50-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/PDO-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/SST-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/TatD-Indicator-Table-2023-Monthly-Variables.png"
+  - "Images/pH-Indicator-Table-2023-Monthly-Variables.png"
   - "Descriptions/CO2_description.md"
   - "Descriptions/pH_description.md"
   - "Descriptions/ENSO_description.md"
@@ -70,7 +70,7 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
 #set include/exclude lists
 include_anom_list <- c("SST", "CO2", "Chl", "MD50") #indicators that have an anomaly plot
 include_anom_map_list <- c("SST", "TatD", "Chl", "MD50") #indicators that have an anomaly map
-report_year <- 2022 #current report year
+report_year <- 2023 #current report year
 
 #set formatting parameters
 plot_title_font <- list(size = 14)
@@ -742,13 +742,13 @@ output$anom_map_desc <- renderUI(
   
   #indicator-specific descriptions for seasonal plot
   if (input$indicator == "SST") {
-    markdown("This anomaly map shows the difference between SST in the report year (2022) and the long-term average (1985-2021).  Areas that were warmer in 2022 are red and areas that were cooler are blue.")
+    markdown("This anomaly map shows the difference between SST in the report year (2023) and the long-term average (1985-2021).  Areas that were warmer in 2023 are red and areas that were cooler are blue.")
   } else if (input$indicator == "TatD") {
-    markdown("This anomaly map shows the difference between temperature at depth in the report year (2022) and the long-term average (1980-2021).  Areas that were warmer in 2022 are red and areas that were cooler are blue.")    
+    markdown("This anomaly map shows the difference between temperature at depth in the report year (2023) and the long-term average (1980-2021).  Areas that were warmer in 2023 are red and areas that were cooler are blue.")    
   } else if (input$indicator == "Chl") {
-    markdown("This anomaly map shows the difference between ocean color in the report year (2022) and the long-term average (1998-2021).  Areas with greater chl concentration in 2022 are red and areas with lower chl concentrations are blue.")    
+    markdown("This anomaly map shows the difference between ocean color in the report year (2023) and the long-term average (1998-2021).  Areas with greater chl concentration in 2023 are red and areas with lower chl concentrations are blue.")    
   } else if (input$indicator == "MD50") {
-    markdown("This anomaly map shows the difference between median phytoplankton size in the report year (2022) and the long-term average (1998-2021).  Areas with larger phytplankotn in 2022 are red and areas with smaller phytoplankton are blue.")    
+    markdown("This anomaly map shows the difference between median phytoplankton size in the report year (2023) and the long-term average (1998-2021).  Areas with larger phytplankotn in 2023 are red and areas with smaller phytoplankton are blue.")    
   }  
   
 )

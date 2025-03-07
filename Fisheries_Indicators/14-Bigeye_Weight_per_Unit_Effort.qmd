@@ -1,5 +1,5 @@
 ---
-title: "Fish_Community_Size_Structure"
+title: "Bigeye_Weight_Per_Unit_Effort"
 author: "johanna.wren@noaa.gov"
 format:
   docx:
@@ -22,15 +22,19 @@ library(here)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-yr <- 2023
+RptYr <- 2023
 
 # Set path to variable: Median_Phytoplankton_Size
 # This is where the data are and where the plots will go
-#Dir <- here("Fish_Community_Size_Structure")
+Dir <- here("Bigeye_Weight_Per_Unit_Effort")
 ```
+
+```{=html}
 <!--
 # Here we import data saved locally and filter out only bigeye tuna (coded as species 6 in the dealer dataset) for deep-set trips onlu and that we don't include trips in the current year. 
 -->
+```
+
 ```{r}
 #| include: false
 # Import the data from saved files
@@ -49,6 +53,7 @@ logbookRaw <- logbookRaw %>%
   filter(LANDYR >= 2000,  LANDYR <= yr, FLEET == 'HI', )
 ```
 
+```{=html}
 <!--
 # Analyze data
 
@@ -60,6 +65,8 @@ NOTE: Dealer data comes with a conversion factor (I kept it in the raw dataset) 
 
 NOTE 2: in 2024 Removing any records of negative NUM_SOLD. Total of 28 records, all in 2023.
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -76,6 +83,7 @@ dealer <- dealerRaw %>%
 
 ```
 
+```{=html}
 <!--
 ## Calculate Age
 This is only used to mark the dashed age lines in the figure
@@ -87,6 +95,8 @@ where $L_\infty$ is the asymptotic length, $K$ is the growth coefficient, $t_0$ 
 
 Then we convert the length given from the growth equation above to a weight using data from Phoebe that she derived based on the Hawaii deep-set fishery. 
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -103,10 +113,13 @@ Weight <- 0.0187*La^2.9605  # these numbers are from phoebe
 WeightAge <- round(Weight)/1000
 ```
 
+```{=html}
 <!--
 ## Calculate effort
 Calculating both climatological quarterly efforts and annual quarter efforts.
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -127,10 +140,13 @@ efrtYr <- logbook %>%
   summarise(Effort=sum(HOOKSSET/1000, na.rm=T))
 ```
 
+```{=html}
 <!--
 ## Histograms
 Calculating quarterly climatological histograms for use in the figures. Calculate these outside the loop since they are the same for each quarter. 
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -145,6 +161,7 @@ for (q in 1:4) {
 }
 ```
 
+```{=html}
 <!--
 # Plot
 This script plots two different figures. The first one is the size-CPUE distribution by quarter for the past two years along with the climatology. the second figure is the CPUE timeseries for all and small bigeye along with weight per unit effort. 
@@ -152,6 +169,8 @@ This script plots two different figures. The first one is the size-CPUE distribu
 ## Size-CPUE distribution
 ### Define plotting variables
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -163,9 +182,12 @@ qName <- c('First', 'Second', 'Third', 'Fourth')
 pal <- rev(cubeHelix(8, start=0, r=-0.1, gamma=1, hue=0.8))
 ```
 
+```{=html}
 <!--
 Define the year range you want to plot
 -->
+```
+
 ```{r}
 #| include: false
 
@@ -176,10 +198,12 @@ efrtPlot <- efrtYr %>%
   filter(Year %in% yrRange)
 ```
 
-
+```{=html}
 <!--
 ### Plot the data
 -->
+```
+
 ```{r}
 
 # Load Fisheries Data
@@ -226,3 +250,17 @@ plot(x=0.5,y=8,type='n', ylim=c(0,16), xlim=c(0,1), axes=F, xlab=NA, ylab=NA)
 text(x=1,y=8, 'CPUE (no. fish/1000 hooks)', srt=90, cex=1.2, xpd=NA)
 #dev.off()
 ```
+
+Rationale: Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.
+
+Status: No above-average peaks in two-year-old bigeye CPUE were observed in 2021–2023, suggesting that there will not be a peak in the CPUE of four- and five-year-old bigeye in 2024 or 2025.
+
+Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in Figure 183. Bigeye weights are from sets using  15 hooks per float.
+
+Timeframe: Quarterly.
+
+Region: Hawaiʻi-based longline fishing grounds.
+
+Measurement Platform: *In-situ* measurement.
+
+Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).

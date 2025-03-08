@@ -232,7 +232,7 @@ dev.off()
 ```
 
 \
-```{r fig-DensDist, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), fig.align='center', echo=FALSE}
+```{r fig-DensDist, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), fig.align='center', out.width='100%', echo=FALSE}
 
 setwd(mainDir)
 knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '.png'))
@@ -240,7 +240,7 @@ knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '
 ```
 \
 \
-```{r fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', out.width='100%', fig.align='center', echo=FALSE}
+```{r fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', echo=FALSE}
 
 setwd(mainDir)
 knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.png'))
@@ -248,7 +248,7 @@ knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.
 ```
 \
 \
-```{r fig-ViolBETSWD, fig.cap='The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', out.width='100%', fig.align='center', echo=FALSE}
+```{r fig-ViolBETSWD, fig.cap='The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', fig.align='center', echo=FALSE}
 
 setwd(mainDir)
 knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinBETSWD_', RptYr, '.png'))

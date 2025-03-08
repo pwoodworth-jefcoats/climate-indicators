@@ -1,0 +1,274 @@
+---
+title: "Fish_Community_Size_Structure"
+author: "johanna.wren@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Fish community size structure
+
+```{r}
+#| include: false
+### Load libraries
+library(ggplot2)
+library(lubridate)
+library(scales)
+library(gridExtra)
+library(dplyr)
+library(grid)
+library(png)
+library(here)
+
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2023
+
+# Set path to variable: Median_Phytoplankton_Size
+# This is where the data are and where the plots will go
+mainDir <- here("Fisheries_Indicators")
+```
+
+```{r}
+#| include: false
+setwd(mainDir)
+
+# Import fisheries the data from saved files
+dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '.rds'))
+
+# Read in images as rasters
+beye <- readPNG("../../Bigeye_blue.png")
+sword <- readPNG("../../Swordfish_yellow.png")
+fish <- readPNG("../../Bigeye_white.png")
+g <- rasterGrob(beye, interpolate=TRUE)
+h <- rasterGrob(sword, interpolate=TRUE)
+w <- rasterGrob(fish, interpolate=TRUE)
+```
+
+```{r}
+#| include: false
+
+#--------------------------------------------------------
+# Process data
+#--------------------------------------------------------
+# Clean up data and calculate new variables
+dealer <- dealer[which(dealer$SPECIES_FK != 0),]
+dealer <- dealer[which(dealer$SPECIES_FK != 722),]  # Remove squid
+dealer <- dealer[which(dealer$SPECIES_FK != 706),]  # Remove spiny lobster
+dealer <- dealer[which(dealer$SPECIES_FK != 708),]  # Remove shrimp
+dealer <- dealer[which(dealer$TRIP_NUM != 0),] # Remove all records without proper trip numbers
+dealer <- dealer[which(dealer$NUM_SOLD > 0),] # Remove all records with <= 0 fish sold
+dealer$WeightGG <- dealer$MEAN_SOLD_WEIGHT/2.204624  # convert form lbs to kg
+
+# Convert date to useful format
+#dealer$Date <- as.POSIXct(strptime(dealer$REPORT_DATE, '%d-%b-%y'))
+dealer$Date <- as.POSIXct(dealer$REPORT_DATE)
+dealer$Year <- year(dealer$Date)
+dealer$Month <- month(dealer$Date)
+
+# Limit dataset to 2000-2018
+dealer <- dealer %>% 
+  filter(Year >= 2000 & Year <= RptYr)
+
+# Convert all gilled/gutted/trunked weights to whole fish weight (using conversion factor in dealer dataset)
+dealer$conversion <- unlist(lapply(regmatches(dealer[,'FISH_CONDITION'],gregexpr("[[:digit:]]+\\.[[:digit:]]+\\*?$",dealer[,'FISH_CONDITION'])),"[",1))
+dealer$conversionNum <- as.numeric(gsub(".$", "",dealer$conversion))
+dealer[which(dealer$FISH_CONDITION==''),'conversionNum'] <- 1
+dealer[which(dealer$conversionNum > 1), 'conversionNum'] <- 1
+dealer[is.na(dealer$conversionNum),'conversionNum'] <- 1
+dealer[which(dealer$conversionNum == 0),'conversionNum'] <- as.numeric(dealer[which(dealer$conversionNum == 0),'conversion'])
+dealer$WholeWeight <- dealer$WeightGG/dealer$conversionNum
+# For bigeye and yellowfin we are using better published conversion factors (non linear)
+dealer[which(dealer$SPECIES_FK==3),'WholeWeight'] <- 1.189346*round(dealer[which(dealer$SPECIES_FK==3),'WeightGG'])^0.972009  # !!! This is for Yellowfin ONLY!!!
+dealer[which(dealer$SPECIES_FK==6),'WholeWeight'] <- 1.274959*round(dealer[which(dealer$SPECIES_FK==6),'WeightGG'])^0.960613  # !!! This is for Bigeye ONLY!!!
+
+# Weight - Length relationships for BET and swordfish
+# Equation W=a*L^b
+# Swordfish: a=1.299x10^(-5) and b=3.0738  Lf=143.6cm and Lm=102cm
+SW_L50_kg_f <- (1.299*10^(-5))*(143.6^3.0738)
+SW_L50_kg_m <- (1.299*10^(-5))*(102^3.0738)
+# Convert from Length to weight using Phoebe's numbers for the Hawaii fishery (gives weight in grams)
+# Bigeye: L=103cm from Farley et al. 2018 (WCPFC scientific committee report on age and growth of BET)
+BET_L50_kg <- round(0.0187*(103^2.9605))/1000  # these numbers are from phoebe
+
+# Merge dealer with logData so we can get departure dates
+dealerAll <- dealer
+
+# Unbin the dealer data for accurate length distributions
+nTimes <- dealer$NUM_SOLD
+dealerUnbin <- dealer[rep(seq_len(nrow(dealer)), nTimes), ]
+dealerUnbin$NUM_SOLD <- 1
+dealer <- dealerUnbin
+
+# Parse out bigeye and swordfish datasets (bigeye is deep set only, swordfish is shallow set only)
+dealerBE <- dealer[which(dealer$SPECIES_FK == 6 & dealer$SET_TYPE == 'D'),]
+dealerSW <- dealer[which(dealer$SPECIES_FK == 11 & dealer$SET_TYPE == 'S'),]
+
+```
+
+```{r}
+#| include: false
+
+# Functions
+# ----------------------------
+# Calculate the mean and sd for the violin plots
+data_summary <- function(x) {
+  m <- median(x)
+  ymin <- as.numeric(quantile(x, 0.25))
+  ymax <- as.numeric(quantile(x, 0.75))
+  return(c(y=m,ymin=ymin,ymax=ymax))
+}
+
+dot_summary <- function(x) {
+  xyy <- x %>% 
+    group_by(Year) %>% 
+    summarize(q20=quantile(WholeWeight, 0.20), q80=quantile(WholeWeight, 0.80)) %>% 
+    tidyr::gather(Condition, Quartile, q20:q80)
+  return(xyy)
+}
+
+```
+
+```{r}
+#| include: false
+
+#--------------------------------------------------------
+# Calculate annual box plot distributions for all three
+#--------------------------------------------------------
+# Function to make violin plot
+violfunc <- function(x, col, img, L50, L50col, dotData, imgMin=2022, yMax=max(x$WholeWeight)) {
+  numSold <- aggregate(NUM_SOLD ~ Year, data=x, FUN=sum)
+  numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
+  #yMax <- max(x$WholeWeight)#200 # for the shortened all fish figure
+  yMin <- round(yMax*1.1)
+  int <- ifelse(length(seq(0,yMax,50)) > 7, 100, 50)
+  dotData <- dot_summary(x)
+  p <- ggplot(data=x, aes(x=Year, y=WholeWeight, group=Year)) + 
+    annotation_custom(img, xmin=imgMin, xmax=RptYr+0.7, ymin=yMax*0.82, ymax=yMax*1.02) +
+    geom_violin(fill=col, color=col, alpha=0.6) +
+    stat_summary(fun.data=data_summary, size=0.2) +
+    geom_point(data=dotData, aes(x=Year, y=Quartile), color='black', size=0.4) +
+    geom_hline(yintercept=L50, linetype='dashed', color=L50col) +
+    ylab('Weight (kg)') +
+    theme_bw() + 
+    theme(plot.margin=unit(c(1.2,1,1,1),'lines'), panel.grid=element_blank(), axis.text=element_text(size=9), 
+          axis.title.x=element_blank(), axis.title.y=element_text(size=10)) +
+    scale_y_continuous(breaks=seq(0,yMax,int), limits=c(0,yMax)) +
+    scale_x_continuous(breaks=seq(2000,RptYr,1), expand = c(0.02,0.02), 
+                       sec.axis=sec_axis(~., breaks=seq(2000,RptYr,1), labels=NULL)) 
+  for (i in 1:length(numSold$Year)) {
+    p <- p + annotation_custom(grob=textGrob(label=numSold$pretty[i], gp=gpar(cex=0.5, color='gray20')), ymin=yMin, ymax=yMin, xmin=numSold$Year[i], xmax=numSold$Year[i])
+  }
+  p <- p + annotation_custom(grob=textGrob(label='n=', gp=gpar(cex=0.5, fontface='italic', color='gray20')),ymin=yMin, ymax=yMin, xmin=1999, xmax=1999)
+  gt <- ggplot_gtable(ggplot_build(p))
+  gt$layout$clip[gt$layout$name == "panel"] <- "off"
+  return(gt)
+}
+# Make three part violin plot
+a <- violfunc(dealer, '#63a298', w, -1, NA)
+a2 <- violfunc(dealer, '#63a298', w, -1, NA, yMax=200)
+b <- violfunc(dealerBE, '#5b84a1', g, BET_L50_kg, 'gray50')
+c <- violfunc(dealerSW, '#ffba37', h, c(SW_L50_kg_f, SW_L50_kg_m), 'gray50', 2020)
+
+setwd(mainDir)
+ggsave(plot=grid.arrange(a, a2, nrow=2), paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
+ggsave(plot=grid.arrange(b, c, nrow=2), paste0('TEST_DELETE_SAFEdealerViolinBETSWD_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
+
+```
+
+```{r}
+#| include: false
+
+#--------------------------------------------------------
+# Calculate Climatology of weight distribution for all fish, bigeye and swordfish 
+#--------------------------------------------------------
+# Bin all fish larger than 200kg
+# All Fish
+dealerSAFE <- dealer
+dealer[which(dealer$WholeWeight >= 200), 'WholeWeight'] <- 200
+dealerClim <- dealer[which(dealer$Year <=2009),]
+dealerYr <- dealer[which(dealer$Year == RptYr),]
+# Bigeye
+dealerBE[which(dealerBE$WholeWeight >= 200), 'WholeWeight'] <- 200
+dealerBEClim <- dealerBE[which(dealerBE$Year <= 2009),]
+dealerBEYr <- dealerBE[which(dealerBE$Year == RptYr),]
+# Swordfish
+dealerSW[which(dealerSW$WholeWeight >= 200), 'WholeWeight'] <- 200
+dealerSWClim <- dealerSW[which(dealerSW$Year <= 2009),]
+dealerSWYr <- dealerSW[which(dealerSW$Year == RptYr),]
+
+# Using function and plot to make density plots
+plotfunc <- function(x, y, color, img) {
+  nc <- prettyNum(c(sum(x$NUM_SOLD)),big.mark=',')
+  n17 <- prettyNum(c(sum(y$NUM_SOLD)),big.mark=',')
+  dclim <- hist(x$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
+  dyr <- hist(y$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
+  ymx <- max(c(dclim$counts/sum(dclim$counts), dyr$counts/sum(dyr$counts)))*1.05
+  plot(dclim$mids, dclim$counts/sum(dclim$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', las=1, xlab=NA, ylab=NA, main=NA, yaxs='i')
+  polygon(c(-5, dclim$mids,205), c(0,dclim$counts/sum(dclim$counts),0), col='gray70', border='gray50')
+  mtext(side=1, line=2.5, text='Weight (kg)', cex=0.7)
+  mtext(side=2, line=3.5, text='Proportion of Fish', cex=0.7)
+  par(new=T)
+  plot(dyr$mids, dyr$counts/sum(dyr$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', xlab=NA, ylab=NA, main=NA, axes=F, yaxs='i', col=color)
+  polygon(c(-5, dyr$mids, 205), c(0,dyr$counts/sum(dyr$counts),0), col=color, border=color)
+  text(160,ymx*0.92, pos=4, labels=bquote(paste('n'['climatology']*' = ', .(prettyNum(nc,big.mark=','), sep=' '))), cex=0.9)
+  text(160, ymx*0.85, pos=4, labels=bquote(paste('n'[.(RptYr)]*' = ', .(prettyNum(n17,big.mark=','), sep=' '))), cex=0.9)
+  grid.raster(beye, 0.85,0.6, width=.11)
+  grid.raster(sword, 0.85,0.26, width=.14)
+  
+}
+# Make three part Density Kernel plot
+setwd(mainDir)
+png(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '.png'), width=5, height=7, res=300, units='in')
+par(mfrow=c(3,1))
+par(mar=c(4,5,0.25,0.5))
+plotfunc(dealerClim, dealerYr, '#63A298A0') #alpha=180 of 250 for the violin version in plot above
+plotfunc(dealerBEClim, dealerBEYr, '#5B84A1A0') 
+plotfunc(dealerSWClim, dealerSWYr, '#FFBA37A0')  
+dev.off()
+```
+
+\
+```{r fig-wpue, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), out.width='70%', fig.align='center', echo=FALSE}
+
+setwd(mainDir)
+knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '.png'))
+
+```
+\
+\
+```{r fig-wpue, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', out.width='70%', fig.align='center', echo=FALSE}
+
+setwd(mainDir)
+knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.png'))
+
+```
+\
+\
+```{r fig-wpue, fig.cap=The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', out.width='70%', fig.align='center', echo=FALSE}
+
+setwd(mainDir)
+knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinBETSWD_', RptYr, '.png'))
+
+```
+
+\
+Rationale: Fish size can be impacted by a number of factors, including climate. Currently, the degree to which the fishery’s target species are impacted by climate, and the scale at which these impacts may occur, is largely unknown. Ongoing collection of size structure data is necessary for detecting trends in community size structure and attributing causes of these trends. Understanding trends in fish size structure and how oceanographic conditions influence these trends is an area of active research.\
+\
+Status: For the longline fishery as a whole, fish were slightly larger than average in 2023, with a lower proportion of fish smaller than about 15 kg.  Bigeye tuna were a bit larger than average in 2023 and swordfish were slightly smaller than the previous year on average, with a greater proportion of small swordfish.\
+\
+Description: The weight of individual fish moving through the Honolulu auction is available from 2000 through the present. Using these weights, community size structure is presented. A standardized pooled climatological distribution (2000–2009) is presented, as is the 2023 distribution. Similar distributions for target species (bigeye tuna and swordfish) are also presented. Annual time series of pooled target species weights are presented as violin plots. Bigeye weights are from deep sets (≥ 15 hooks per float) only. Swordfish weights are from shallow sets (< 15 hooks per float) only. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
+\
+Timeframe: Annual.\
+\
+Region: Hawaiʻi-based longline fishing grounds.\
+\
+Measurement Platform: *In-situ* measurement.\
+\
+Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, Farley et al. (2018), and Langley et al. (2006).
+
+
+

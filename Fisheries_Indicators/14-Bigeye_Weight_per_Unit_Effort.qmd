@@ -26,7 +26,7 @@ RptYr <- 2023
 
 # Set path to variable: Median_Phytoplankton_Size
 # This is where the data are and where the plots will go
-Dir <- here("Bigeye_Weight_Per_Unit_Effort")
+Dir <- here('Fisheries_Indicators')
 ```
 
 ```{=html}
@@ -39,18 +39,18 @@ Dir <- here("Bigeye_Weight_Per_Unit_Effort")
 #| include: false
 # Import the data from saved files
 #setwd(Dir)
-dealerRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', yr, '.rds'))
-logbookRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', yr, '.rds'))
+dealerRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '.rds'))
+logbookRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr, '.rds'))
 
 # Filter data to bigeye only for deep set trips before 2023
 dealerRaw <- dealerRaw %>%
-  filter(REPORT_DATE < as.Date(paste0(yr+1, '-01-01')),
+  filter(REPORT_DATE < as.Date(paste0(RptYr+1, '-01-01')),
          SPECIES_FK == 6, 
          SET_TYPE == 'D')
 
 # Make sure we only have information from the Hawaii fleet for trips spanning 2000- 2023
 logbookRaw <- logbookRaw %>%
-  filter(LANDYR >= 2000,  LANDYR <= yr, FLEET == 'HI', )
+  filter(LANDYR >= 2000,  LANDYR <= RptYr, FLEET == 'HI', )
 ```
 
 ```{=html}
@@ -192,7 +192,7 @@ Define the year range you want to plot
 #| include: false
 
 # Set years you want to plot
-yrRange <- (yr-2):yr
+yrRange <- (RptYr-2):RptYr
 # Isolate the number of panels you want to plot so we get the quarters right
 efrtPlot <- efrtYr %>% 
   filter(Year %in% yrRange)
@@ -205,12 +205,13 @@ efrtPlot <- efrtYr %>%
 ```
 
 ```{r}
+#| include: false
 
 # Load Fisheries Data
-#setwd(file.path(mainDir, 'Output'))
+setwd(Dir)
 # Start plotting
 # Save file
-#png(paste0('SAFE_SizeFreqHist_', yr, '.png'), height=8, width=5.5, unit='in', res=300)
+png(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'), height=8, width=5.5, unit='in', res=300)
 # Set plot dimensions
 nPanels <- nrow(efrtPlot)
 m <- matrix(c(rep(nPanels+1,nPanels+2),nPanels+2,1:nPanels,nPanels+3),nrow=nPanels+2, ncol=2)
@@ -248,19 +249,35 @@ axis(2, las=1, at=c(0,0.5,1,1.1))
 par(mar=c(1,0,1,0))
 plot(x=0.5,y=8,type='n', ylim=c(0,16), xlim=c(0,1), axes=F, xlab=NA, ylab=NA)
 text(x=1,y=8, 'CPUE (no. fish/1000 hooks)', srt=90, cex=1.2, xpd=NA)
-#dev.off()
+dev.off()
+
+cap <- paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)')
 ```
 
-Rationale: Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.
+```{r fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center'}
 
-Status: No above-average peaks in two-year-old bigeye CPUE were observed in 2021–2023, suggesting that there will not be a peak in the CPUE of four- and five-year-old bigeye in 2024 or 2025.
+#| include: false
 
-Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in Figure 183. Bigeye weights are from sets using  15 hooks per float.
+knitr::include_graphics(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'))
 
-Timeframe: Quarterly.
+```
 
-Region: Hawaiʻi-based longline fishing grounds.
 
-Measurement Platform: *In-situ* measurement.
+<!--
+![Quarterly deep-set bigeye tuna weight per unit effort for 2001-2023 (color) and the climatological average (2000-2009).](paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png')){height=80%, #fig-wpue}
+-->
 
+\
+Rationale: Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\
+\
+Status: No above-average peaks in two-year-old bigeye CPUE were observed in 2021–2023, suggesting that there will not be a peak in the CPUE of four- and five-year-old bigeye in 2024 or 2025.\
+\
+Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in @fig-wpue. Bigeye weights are from sets using $\ge$ 15 hooks per float.\
+\
+Timeframe: Quarterly.\
+\
+Region: Hawaiʻi-based longline fishing grounds.\
+\
+Measurement Platform: *In-situ* measurement.\
+\
 Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).

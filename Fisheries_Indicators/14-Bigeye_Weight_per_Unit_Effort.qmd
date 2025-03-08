@@ -6,7 +6,7 @@ format:
     reference-doc: SAFE-Reference-Doc.docx
 ---
 
-## Fish community size structure
+## Bigeye weight per unit effort
 
 ```{r}
 #| include: false
@@ -251,21 +251,14 @@ plot(x=0.5,y=8,type='n', ylim=c(0,16), xlim=c(0,1), axes=F, xlab=NA, ylab=NA)
 text(x=1,y=8, 'CPUE (no. fish/1000 hooks)', srt=90, cex=1.2, xpd=NA)
 dev.off()
 
-cap <- paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)')
 ```
 
-```{r fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center'}
+```{r fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', echo=FALSE}
 
-#| include: false
-
+setwd(Dir)
 knitr::include_graphics(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'))
 
 ```
-
-
-<!--
-![Quarterly deep-set bigeye tuna weight per unit effort for 2001-2023 (color) and the climatological average (2000-2009).](paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png')){height=80%, #fig-wpue}
--->
 
 \
 Rationale: Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\

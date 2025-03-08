@@ -1,0 +1,129 @@
+---
+title: "Bigeye_Recruitment_Index"
+author: "johanna.wren@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Bigeye recruitment Index
+
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(rje)
+library(zoo)
+library(here)
+
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2023
+
+# Set path to variable: Median_Phytoplankton_Size
+# This is where the data are and where the plots will go
+Dir <- here('Fisheries_Indicators')
+```
+
+```{r}
+### Calculate plot variables
+# Summarize the logbook and dealer data on trip level and calculate number of small bigeye per trip
+
+logbookTrip <- logbook %>% 
+  mutate(TRIP_NUM=as.numeric(paste(LANDYR, sprintf("%04d", TRIPNUM),sep=''))) %>%
+  group_by(TRIP_NUM) %>%
+  summarize(HOOKSSET=sum(HOOKSSET), LANDYR=unique(LANDYR), LANDMON=max(unique(LANDMON)))
+
+# This splits up large and small bigeye and groups by trip number
+dealer$Num_Small <- ifelse(dealer$Weight_Whole <= 15, dealer$NUM_SOLD, 0)
+
+dealer2 <- dealer %>% 
+  group_by(TRIP_NUM) %>% 
+  summarise_at(.vars=c('NUM_SOLD', 'Num_Small', 'Weight_Whole'), .funs=sum)
+```
+
+```{r}
+### Merge and save dealer and logbook datasets
+# Now we merge the dealer and logbook (logData) datasets since we only really need the effort information from the logbook.
+# I did an `inner_join` here because I wanted to avoid having weight for sold fish (from dealer data) but no effort information for them (logbook data) or vice versa. 
+
+# merge dealer and logbook since we only really need the hooksset info
+dealerFinal <- full_join(dealer2, logbookTrip, by='TRIP_NUM')
+
+# Check output
+dealerFinal
+```
+
+```{r}
+### Summarize by year
+# Summarizing the joined dealer-logbook data by year and calculating running mean. Here we use a three year running mean that is centered on the middle year. 
+
+# Raw data
+dealerYear <- dealerFinal %>%
+  filter(LANDYR >= 2000, LANDYR <= yr) %>%
+  group_by(LANDYR) %>%
+  summarize_at(c('Num_Small', 'NUM_SOLD', 'Weight_Whole', 'HOOKSSET'), sum, na.rm=T) %>%
+  mutate(CPUEsmall=Num_Small/(HOOKSSET/1000), CPUEall= NUM_SOLD/(HOOKSSET/1000), WPUE=Weight_Whole/(HOOKSSET/1000))
+```
+
+```{r}
+### Plot the data
+# Make plot that is color coded and axes are colored as well
+
+# Change working directory
+setwd(file.path(mainDir, 'Output'))
+# Calculate plot range
+idx <- range(dealerYear$CPUEall, na.rm=T)
+mn <- signif(idx[1], digits=2)-0.1
+mx <- signif(idx[2], digits=2)
+stp <- round((mx-mn)/6,digits=1)
+
+# Make plot
+png(paste0('RecIndexRaw_', yr, '.png'), height=6, width=11, res=300, unit='in')
+# Make raw plot
+par(mar=c(5,9,1,4.5))
+with(dealerYear, plot(LANDYR, CPUEsmall, type='l', lwd=3, lty=1, col='gray40', ylab=NA, xlab='Year', axes=F, xaxs='i'))
+axis(1, at=seq(2000,yr,1))
+axis(2, las=1)
+mtext(side=2,line=3, expression("Bigeye Tuna "<=15 ~"kg CPUE (# fish/1000 hks)"))
+box()
+par(new=T)
+with(dealerYear, plot(LANDYR, CPUEall, type='l', lwd=3, lty=2, col='#A3218E', ylab=NA, xlab=NA, ylim=c(mn,mx), axes=F, xaxs='i'))
+axis(2, line=5, at=seq(mn,mx,stp), las=1, col='#A3218E', col.axis='#A3218E')
+mtext(side=2, line=7.5, col='#A3218E', 'Bigeye Tuna CPUE (# fish /1000 hks)')
+par(new=T)
+with(dealerYear, plot(LANDYR, WPUE, type='l', lwd=3, lty=3, col='#00ACAC', ylab=NA, xlab=NA, axes=F, xaxs='i'))
+axis(4, las=1, col='#00ACAC', col.axis='#00ACAC')
+mtext(side=4, line=3, col='#00ACAC', 'Bigeye  biomass CPUE (kg/1000 hks)')
+legend(2003.5, 172, legend=c(expression("CPUE Bigeye Tuna "<=15 ~"kg"), 'CPUE All Bigeye Tuna', 'Biomass CPUE All Bigeye Tuna'), lty=1:3, col=c('gray30', '#A3218E' , '#00ACAC'), bty='n', lwd=3)
+
+dev.off()
+
+```
+
+```{r fig-recPulse, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', echo=FALSE}
+
+setwd(Dir)
+knitr::include_graphics(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'))
+
+```
+
+\
+Rationale: Catch rates of small bigeye tuna (≤ 15 kg) peak two years prior to peaks in catch rates (CPUE) and biomass (weight-per-unit-effort), indicating a recruitment pulse and allowing for predictions regarding increases in total catch rates of the fishery. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climate impacts such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research. \
+\
+Status: In `RptYr` 2023, the CPUE of bigeye ≤ 15 kg was **0.14 CHANGE THIS** fish per 1,000 hooks set.  This is the lowest value observed over the past 22 years (previous minimum was 0.16 fish per 1,000 hooks set) and at this time does not appear indicative of a strong recruitment pulse such as was seen in 2001 or 2013.\
+\
+Description: Time series of small (≤ 15 kg) and total bigeye tuna catch-per-unit-effort (hooks set) and weight-per-unit-effort (hooks set) for all bigeye tuna is presented. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). \
+\
+Timeframe: Annual.\
+\
+Region: Hawaiʻi-based longline fishing grounds.\
+\
+Measurement Platform: Model-derived from in situ data.\
+\
+Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).

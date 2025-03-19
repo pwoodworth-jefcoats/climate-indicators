@@ -105,7 +105,7 @@ str(logbookRaw)  # It looks like a lot of the numeric fields are read in as char
 # Convert character fields to numeric
 logbookRaw <- logbookRaw %>% 
   mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON'), as.numeric) %>% 
-  mutate(Quarter=quarter(LANDMON), Year=LANDYR) %>%
+  mutate(Quarter=quarter(LANDMON), Year=LANDYR)
 str(logbookRaw)
 
 # Save dataset
@@ -131,7 +131,7 @@ head(dealerRaw)
 str(dealerRaw) 
 
 # Save dataset
-saveRDS(object = dealerRaw, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH.rds')
+saveRDS(object = dealerRaw, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH_Mar2025.rds')
 
 # Clear your query results
 dbClearResult(res)
@@ -156,7 +156,7 @@ dealer <- dealer[which(dealer$NUM_SOLD > 0),] # Remove all records with <= 0 fis
 dealer$WeightGG <- dealer$MEAN_SOLD_WEIGHT/2.204624  # convert form lbs to kg
 
 # Convert date to useful format
-#dealer$Date <- as.POSIXct(dealer$REPORT_DATE)
+dealer$Date <- as.POSIXct(dealer$REPORT_DATE)
 dealer$Year <- year(dealer$Date)
 dealer$Month <- month(dealer$Date)
 
@@ -178,7 +178,7 @@ dealer <- dealer %>%
   mutate(NUM_SOLD=1)  # make a num sold column since it was removed during the uncount operation
 
 # Save dataset
-saveRDS(object = dealer, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH_processed.rds')
+saveRDS(object = dealer, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_processed.rds')
 ```
 
 

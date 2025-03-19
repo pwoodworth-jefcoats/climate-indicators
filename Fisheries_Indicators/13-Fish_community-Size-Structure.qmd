@@ -37,7 +37,7 @@ mainDir <- here("Fisheries_Indicators")
 setwd(mainDir)
 
 # Import fisheries the data from saved files
-dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '.rds'))
+dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
 
 # Read in images as rasters
 beye <- readPNG("../../Bigeye_blue.png")
@@ -50,40 +50,11 @@ w <- rasterGrob(fish, interpolate=TRUE)
 
 ```{r}
 #| include: false
-
-#--------------------------------------------------------
-# Process data
-#--------------------------------------------------------
-# Clean up data and calculate new variables
-dealer <- dealer[which(dealer$SPECIES_FK != 0),]
-dealer <- dealer[which(dealer$SPECIES_FK != 722),]  # Remove squid
-dealer <- dealer[which(dealer$SPECIES_FK != 706),]  # Remove spiny lobster
-dealer <- dealer[which(dealer$SPECIES_FK != 708),]  # Remove shrimp
-dealer <- dealer[which(dealer$TRIP_NUM != 0),] # Remove all records without proper trip numbers
-dealer <- dealer[which(dealer$NUM_SOLD > 0),] # Remove all records with <= 0 fish sold
-dealer$WeightGG <- dealer$MEAN_SOLD_WEIGHT/2.204624  # convert form lbs to kg
-
-# Convert date to useful format
-#dealer$Date <- as.POSIXct(strptime(dealer$REPORT_DATE, '%d-%b-%y'))
-dealer$Date <- as.POSIXct(dealer$REPORT_DATE)
-dealer$Year <- year(dealer$Date)
-dealer$Month <- month(dealer$Date)
-
-# Limit dataset to 2000-2018
+#| 
+# Process dealer data
+# Limit dataset to 2000-report year
 dealer <- dealer %>% 
   filter(Year >= 2000 & Year <= RptYr)
-
-# Convert all gilled/gutted/trunked weights to whole fish weight (using conversion factor in dealer dataset)
-dealer$conversion <- unlist(lapply(regmatches(dealer[,'FISH_CONDITION'],gregexpr("[[:digit:]]+\\.[[:digit:]]+\\*?$",dealer[,'FISH_CONDITION'])),"[",1))
-dealer$conversionNum <- as.numeric(gsub(".$", "",dealer$conversion))
-dealer[which(dealer$FISH_CONDITION==''),'conversionNum'] <- 1
-dealer[which(dealer$conversionNum > 1), 'conversionNum'] <- 1
-dealer[is.na(dealer$conversionNum),'conversionNum'] <- 1
-dealer[which(dealer$conversionNum == 0),'conversionNum'] <- as.numeric(dealer[which(dealer$conversionNum == 0),'conversion'])
-dealer$WholeWeight <- dealer$WeightGG/dealer$conversionNum
-# For bigeye and yellowfin we are using better published conversion factors (non linear)
-dealer[which(dealer$SPECIES_FK==3),'WholeWeight'] <- 1.189346*round(dealer[which(dealer$SPECIES_FK==3),'WeightGG'])^0.972009  # !!! This is for Yellowfin ONLY!!!
-dealer[which(dealer$SPECIES_FK==6),'WholeWeight'] <- 1.274959*round(dealer[which(dealer$SPECIES_FK==6),'WeightGG'])^0.960613  # !!! This is for Bigeye ONLY!!!
 
 # Weight - Length relationships for BET and swordfish
 # Equation W=a*L^b
@@ -93,15 +64,6 @@ SW_L50_kg_m <- (1.299*10^(-5))*(102^3.0738)
 # Convert from Length to weight using Phoebe's numbers for the Hawaii fishery (gives weight in grams)
 # Bigeye: L=103cm from Farley et al. 2018 (WCPFC scientific committee report on age and growth of BET)
 BET_L50_kg <- round(0.0187*(103^2.9605))/1000  # these numbers are from phoebe
-
-# Merge dealer with logData so we can get departure dates
-dealerAll <- dealer
-
-# Unbin the dealer data for accurate length distributions
-nTimes <- dealer$NUM_SOLD
-dealerUnbin <- dealer[rep(seq_len(nrow(dealer)), nTimes), ]
-dealerUnbin$NUM_SOLD <- 1
-dealer <- dealerUnbin
 
 # Parse out bigeye and swordfish datasets (bigeye is deep set only, swordfish is shallow set only)
 dealerBE <- dealer[which(dealer$SPECIES_FK == 6 & dealer$SET_TYPE == 'D'),]

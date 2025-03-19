@@ -34,7 +34,7 @@ This script downloads logbook and dealer data for use in the annual SAFE report.
 rm(list=ls())
 
 # Set working directory
-mainDir <- '~/Documents/SAFEindicators/RAnalysis_SAFE/'
+mainDir <- here("Fisheries_Indicators")
 
 # Load libraries
 library(tidyverse)
@@ -42,6 +42,7 @@ library(lubridate)
 library(rje)
 library(ROracle)
 library(zoo)
+
 ```
 
 # Access and download data 
@@ -61,7 +62,7 @@ con <- dbConnect(dbDriver("Oracle"),
 
 # Name schema to use
 shma_log <- 'LLDS'
-shma_deal <- 'WP_HAWAII'
+shma_deal <- 'WP_HAWAII_WH'
 
 # Look at what views are available in schema.
 # We want the DR_113292_SEAHUNT_MARIEM view
@@ -92,7 +93,7 @@ We are getting data from the logbook so we can calculate effort so we don't need
 # Query the database
 res <- dbSendQuery(con, paste("SELECT TRIPNUM, HOOKSSET, LANDYR, LANDMON, FLEET, RSCH_EXPMTL_CODE, SET_TYPE",
                               "FROM", tname_log,
-                              "WHERE LANDYR >= '2000' AND RSCH_EXPMTL_CODE IS NULL")) 
+                              "WHERE LANDYR >= '2000' AND RSCH_EXPMTL_CODE IS NULL AND FLEET = 'HI'")) 
 
 logbookRaw <- dbFetch(res)
 
@@ -103,11 +104,12 @@ str(logbookRaw)  # It looks like a lot of the numeric fields are read in as char
 
 # Convert character fields to numeric
 logbookRaw <- logbookRaw %>% 
-  mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON'), as.numeric)
+  mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON'), as.numeric) %>% 
+  mutate(Quarter=quarter(LANDMON), Year=LANDYR) %>%
 str(logbookRaw)
 
 # Save dataset
-saveRDS(object = logbookRaw, file = 'Data/SAFE_logbook_2024.rds')
+saveRDS(object = logbookRaw, file = '../../RAnalysis_SAFE/Data/SAFE_logbook_2024_WH.rds')
 
 # Clear your query results
 dbClearResult(res)
@@ -129,7 +131,7 @@ head(dealerRaw)
 str(dealerRaw) 
 
 # Save dataset
-saveRDS(object = dealerRaw, file = 'Data/SAFE_dealer_2024.rds')
+saveRDS(object = dealerRaw, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH.rds')
 
 # Clear your query results
 dbClearResult(res)
@@ -137,4 +139,46 @@ dbClearResult(res)
 # Close connection
 dbDisconnect(con)
 ```
+
+Minimally process data so we only need to do it once and it can be used for multiple chapters
+
+```{r}
+#--------------------------------------------------------
+# Process dealer data
+#--------------------------------------------------------
+# Clean up data and calculate new variables
+dealer <- dealerRaw[which(dealerRaw$SPECIES_FK != 0),]
+dealer <- dealer[which(dealer$SPECIES_FK != 722),]  # Remove squid
+dealer <- dealer[which(dealer$SPECIES_FK != 706),]  # Remove spiny lobster
+dealer <- dealer[which(dealer$SPECIES_FK != 708),]  # Remove shrimp
+dealer <- dealer[which(dealer$TRIP_NUM != 0),] # Remove all records without proper trip numbers
+dealer <- dealer[which(dealer$NUM_SOLD > 0),] # Remove all records with <= 0 fish sold
+dealer$WeightGG <- dealer$MEAN_SOLD_WEIGHT/2.204624  # convert form lbs to kg
+
+# Convert date to useful format
+#dealer$Date <- as.POSIXct(dealer$REPORT_DATE)
+dealer$Year <- year(dealer$Date)
+dealer$Month <- month(dealer$Date)
+
+# Convert all gilled/gutted/trunked weights to whole fish weight (using conversion factor in dealer dataset)
+dealer$conversion <- unlist(lapply(regmatches(dealer[,'FISH_CONDITION'],gregexpr("[[:digit:]]+\\.[[:digit:]]+\\*?$",dealer[,'FISH_CONDITION'])),"[",1))
+dealer$conversionNum <- as.numeric(gsub(".$", "",dealer$conversion))
+dealer[which(dealer$FISH_CONDITION==''),'conversionNum'] <- 1
+dealer[which(dealer$conversionNum > 1), 'conversionNum'] <- 1
+dealer[is.na(dealer$conversionNum),'conversionNum'] <- 1
+dealer[which(dealer$conversionNum == 0),'conversionNum'] <- as.numeric(dealer[which(dealer$conversionNum == 0),'conversion'])
+dealer$WholeWeight <- dealer$WeightGG/dealer$conversionNum
+# For bigeye and yellowfin we are using better published conversion factors (non linear)
+dealer[which(dealer$SPECIES_FK==3),'WholeWeight'] <- 1.189346*round(dealer[which(dealer$SPECIES_FK==3),'WeightGG'])^0.972009  # !!! This is for Yellowfin ONLY!!!
+dealer[which(dealer$SPECIES_FK==6),'WholeWeight'] <- 1.274959*round(dealer[which(dealer$SPECIES_FK==6),'WeightGG'])^0.960613  # !!! This is for Bigeye ONLY!!!
+
+# Unbin the dealer data for accurate length distributions
+dealer <- dealer %>% 
+  uncount(NUM_SOLD) %>%   # unbin the binned records
+  mutate(NUM_SOLD=1)  # make a num sold column since it was removed during the uncount operation
+
+# Save dataset
+saveRDS(object = dealer, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH_processed.rds')
+```
+
 

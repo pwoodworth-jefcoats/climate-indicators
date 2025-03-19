@@ -39,48 +39,20 @@ Dir <- here('Fisheries_Indicators')
 #| include: false
 # Import the data from saved files
 #setwd(Dir)
-dealerRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '.rds'))
+dealerRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
 logbookRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr, '.rds'))
 
 # Filter data to bigeye only for deep set trips before 2023
-dealerRaw <- dealerRaw %>%
+dealer <- dealerRaw %>%
   filter(REPORT_DATE < as.Date(paste0(RptYr+1, '-01-01')),
          SPECIES_FK == 6, 
-         SET_TYPE == 'D')
-
-# Make sure we only have information from the Hawaii fleet for trips spanning 2000- 2023
-logbookRaw <- logbookRaw %>%
-  filter(LANDYR >= 2000,  LANDYR <= RptYr, FLEET == 'HI', )
-```
-
-```{=html}
-<!--
-# Analyze data
-
-## Convert weights from gilld & gutted to whole fish weights
-
-Dealer weights are reported in lbs for gilled and gutted fresh, chilled fish. Here we convert their weight to whole fish weight using a non-linear conversion from *Langley et al. 2006* table 8. 
-
-NOTE: Dealer data comes with a conversion factor (I kept it in the raw dataset) but it's fixed and for multiple entries it's quite complicated. I opted to use the Langley conversion here rather than the standard conversion factor reported because I felt it was most consistent and a better fit. 
-
-NOTE 2: in 2024 Removing any records of negative NUM_SOLD. Total of 28 records, all in 2023.
--->
-```
-
-```{r}
-#| include: false
-
-dealer <- dealerRaw %>%
-  filter(NUM_SOLD >= 0) %>% 
-  mutate(Weight_GilGut=MEAN_SOLD_WEIGHT/2.204624, 
-         Weight_Whole=1.274959*round(Weight_GilGut)^0.960613, 
-         Year=year(REPORT_DATE), 
-         Quarter=quarter(REPORT_DATE)) %>%
-  uncount(NUM_SOLD) %>%   # unbin the binned records
-  mutate(NUM_SOLD=1) %>%  # make a num sold column since it was removed during the uncount operation
+         SET_TYPE == 'D') %>% 
   select(TRIP_NUM, REPORT_DATE, NUM_SOLD, Weight_Whole, Year, Quarter) %>%
   mutate(Weight_Whole=ifelse(Weight_Whole > 100, 100, Weight_Whole))
 
+# Make sure we only have information from the Hawaii fleet for trips spanning 2000- 2023
+logbook <- logbookRaw %>%
+  filter(LANDYR >= 2000,  LANDYR <= RptYr)
 ```
 
 ```{=html}
@@ -124,9 +96,9 @@ Calculating both climatological quarterly efforts and annual quarter efforts.
 #| include: false
 
 # Make a trip level dataset
-logbook <- logbookRaw %>% 
+logbook <- logbook %>% 
   mutate(Quarter=quarter(LANDMON), Year=LANDYR) %>%
-  filter(!RSCH_EXPMTL_CODE %in% c('R', 'X'), FLEET == 'HI', SET_TYPE == 'D')
+  filter(SET_TYPE == 'D')
   
 # Calculate quarterly climatology effort
 efrtTot <-  logbook %>%

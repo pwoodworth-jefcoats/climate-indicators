@@ -37,7 +37,7 @@ mainDir <- here("Fisheries_Indicators")
 setwd(mainDir)
 
 # Import fisheries the data from saved files
-dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
+dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr+1, '_processed.rds'))
 
 # Read in images as rasters
 beye <- readPNG("../../Bigeye_blue.png")
@@ -105,7 +105,7 @@ violfunc <- function(x, col, img, L50, L50col, dotData, imgMin=2022, yMax=max(x$
   numSold <- aggregate(NUM_SOLD ~ Year, data=x, FUN=sum)
   numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
   #yMax <- max(x$WholeWeight)#200 # for the shortened all fish figure
-  yMin <- round(yMax*1.1)
+  yMin <- round(yMax*1.13)
   int <- ifelse(length(seq(0,yMax,50)) > 7, 100, 50)
   dotData <- dot_summary(x)
   p <- ggplot(data=x, aes(x=Year, y=WholeWeight, group=Year)) + 
@@ -116,15 +116,15 @@ violfunc <- function(x, col, img, L50, L50col, dotData, imgMin=2022, yMax=max(x$
     geom_hline(yintercept=L50, linetype='dashed', color=L50col) +
     ylab('Weight (kg)') +
     theme_bw() + 
-    theme(plot.margin=unit(c(1.2,1,1,1),'lines'), panel.grid=element_blank(), axis.text=element_text(size=9), 
+    theme(plot.margin=unit(c(2,1,1,1),'lines'), panel.grid=element_blank(), axis.text=element_text(size=9), 
           axis.title.x=element_blank(), axis.title.y=element_text(size=10)) +
     scale_y_continuous(breaks=seq(0,yMax,int), limits=c(0,yMax)) +
     scale_x_continuous(breaks=seq(2000,RptYr,1), expand = c(0.02,0.02), 
                        sec.axis=sec_axis(~., breaks=seq(2000,RptYr,1), labels=NULL)) 
   for (i in 1:length(numSold$Year)) {
-    p <- p + annotation_custom(grob=textGrob(label=numSold$pretty[i], gp=gpar(cex=0.5, color='gray20')), ymin=yMin, ymax=yMin, xmin=numSold$Year[i], xmax=numSold$Year[i])
+    p <- p + annotation_custom(grob=textGrob(label=numSold$pretty[i], gp=gpar(cex=0.6, color='gray20'), rot=45), ymin=yMin, ymax=yMin, xmin=numSold$Year[i]+0.4, xmax=numSold$Year[i]+0.4)
   }
-  p <- p + annotation_custom(grob=textGrob(label='n=', gp=gpar(cex=0.5, fontface='italic', color='gray20')),ymin=yMin, ymax=yMin, xmin=1999, xmax=1999)
+  p <- p + annotation_custom(grob=textGrob(label='n=', gp=gpar(cex=0.6, fontface='italic', color='gray20')),ymin=yMin, ymax=yMin, xmin=1999, xmax=1999)
   gt <- ggplot_gtable(ggplot_build(p))
   gt$layout$clip[gt$layout$name == "panel"] <- "off"
   return(gt)

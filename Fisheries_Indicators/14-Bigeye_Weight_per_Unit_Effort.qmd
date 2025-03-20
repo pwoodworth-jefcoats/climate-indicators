@@ -225,7 +225,9 @@ dev.off()
 
 ```
 
-```{r fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', echo=FALSE}
+```{r echo=FALSE}
+# Figure caption info
+# fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', 
 
 setwd(Dir)
 knitr::include_graphics(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'))

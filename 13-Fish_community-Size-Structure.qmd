@@ -37,6 +37,7 @@ Dir <- here("Fisheries_Indicators")
 setwd(Dir)
 
 # Import fisheries the data from saved files
+# This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
 dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
 
 # Read in images as rasters

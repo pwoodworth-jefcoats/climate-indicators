@@ -38,7 +38,7 @@ Dir <- here('Fisheries_Indicators')
 ```{r}
 #| include: false
 # Import the data from saved files
-#setwd(Dir)
+# This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
 dealerRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
 logbookRaw <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr, '.rds'))
 

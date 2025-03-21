@@ -2,29 +2,13 @@
 title: "Logbook and Dealer data download for use in the SAFE report"
 author: Johanna Wren
 date: April 14, 2023
-output:
-  html_notebook:
-    theme: flatly
-    toc: true
-    toc_float:
-      collapsed: false
-      tod_depth: 3
 ---
-
-<script>
-$(document).ready(function() {
-  $items = $('div#TOC li');
-  $items.each(function(idx) {
-    num_ul = $(this).parentsUntil('#TOC').length;
-    $(this).css({'text-indent': num_ul * 10, 'padding-left': 0});
-  });
-
-});
-</script>
 
 # Description
 
 *UPDATE: This script was updated in April 2023 to use ROracle to access the logbook database and to split the SAFE_SizeFreqHist.Rmd notebook into two parts: one that downloads the data only (this script) and one that processes the data and makes the figures (SAFE_SizeFreqHist_analysisOnly.Rmd and SAFEindicatorsWeightDist.R).*
+
+*UPDATE 2: This script was updated to add some data processing of mainly the dealer data in March 2025. This was done because we restructured the data analysis scripts to match the chapter structure in the SAFE report and to be consistent with the rest of the .qmd files for the report. Scripts SAFE_SizeFreqHist_analysisOnly.Rmd and SAFEindicatorsWeightDist.R are now called 13-Fish_community_Size_Structure.qmd, 14-Bigeye_Weight_per_Unit_Effort.qmd, and 15-Bigeye_Recruitment_Index.qmd*
 
 This script downloads logbook and dealer data for use in the annual SAFE report. We access the data using ROracle and the data are saved locally for use in analysis and figure generation. 
 
@@ -47,6 +31,12 @@ library(zoo)
 
 # Access and download data 
 Access data from Oracle using ROracle. 
+
+```{r}
+# Set the year for which you are generating the report
+RptYr <- 2024
+```
+
 
 Put in your own credentials at the prompt. You have to have access to the dataset in question, here "Karen's data" which refers to the LLDS data, to be able to access it.
 
@@ -72,11 +62,11 @@ table_deal <- dbListTables(con, schema=shma_deal)
 table_deal
 
 # Define table name
-tname_log <- paste(tolower(shma_log),table_log[10], sep='.')  # this is the HDR table, not the DETAIL
+tname_log <- paste(tolower(shma_log),table_log[grep(paste0('LLDS_HDR_',RptYr), table_log)], sep='.')  # this is the HDR table, not the DETAIL
 tname_deal <- paste(tolower(shma_deal),table_deal[2], sep='.')
 
 # Look at column names available in the table
-tableInfo_log <- dbListFields(con, schema=shma_log, name=table_log[10])
+tableInfo_log <- dbListFields(con, schema=shma_log, name=table_log[grep(paste0('LLDS_HDR_',RptYr), table_log)])
 tableInfo_log
 tableInfo_deal <- dbListFields(con, schema=shma_deal, name=table_deal[2])
 tableInfo_deal
@@ -109,7 +99,7 @@ logbookRaw <- logbookRaw %>%
 str(logbookRaw)
 
 # Save dataset
-saveRDS(object = logbookRaw, file = '../../RAnalysis_SAFE/Data/SAFE_logbook_2024_WH.rds')
+saveRDS(object = logbookRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr ,'.rds'))
 
 # Clear your query results
 dbClearResult(res)
@@ -131,7 +121,7 @@ head(dealerRaw)
 str(dealerRaw) 
 
 # Save dataset
-saveRDS(object = dealerRaw, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_WH_Mar2025.rds')
+saveRDS(object = dealerRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'.rds'))
 
 # Clear your query results
 dbClearResult(res)
@@ -178,7 +168,8 @@ dealer <- dealer %>%
   mutate(NUM_SOLD=1)  # make a num sold column since it was removed during the uncount operation
 
 # Save dataset
-saveRDS(object = dealer, file = '../../RAnalysis_SAFE/Data/SAFE_dealer_2024_processed.rds')
+saveRDS(object = dealer, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'_processed.rds'))
+
 ```
 
 

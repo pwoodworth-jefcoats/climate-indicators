@@ -25,24 +25,24 @@ library(here)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Set path to variable: Median_Phytoplankton_Size
 # This is where the data are and where the plots will go
-mainDir <- here("Fisheries_Indicators")
+Dir <- here("Fisheries_Indicators")
 ```
 
 ```{r}
 #| include: false
-setwd(mainDir)
+setwd(Dir)
 
 # Import fisheries the data from saved files
-dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr+1, '_processed.rds'))
+dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
 
 # Read in images as rasters
-beye <- readPNG("../../Bigeye_blue.png")
-sword <- readPNG("../../Swordfish_yellow.png")
-fish <- readPNG("../../Bigeye_white.png")
+beye <- readPNG("Bigeye_blue.png")
+sword <- readPNG("Swordfish_yellow.png")
+fish <- readPNG("Bigeye_white.png")
 g <- rasterGrob(beye, interpolate=TRUE)
 h <- rasterGrob(sword, interpolate=TRUE)
 w <- rasterGrob(fish, interpolate=TRUE)
@@ -135,9 +135,8 @@ a2 <- violfunc(dealer, '#63a298', w, -1, NA, yMax=200)
 b <- violfunc(dealerBE, '#5b84a1', g, BET_L50_kg, 'gray50')
 c <- violfunc(dealerSW, '#ffba37', h, c(SW_L50_kg_f, SW_L50_kg_m), 'gray50', 2020)
 
-setwd(mainDir)
-ggsave(plot=grid.arrange(a, a2, nrow=2), paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
-ggsave(plot=grid.arrange(b, c, nrow=2), paste0('TEST_DELETE_SAFEdealerViolinBETSWD_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
+ggsave(plot=grid.arrange(a, a2, nrow=2), paste0(Dir, '/SAFEdealerViolinAllFish_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
+ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', RptYr, '.png'), height=7, width=9, dpi = 300, units = 'in')
 
 ```
 
@@ -183,8 +182,7 @@ plotfunc <- function(x, y, color, img) {
   
 }
 # Make three part Density Kernel plot
-setwd(mainDir)
-png(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '.png'), width=5, height=7, res=300, units='in')
+png(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'), width=5, height=7, res=300, units='in')
 par(mfrow=c(3,1))
 par(mar=c(4,5,0.25,0.5))
 plotfunc(dealerClim, dealerYr, '#63A298A0') #alpha=180 of 250 for the violin version in plot above
@@ -199,8 +197,7 @@ dev.off()
 # Figure caption info
 # fig-DensDist, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), fig.align='center', out.width='100%'
 
-setwd(mainDir)
-knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'))
 
 ```
 
@@ -211,8 +208,7 @@ knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerWeightDensDist_', RptYr, '
 # Figure catopn info
 # fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', 
 
-setwd(mainDir)
-knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFEdealerViolinAllFish_', RptYr, '.png'))
 
 ```
 
@@ -223,8 +219,7 @@ knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinAllFish_', RptYr, '.
 # Figure cation info
 # fig-ViolBETSWD, fig.cap='The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', fig.align='center', 
 
-setwd(mainDir)
-knitr::include_graphics(paste0('TEST_DELETE_SAFEdealerViolinBETSWD_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir,'/SAFEdealerViolinBETSWD_', RptYr, '.png'))
 
 ```
 

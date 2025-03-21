@@ -179,11 +179,9 @@ efrtPlot <- efrtYr %>%
 ```{r}
 #| include: false
 
-# Load Fisheries Data
-setwd(Dir)
 # Start plotting
 # Save file
-png(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'), height=8, width=5.5, unit='in', res=300)
+png(paste0(Dir, '/SAFE_SizeFreqHist_', RptYr, '.png'), height=8, width=5.5, unit='in', res=300)
 # Set plot dimensions
 nPanels <- nrow(efrtPlot)
 m <- matrix(c(rep(nPanels+1,nPanels+2),nPanels+2,1:nPanels,nPanels+3),nrow=nPanels+2, ncol=2)
@@ -229,8 +227,7 @@ dev.off()
 # Figure caption info
 # fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', 
 
-setwd(Dir)
-knitr::include_graphics(paste0('TEST_DELETE_SAFE_SizeFreqHist_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFE_SizeFreqHist_', RptYr, '.png'))
 
 ```
 

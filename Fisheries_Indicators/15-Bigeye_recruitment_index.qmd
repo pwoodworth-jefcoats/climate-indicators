@@ -48,11 +48,10 @@ logbookTrip <- logbook %>%
 
 # This splits up large and small bigeye and groups by trip number
 dealer <- dealerProc %>% 
-  filter(REPORT_DATE < as.Date(paste0(RptYr, '-01-01')),
+  filter(REPORT_DATE < as.Date(paste0(RptYr+1, '-01-01')),
          SPECIES_FK == 6,
          SET_TYPE == 'D') %>% 
-  mutate
-dealer$Num_Small <- ifelse(dealer$WholeWeight <= 15, dealer$NUM_SOLD, 0)
+  mutate(Num_Small=if_else(WholeWeight <= 15, NUM_SOLD, 0))
 
 dealer2 <- dealer %>% 
   group_by(TRIP_NUM) %>% 
@@ -67,8 +66,6 @@ dealer2 <- dealer %>%
 # merge dealer and logbook since we only really need the hooksset info
 dealerFinal <- full_join(dealer2, logbookTrip, by='TRIP_NUM')
 
-# Check output
-dealerFinal
 ```
 
 ```{r}

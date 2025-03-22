@@ -47,8 +47,8 @@ dealer <- dealerRaw %>%
   filter(REPORT_DATE < as.Date(paste0(RptYr+1, '-01-01')),
          SPECIES_FK == 6, 
          SET_TYPE == 'D') %>% 
-  select(TRIP_NUM, REPORT_DATE, NUM_SOLD, Weight_Whole, Year, Quarter) %>%
-  mutate(Weight_Whole=ifelse(Weight_Whole > 100, 100, Weight_Whole))
+  select(TRIP_NUM, REPORT_DATE, NUM_SOLD, WholeWeight, Year, Quarter) %>%
+  mutate(WholeWeight=ifelse(WholeWeight > 100, 100, WholeWeight))
 
 # Make sure we only have information from the Hawaii fleet for trips spanning 2000- 2023
 logbook <- logbookRaw %>%
@@ -127,9 +127,9 @@ cCPUE <- list()
 for (q in 1:4) {
   cCPUE[[q]] <- dealer %>% 
     filter(Quarter==q, Year <= 2009) %>% 
-    select(Weight_Whole) %>% 
+    select(WholeWeight) %>% 
     lapply(hist, plot=F)
-  cCPUE[[q]]$Weight_Whole$CPUE <- cCPUE[[q]]$Weight_Whole$counts/efrtTot$EffortClim[q]
+  cCPUE[[q]]$WholeWeight$CPUE <- cCPUE[[q]]$WholeWeight$counts/efrtTot$EffortClim[q]
 }
 ```
 
@@ -147,7 +147,7 @@ This script plots two different figures. The first one is the size-CPUE distribu
 #| include: false
 
 # Define the center bin locations for plotting
-cXpos <- cCPUE[[1]]$Weight_Whole$mids
+cXpos <- cCPUE[[1]]$WholeWeight$mids
 # Write out quarter names for plotting
 qName <- c('First', 'Second', 'Third', 'Fourth')
 # Set color palette
@@ -191,15 +191,15 @@ for (y in yrRange) {
   qIdx <- efrtPlot %>% filter(Year == y)
   for (q in qIdx$Quarter) {
     qEffort <- efrtYr %>% filter(Quarter==q, Year==y)
-    qWeight <- dealer %>% filter(Quarter==q, Year==y) %>% select(Weight_Whole) %>% lapply(hist, plot=F)
-    qCPUE <- qWeight$Weight_Whole$counts/qEffort$Effort
+    qWeight <- dealer %>% filter(Quarter==q, Year==y) %>% select(WholeWeight) %>% lapply(hist, plot=F)
+    qCPUE <- qWeight$WholeWeight$counts/qEffort$Effort
     qCPUE[is.infinite(qCPUE)] <- rep(0, 20)
     
     par(mar=c(0.25,3,0,1))
-    plot(cCPUE[[q]]$Weight_Whole$mids, cCPUE[[q]]$Weight_Whole$CPUE, type='l', lwd=2, col='gray50', xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
+    plot(cCPUE[[q]]$WholeWeight$mids, cCPUE[[q]]$WholeWeight$CPUE, type='l', lwd=2, col='gray50', xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
          xlim=c(0,100), ylim=c(0,1.1))
     par(new=T)
-    plot(qWeight$Weight_Whole$mids, qCPUE, type='l', lwd=3, col=pal[q+2], xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
+    plot(qWeight$WholeWeight$mids, qCPUE, type='l', lwd=3, col=pal[q+2], xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
          xlim=c(0,100), ylim=c(0,1.1))
     axis(2, las=1, at=c(0,0.5,1,1.1), labels=F)
     abline(v=WeightAge, lty=2, col='gray50')

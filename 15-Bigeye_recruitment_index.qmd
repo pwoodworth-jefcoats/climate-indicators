@@ -22,9 +22,9 @@ library(here)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
-# Set path to variable: Median_Phytoplankton_Size
+# Set path to variable: Fisheries Indicators
 # This is where the data are and where the plots will go
 Dir <- here('Fisheries_Indicators')
 ```
@@ -34,8 +34,8 @@ Dir <- here('Fisheries_Indicators')
 
 # Import the data from saved files
 # This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
-dealerProc <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr+1, '_processed.rds'))
-logbook <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr+1, '_WH.rds'))
+dealerProc <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
+logbook <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr, '.rds'))
 ```
 
 ```{r}

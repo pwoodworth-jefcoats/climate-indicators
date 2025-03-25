@@ -27,7 +27,7 @@ library(here)
 # Set report year (RptYr), to make things easier
 RptYr <- 2024
 
-# Set path to variable: Median_Phytoplankton_Size
+# Set path to variable: Fisheries Indicators
 # This is where the data are and where the plots will go
 Dir <- here("Fisheries_Indicators")
 ```

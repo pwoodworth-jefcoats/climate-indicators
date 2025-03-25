@@ -104,7 +104,7 @@ RptIdx <- which(yr==RptYr)
 datRptYr <- mean(brick(t1[[RptIdx]],t2[[RptIdx]],t3[[RptIdx]]))
 # Start your plot by making the report year background SST with a land overlay
 p0 <- levelplot(datRptYr, pretty=T, margin=F, par.setting=mapThemeSST, at=seq(4,29.5,by=0.3)) +
-        layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
+        layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
 
 # Loop through all years of the dataset to add gray ghost contours for each year
 # Add each contour to the plot initiated above
@@ -175,15 +175,13 @@ climIdx <- which(yr == 2009)
 # Average average all the first quarter months for the climatology
 cclim <- mean(stack(c1[[1:climIdx]], c2[[1:climIdx]], c3[[1:climIdx]]), na.rm=T)
 # aggregate the raster to 0.5 degree for nicer plotting. Take the mean of aggregated cells
-cclim <- aggregate(cclim, fact=12, fun=mean)
+cclim <- aggregate(cclim, fact=6, fun=mean)
 cclim_crop <- crop(cclim, extent(c(180, 240.5, 29, 40))) # to clean up the areas around the front and make figure less busy
 
 ## Make the plot
 # Isolate the Report Year for background SST and emphasized contourline and make a dataset
 RptIdx <- which(yr==RptYr)
-datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=12, fun=mean)
-datRptYrC25 <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=6, fun=mean)
-datRptYrCraw <- mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]]))
+datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=6, fun=mean)
 
 # Start your plot by making the report year background SST with a land overlay
 pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01)) 
@@ -192,29 +190,29 @@ pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(
 # Add each contour to the plot initiated above
 for (i in 1:nlayers(c1)) {
   # Average Jan-Mar data for year i
-  datC <- crop(aggregate(mean(brick(c1[[i]],c2[[i]],c3[[i]])), fact=12, fun=mean), extent(c(180, 240.5, 27, 42)))
+  datC <- crop(aggregate(mean(brick(c1[[i]],c2[[i]],c3[[i]])), fact=6, fun=mean), extent(c(180, 240.5, 27, 42)))
   # Make ith year contour
-  pC1 <- contourplot(datC, pretty=T, margin=F, at=0.2, labels=F, par.settings = list(add.line = list(col = "darkgray")))
+  pC1 <- contourplot(datC, pretty=T, margin=F, at=0.2, labels=F, par.settings = list(add.line = list(col = "gray60")))
   # Add contour to plot
   pC0 <- pC0+pC1
 }
 # Finally add the climatology contour as a dashed line and the report year contour as a solid black line
 pC0 <- pC0 + 
-        contourplot(crop(datRptYrC, extent(c(180, 240.5, 25, 40))), pretty=T, margin=F, at=0.2, labels=F) + 
-        contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2) +
-        layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
+        contourplot(crop(datRptYrC, extent(c(180, 240.5, 25, 40))), pretty=T, margin=F, at=0.2, labels=F, lwd=1.25) + 
+        contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2, lwd=1.25) +
+        layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
 
 # Save plot
-png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_ghost.png'), width=7, height=5, res=300, units='in') 
+png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_ghost25.png'), width=7, height=5, res=300, units='in') 
 pC0
 dev.off()
 
-png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_onlyRaw.png'), width=7, height=5, res=300, units='in') 
-levelplot(datRptYrCraw, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01)) +
-  contourplot(crop(datRptYrC,extent(c(180, 240.5, 29, 40))), pretty=T, margin=F, at=0.2, labels=F) + 
-  contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2) +
-  layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
-dev.off()
+# png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_only25All.png'), width=7, height=5, res=300, units='in') 
+# levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01)) +
+#   contourplot(crop(datRptYrC,extent(c(180, 240.5, 29, 40))), pretty=T, margin=F, at=0.2, labels=F, lwd=1.25) + 
+#   contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2, lwd=1.25) +
+#   layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
+# dev.off()
 
 ```
 

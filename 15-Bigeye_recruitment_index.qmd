@@ -87,9 +87,19 @@ dealerYear <- dealerFinal %>%
   summarize_at(c('Num_Small', 'NUM_SOLD', 'WholeWeight', 'HOOKSSET'), sum, na.rm=T) %>%
   mutate(CPUEsmall=Num_Small/(HOOKSSET/1000), CPUEall= NUM_SOLD/(HOOKSSET/1000), WPUE=WholeWeight/(HOOKSSET/1000))
 
-# Save the annual dealer data file for use in the dashboard
-write.csv(dealerYear, paste0(Dir, '/SAFE_AnnualDealer_forDashboard_', RptYr, '.csv'), quote = F, row.names = F)
 ```
+
+```{r}
+#| include: false
+
+# Write csv for portal
+# Renaming LANDYr to Year and Num_Small to Fish per 1000 hooks. 
+recIndex <- dealerYear %>% 
+  select(LANDYR, Num_Small) %>% 
+  rename(Year=LANDYR, `Fish per 1,000 Hooks`=Num_Small)
+write.csv(recIndex, paste0(here(), '/PelagicClimate_', RptYr, '/BigeyeRecruitmentIndex', RptYr, '.csv'), quote = F, row.names = F)
+```
+
 
 ```{r}
 #| include: false

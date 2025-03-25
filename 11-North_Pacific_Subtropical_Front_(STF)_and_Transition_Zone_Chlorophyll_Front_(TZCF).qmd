@@ -47,6 +47,14 @@ lat1 <- 45
 lat2 <- 5
 lon1 <- 180
 lon2 <- 240
+
+# Get land information and make it into a spatial object for plotting
+land <- maps::map('world2', fill=TRUE, xlim=c(180,240), ylim=c(20,45), plot=FALSE)
+landSpat <- as_Spatial(st_as_sf(land))
+
+# Make map themes
+mapThemeSST <- rasterTheme(region=rev(brewer.pal(11, 'Spectral')))
+mapThemeChl <- rasterTheme(region=cmocean('algae')(50))
 ```
 
 ```{r}
@@ -82,39 +90,25 @@ STFfiles <- list.files(paste0(Dir,'/STFdata'), full.names = T)
 t1 <- brick(STFfiles[1])
 t2 <- brick(STFfiles[2])
 t3 <- brick(STFfiles[3])
-# # Make a vector with the brick names
-# flz <- c(t1, t2, t3)
-# # Sort the bricks into monthly order. These are read in after alphabetical name, not which month it is, so fixing that here for when we need to read in the months in order
-# fileIdx <- order(c(unique(month(t1@z$`Date/time`)), unique(month(t2@z$`Date/time`)), unique(month(t3@z$`Date/time`))))
-# Make a climatology for all years except the most recent/current one
-#tclim <- mean(stack(flz[[fileIdx[1]]], flz[[fileIdx[2]]], flz[fileIdx[[3]]]))
-tclim <- mean(stack(t1, t2, t3))
+
+# Make a climatology for 1985-2009
+# list years and grab index you need
+yr <- substr(names(t1), 2, 5)
+climIdx <- which(yr == 2009)
+# Average average all the first quarter months for the climatology
+tclim <- mean(stack(t1[[1:climIdx]], t2[[1:climIdx]], t3[[1:climIdx]]))
 
 ## Make the plot
-# Get land information and make it into a spatial object
-land <- maps::map('world2', fill=TRUE, xlim=c(180,240), ylim=c(20,45), plot=FALSE)
-#ids <- sapply(strsplit(land$names, ":"), function(x) x[1])
-#bPols <- map2SpatialPolygons(land, IDs=ids, proj4string=CRS('+proj=longlat +datum=WGS84 +no_defs'))
-bPols<- as_Spatial(st_as_sf(land))
-
-# make map themes
-mapThemeSST <- rasterTheme(region=rev(brewer.pal(11, 'Spectral')))
-mapThemeChl <- rasterTheme(region=cmocean('algae')(50))
-
-# make averaging index
-idx <- 1:nlayers(t1)
-# years for labels
-yr <- substr(names(t1), 2, 5) #Ideally you grab this from the names in the file, to make sure 
-
 # Isolate the Report Year for background SST and emphasized contourline and make a dataset
 RptIdx <- which(yr==RptYr)
 datRptYr <- mean(brick(t1[[RptIdx]],t2[[RptIdx]],t3[[RptIdx]]))
-# Start your plot by making the report year background SST
-p0 <- levelplot(datRptYr, pretty=T, margin=F, par.setting=mapThemeSST, at=seq(4,29.5,by=0.3)) + layer(sp.polygons(bPols, fill='gray50', col='gray30'))
+# Start your plot by making the report year background SST with a land overlay
+p0 <- levelplot(datRptYr, pretty=T, margin=F, par.setting=mapThemeSST, at=seq(4,29.5,by=0.3)) +
+        layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
 
-# Loop through all years of the dataset to add gray contours for each year
+# Loop through all years of the dataset to add gray ghost contours for each year
 # Add each contour to the plot initiated above
-for (i in idx) {
+for (i in 1:nlayers(t1)) {
   # Average Jan-Mar data for year i
   dat <- mean(brick(t1[[i]],t2[[i]],t3[[i]]))
   # Make ith year contour
@@ -123,7 +117,9 @@ for (i in idx) {
   p0 <- p0+p1
 }
 # Finally add the climatology contour as a dashed line and the report year contour as a solid black line
-p0 <- p0 + contourplot(datRptYr, pretty=T, margin=F, cuts=1, at=18, labels=F) + contourplot(tclim, pretty=T, margin=F, cuts=1, at=18, labels=F, lty=2)
+p0 <- p0 + 
+        contourplot(datRptYr, pretty=T, margin=F, cuts=1, at=18, labels=F) + 
+        contourplot(tclim, pretty=T, margin=F, cuts=1, at=18, labels=F, lty=2)
 
 # Save plot
 png(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'), width=7, height=5, res=300, units='in') 
@@ -136,8 +132,117 @@ dev.off()
 #| echo: false
 
 # Figure caption text
+# Average position of the subtropical front (STF) in 2023 (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–2024; solid grey lines), and ocean temperatures for the first quarter of 2024 (shaded). 
 
 knitr::include_graphics(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'))
 
 ```
+
+
+```{r}
+#| eval: false
+#| include: false
+
+#----------------------------------------------------------
+#   TCZF
+#----------------------------------------------------------
+
+## Download data from erddap
+# for ease I'm downloading one month at a time for all years, so first Jan then Feb and then March
+chlInfo <- info(url = 'https://oceanwatch.pifsc.noaa.gov/erddap', datasetid = 'esa-cci-chla-monthly-v6-0')
+# Comment below out if you have already downloaded and saved the .nc file
+# Looping through to grab files for Jan, then Feb, then March
+for (i in 1:3) {
+  chlDat <- griddap(chlInfo, time = c(paste0('1998-0',i, '-01'),paste0(RptYr, '-0',i, '-01')), latitude = c(lat2, lat1), longitude = c(lon1, lon2),
+                    fields = chlInfo$variables$variable_name[1],
+                    stride = c(12,1,1),
+                    store=disk(paste0(Dir,'/TZCFdata')))
+}
+
+```
+
+```{r}
+# Read in the files
+TZCFfiles <- list.files(paste0(Dir,'/TZCFdata/'), full.names = T)
+# Read all three files into R and combine as stack and sort them after the date (name)
+c1 <- brick(TZCFfiles[1])
+c2 <- brick(TZCFfiles[2])
+c3 <- brick(TZCFfiles[3])
+# Make a climatology for 1998-2009
+# list years and grab index you need
+yr <- substr(names(c1), 2, 5)
+climIdx <- which(yr == 2009)
+# Average average all the first quarter months for the climatology
+cclim <- mean(stack(c1[[1:climIdx]], c2[[1:climIdx]], c3[[1:climIdx]]), na.rm=T)
+# aggregate the raster to 0.5 degree for nicer plotting. Take the mean of aggregated cells
+cclim <- aggregate(cclim, fact=12, fun=mean)
+cclim_crop <- crop(cclim, extent(c(180, 240.5, 29, 40))) # to clean up the areas around the front and make figure less busy
+
+## Make the plot
+# Isolate the Report Year for background SST and emphasized contourline and make a dataset
+RptIdx <- which(yr==RptYr)
+datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=12, fun=mean)
+datRptYrC25 <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=6, fun=mean)
+datRptYrCraw <- mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]]))
+
+# Start your plot by making the report year background SST with a land overlay
+pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01)) 
+
+# Loop through all years of the dataset to add gray ghost contours for each year
+# Add each contour to the plot initiated above
+for (i in 1:nlayers(c1)) {
+  # Average Jan-Mar data for year i
+  datC <- crop(aggregate(mean(brick(c1[[i]],c2[[i]],c3[[i]])), fact=12, fun=mean), extent(c(180, 240.5, 27, 42)))
+  # Make ith year contour
+  pC1 <- contourplot(datC, pretty=T, margin=F, at=0.2, labels=F, par.settings = list(add.line = list(col = "darkgray")))
+  # Add contour to plot
+  pC0 <- pC0+pC1
+}
+# Finally add the climatology contour as a dashed line and the report year contour as a solid black line
+pC0 <- pC0 + 
+        contourplot(crop(datRptYrC, extent(c(180, 240.5, 25, 40))), pretty=T, margin=F, at=0.2, labels=F) + 
+        contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2) +
+        layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
+
+# Save plot
+png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_ghost.png'), width=7, height=5, res=300, units='in') 
+pC0
+dev.off()
+
+png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_onlyRaw.png'), width=7, height=5, res=300, units='in') 
+levelplot(datRptYrCraw, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01)) +
+  contourplot(crop(datRptYrC,extent(c(180, 240.5, 29, 40))), pretty=T, margin=F, at=0.2, labels=F) + 
+  contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2) +
+  layer(sp.polygons(landSpat, fill='gray50', col='gray30'))
+dev.off()
+
+```
+
+```{r}
+#| echo: false
+
+# Figure caption text
+# Average position of the subtropical front (STF) in 2023 (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–2024; solid grey lines), and ocean temperatures for the first quarter of 2024 (shaded). 
+
+knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
+
+```
+
+
+
+Rationale: The STF is targeted by the swordfish fishery. Additionally, both the STF and TZCF are used as migration and foraging corridors by both commercially valuable and protected species. Northward displacement of the frontal zone can increase the distance fishing vessels must travel to set their gear. This can, in turn, increase operational expenses. The positions of the fronts vary in response to natural climate variations. Long-term northward displacement of the frontal zone may also result from anthropogenic climate change. 
+
+Status: During the first quarter of `r RptYr`, the STF was north of average across much of the fishing grounds.  Though, unlike 2022, it was not near its historical northern limits.  The TZCF was average across much of the fishing grounds, except between about 170°W and 155°W, where it was slightly north of average.
+
+Description: The subtropical front (STF) is marked by the 18 °C sea surface temperature (SST) isotherm and the transition zone chlorophyll front (TZCF) by the 0.2 mg chl-a m-3 isopleth (Bograd et al. 2004; Polovina et al. 2001). They roughly mark the northern boundary of the North Pacific subtropical gyre as well as the northern extent of the Hawaiʻi-based longline fishery. Both fronts migrate meridionally on a seasonal basis and their positions are impacted by the phase of the El Niño – Southern Oscillation (ENSO). Due to significant seasonal variation, the climatology and anomaly (2023) are presented for the first quarter of the year only. The STF is determined from CoralTemp data (see SST indicator) and the TZCF is determined from ESA CCI data (see Section 0). 
+
+Timeframe: Annual, seasonal
+
+Region: Hawaiʻi longline region: 5° – 45°N, 180° – 120°W
+
+Measurement Platform: Satellite
+
+Data available at: https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly and https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v5-0.
+
+Sourced from: Bograd et al. (2004), Polovina et al. (2001), and NOAA OceanWatch (2024a; 2024b).
 

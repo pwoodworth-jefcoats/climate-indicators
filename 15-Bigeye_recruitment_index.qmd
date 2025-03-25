@@ -86,6 +86,9 @@ dealerYear <- dealerFinal %>%
   group_by(LANDYR) %>%
   summarize_at(c('Num_Small', 'NUM_SOLD', 'WholeWeight', 'HOOKSSET'), sum, na.rm=T) %>%
   mutate(CPUEsmall=Num_Small/(HOOKSSET/1000), CPUEall= NUM_SOLD/(HOOKSSET/1000), WPUE=WholeWeight/(HOOKSSET/1000))
+
+# Save the annual dealer data file for use in the dashboard
+write.csv(dealerYear, paste0(Dir, '/SAFE_AnnualDealer_forDashboard_', RptYr, '.csv'), quote = F, row.names = F)
 ```
 
 ```{r}

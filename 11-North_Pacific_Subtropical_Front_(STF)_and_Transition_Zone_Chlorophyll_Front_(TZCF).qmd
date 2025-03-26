@@ -35,11 +35,7 @@ Dir <- here('Fronts')
 ```{r}
 #| include: false
 
-#Set working directory
-setwd(Dir)
-if (!dir.exists(file.path('STFfigs'))) { dir.create(file.path('STFfigs')) }
-if (!dir.exists(file.path('TZCFfigs'))) { dir.create(file.path('TZCFfigs')) }
-
+# Set variables that are used by both STF and TZCF figures
 # Area for which to make the maps
 lat1 <- 45
 lat2 <- 5

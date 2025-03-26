@@ -20,6 +20,7 @@ library(latticeExtra)
 library(rerddap)
 library(here)
 library(sf)
+library(nmfspalette)
 ```
 
 ```{r}
@@ -49,8 +50,8 @@ landSpat <- as_Spatial(st_as_sf(land))
 # Make map themes
 mapThemeSST <- rasterTheme(region=rev(brewer.pal(11, 'Spectral')))
 mapThemeChl <- rasterTheme(region=cmocean('algae')(50))
-#mapThemeSST2 <- rasterTheme(region=colorRampPalette(c('#143c43', '#5fbbc3', '#dcf6f7'))(11))
-mapThemeSST <- rasterTheme(region=colorRampPalette(c('black', '#5fbbc3', 'white'))(11))
+mapThemeChl <- rasterTheme(region=nmfs_palette('seagrass')(50))
+mapThemeSST <- rasterTheme(region=rev(nmfs_palette('waves')(50)))
 
 
 ```
@@ -101,7 +102,7 @@ RptIdx <- which(yr==RptYr)
 datRptYr <- mean(brick(t1[[RptIdx]],t2[[RptIdx]],t3[[RptIdx]]))
 # Start your plot by making the report year background SST with a land overlay
 p0 <- levelplot(datRptYr, pretty=T, margin=F, par.setting=mapThemeSST, at=seq(4,29.5,by=0.3), colorkey=list(title=list(label='Sea Surface Temperature (°C)', cex=1), title.control=list(side='right'))) +
-        layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
+        layer(sp.polygons(landSpat, fill='gray50', col='gray30', lwd=0.75))
 
 # Loop through all years of the dataset to add gray ghost contours for each year
 # Add each contour to the plot initiated above
@@ -109,7 +110,7 @@ for (i in 1:nlayers(t1)) {
   # Average Jan-Mar data for year i
   dat <- mean(brick(t1[[i]],t2[[i]],t3[[i]]))
   # Make ith year contour
-  p1 <- contourplot(dat, pretty=T, margin=F, cuts=1, at=18, labels=F, lwd=0.5, par.settings = list(add.line = list(col = "gray")))
+  p1 <- contourplot(dat, pretty=T, margin=F, cuts=1, at=18, labels=F, lwd=0.5, par.settings = list(add.line = list(col = "lightgray")))
   # Add contour to plot
   p0 <- p0+p1
 }
@@ -180,11 +181,13 @@ cclim_crop <- crop(cclim, extent(c(180, 240.5, 29, 40))) # to clean up the areas
 ## Make the plot
 # Isolate the Report Year for background SST and emphasized contourline and make a dataset
 RptIdx <- which(yr==RptYr)
-datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=6, fun=mean)
+datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=3, fun=mean)
 datRptYrC5 <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=12, fun=mean)
 
 # Start your plot by making the report year background SST with a land overlay
-pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01), colorkey=list(title=list(label=expression(Chlorophyll-a ~ Concentration ~ (mg/m^3)), cex=1), title.control=list(side='right'))) 
+pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,0.8,by=0.01),
+                 colorkey=list(title=list(label=expression(Chlorophyll-a ~ Concentration ~ (mg/m^3)), cex=1), 
+                               title.control=list(side='right'))) 
 
 # Loop through all years of the dataset to add gray ghost contours for each year
 # Add each contour to the plot initiated above
@@ -200,7 +203,7 @@ for (i in 1:nlayers(c1)) {
 pC0 <- pC0 + 
         contourplot(crop(datRptYrC5, extent(c(180, 240.5, 25, 40))), pretty=T, margin=F, at=0.2, labels=F, lwd=1.25) +
         contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2, lwd=1.25) +
-        layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
+        layer(sp.polygons(landSpat, fill='gray50', col='gray30', lwd=0.75))
 
 # Save plot
 png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'), width=7, height=5, res=300, units='in') 

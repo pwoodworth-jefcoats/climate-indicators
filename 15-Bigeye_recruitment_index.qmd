@@ -95,8 +95,11 @@ dealerYear <- dealerFinal %>%
 # Write csv for portal
 # Renaming LANDYr to Year and Num_Small to Fish per 1000 hooks. 
 recIndex <- dealerYear %>% 
-  select(LANDYR, CPUESmall) %>% 
-  rename(Year=LANDYR, `Fish per 1,000 Hooks`=Num_Small)
+  select(LANDYR, CPUEsmall) %>% 
+  rename(Year=LANDYR, `Fish per 1,000 Hooks`=CPUEsmall)
+# Round to two significant figures/decimal places
+recIndex$`Fish per 1,000 Hooks` <- format(round(recIndex$`Fish per 1,000 Hooks`,2), nsmall=2)
+# Save file
 write.csv(recIndex, paste0(here(), '/PelagicClimate_', RptYr, '/BigeyeRecruitmentIndex', RptYr, '.csv'), quote = F, row.names = F)
 ```
 

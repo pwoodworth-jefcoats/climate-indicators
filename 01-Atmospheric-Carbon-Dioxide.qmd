@@ -11,25 +11,28 @@ format:
 ```{r}
 #| include: false
 ### Load libraries
-library(tidyverse)
+# Commenting out the plotly, reticulate, python stuff because it is 
+# inexplicably not working this year
+library(tidyverse, quietly = TRUE)
 library(lubridate)
 library(here)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
-library(plotly)
-library(reticulate)
+# library(plotly)
+# library(reticulate)
 
 # reticulate::install_miniconda()
-# reticulate::conda_install('r-reticulate', 'python-kaleido')
 # reticulate::py_install("packaging")
+# reticulate::use_miniconda('r-reticulate')
+# reticulate::use_condaenv(condaenv = "/Users/phoebe.woodworth/Library/r-miniconda", required = TRUE)
+# reticulate::conda_install('r-reticulate', 'python-kaleido')
 # reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
-reticulate::use_miniconda('r-reticulate')
 ```
 
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Set path to variable: Atmospheric_CO2
 # This is where the data are and where the plots will go
@@ -39,7 +42,7 @@ Dir <- here("Atmospheric_CO2")
 ```{r}
 #| include: false
 ### Load data
-# Note that the number of lines to skip changes each year, which is frustrating.
+# Note that the number of lines to skip sometimes changes from year to year, which is frustrating.
 # Monthly CO2 concentration
 atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 40)
 
@@ -90,7 +93,8 @@ if (ann_co2$year[pass_400[1]] != 2015) {
 ```{r}
 #| include: false
 # ### Create growth rate plot for reference
-seasonadj <- nmfspalette::nmfs_cols("supdkgray") # seasonally adj
+# 2024: spudkgray --> whale_gray
+seasonadj <- nmfspalette::nmfs_cols("whale_gray") # seasonally adj
 pdf(paste(Dir, '/AtmosphericCO2growth_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
 plot(ann_gr$year, ann_gr$`ann inc`, type = "l", lwd = 2, col = seasonadj,
      xlim = c(min(ann_gr$year), RptYr), ylim = c(0, 3.5),
@@ -132,6 +136,8 @@ write_csv(CO2_dashboard, file = here("Indicator_Dashboard", "Data",
 
 ```{r}
 #| include: false
+# 2024 update: color for annual values changed from #D0D0D0 to #A5AAAF
+
 # Borrowing code from the dashboard for this chunk
 # so that figures look the same across products
 indicator_data <- CO2_dashboard |>
@@ -141,7 +147,7 @@ indicator_data <- CO2_dashboard |>
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
 crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
@@ -164,41 +170,96 @@ given_yr_ann <- bind_cols(rep(ann_vals$Value[dim(ann_vals)[1]]),
 given_yr_ann <- rename(given_yr_ann, Value = ...1)
 given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
 
-p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
-              type = "scatter", mode = "lines", line = list(color = pal[1]),
-              height = plot_height, name = "Monthly average") |>
-  add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value_lm,
-            type = "scatter", mode = "lines", line = list(color = pal[5]),
-            name = "Long-term Trend") |>
-  add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Value,
-            type = "scatter", mode = "lines", line = list(color = pal[3]),
-            name = "Annual average") |>
-  add_trace(given_yr, x = dmy_hm(given_yr$Date_Time), y = given_yr$Value,
-            type = "scatter", mode = "lines", line = list(color = pal[2]),
-            name = paste("Monthly average,", RptYr)) |>
-  add_trace(given_yr_ann, x = dmy_hm(given_yr_ann$Date_Time), y = given_yr_ann$Value,
-            type = "scatter", mode = "lines", line = list(color = pal[4]),
-            name = paste("Annual average,", RptYr))
+# Commented out the plotly code because it's not working this year.  So,
+# going with base R, because that's what I'm most familiar with
+# Fair warning, this coding is tedious.
 
-#apply same layout parameters for all plots
+# x axis ticks and grid
+x_grid <- c(min(dmy_hm(indicator_data$Date_Time)), 
+                dmy(01011960),
+                dmy(01011970),
+                dmy(01011980),
+                dmy(01011990),
+                dmy(01012000),
+                dmy(01012010),
+                dmy(01012020),
+                max(dmy_hm(indicator_data$Date_Time)))
 
-#custom x axis (min, every decade, report year)
-all_years <- unique(indicator_data$Year)
-first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
-date_axis <- c(first_date, 
-              all_years[which(all_years %% 10 == 0)], 
-              RptYr)
+pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
+plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(300, 430), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[1],
+     xlab = "Year", ylab = "Parts per Million (ppm)",
+     # put a grid behind the plot
+     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
+                     abline(h = c(seq(300, 420, 20), 430), col = "#F1F3F3")),
+     font.lab = 2)
+par(new = TRUE)
+plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(300, 430), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[3],
+     xlab = " ", ylab = " ")
+par(new = TRUE)
+plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(300, 430), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[2],
+     xlab = " ", ylab = " ")
+par(new = TRUE)
+plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(300, 430), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[2],
+     xlab = " ", ylab = " ")
+axis(1, at = x_grid, label = c(" ", seq(1960, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
+axis(2, at = c(seq(300, 420, 20), 430), las = 1, col = "transparent", col.ticks = "transparent")
+dev.off()
 
-p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
-                   xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
-                   #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
-                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(300, 430), tickvals = list(300, 320, 340, 360, 380, 400, 420, 430)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
-                   paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
-                   hovermode = "x unified", #show data for all traces simultaneously
-                   hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
-  
+# p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
+#               type = "scatter", mode = "lines", line = list(color = pal[1]),
+#               height = plot_height, name = "Monthly average") |>
+#   add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value_lm,
+#             type = "scatter", mode = "lines", line = list(color = pal[5]),
+#             name = "Long-term Trend") |>
+#   add_trace(ann_vals, x = ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), y = ann_vals$Value,
+#             type = "scatter", mode = "lines", line = list(color = pal[3]),
+#             name = "Annual average") |>
+#   add_trace(given_yr, x = dmy_hm(given_yr$Date_Time), y = given_yr$Value,
+#             type = "scatter", mode = "lines", line = list(color = pal[2]),
+#             name = paste("Monthly average,", RptYr)) |>
+#   add_trace(given_yr_ann, x = dmy_hm(given_yr_ann$Date_Time), y = given_yr_ann$Value,
+#             type = "scatter", mode = "lines", line = list(color = pal[4]),
+#             name = paste("Annual average,", RptYr))
+# 
+# #apply same layout parameters for all plots
+# 
+# #custom x axis (min, every decade, report year)
+# all_years <- unique(indicator_data$Year)
+# first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
+# date_axis <- c(first_date, 
+#               all_years[which(all_years %% 10 == 0)], 
+#               RptYr)
+# 
+# p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
+#                    xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90),
+#                    #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
+#                    yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(300, 430), tickvals = list(300, 320, 340, 360, 380, 400, 420, 430)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
+#                    paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
+#                    hovermode = "x unified", #show data for all traces simultaneously
+#                    hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+#   
 #return plot - oddly works in R but results in an error when rendering
-save_image(p1, paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
+# save_image(p1, paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
 
 # NOTE - added below in the library import chunk at the top
 # Handy reference, in case this doesn't work in the future
@@ -229,9 +290,9 @@ Measurement Platform: *In-situ* station.
 \
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
 \
-Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2024a).  
+Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2025a).  
 \
-Graphics produced in part using Stawitz (2023).
+Graphics produced in part using Stawitz and Li (2025).
 
 ## Additional Information
 
@@ -241,4 +302,6 @@ The following .csv files were downloaded from <https://gml.noaa.gov/ccgg/trends/
  - Mauna Loa CO2 annual mean data  (co2_annmean_mlo.csv)
  - Mauna Loa CO2 annual mean growth rates  (co2_gr_mlo.csv)
  
-These files were manually appended with the report year (i.e., `r RptYr`).  Information from these data was used to lend detail and context to the indicator status.
+These files were manually appended with the report year (i.e., `r RptYr`).  Information from these data was used to lend detail and context to the indicator status.  
+
+The files could be accessed directly without downloading them first.  I decided against this only so that there's a full record of the data used to create the indicators.  But I'm curious what other think.  If you have an opinion, please start a discussion or open an issue.

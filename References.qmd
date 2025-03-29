@@ -12,7 +12,7 @@ This list includes the full references for all the sources in the pelagic ocean 
 **Atmospheric Carbon Dioxide**  
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551  
 \
-NOAA (2024a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 13 March 2024.  
+NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 28 March 2024.  
 \
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565  
 \
@@ -153,7 +153,7 @@ lubridate: Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy w
 \
 here:  Müller K (2020). _here: A Simpler Way to Find Your Files_. R package version 1.0.1,   <https://CRAN.R-project.org/package=here>.  
 \
-nmfspalette: Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>  
+nmfspalette: Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000.  
 \
 plotly: C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.  
 \

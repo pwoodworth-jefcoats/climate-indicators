@@ -47,6 +47,7 @@ dealer <- dealerRaw %>%
   filter(REPORT_DATE < as.Date(paste0(RptYr+1, '-01-01')),
          SPECIES_FK == 6, 
          SET_TYPE == 'D') %>% 
+  mutate(Quarter = quarter(REPORT_DATE)) %>% 
   select(TRIP_NUM, REPORT_DATE, NUM_SOLD, WholeWeight, Year, Quarter) %>%
   mutate(WholeWeight=ifelse(WholeWeight > 100, 100, WholeWeight))
 
@@ -223,11 +224,11 @@ dev.off()
 
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.width="5.5in", fig.align='center'}
 # Figure caption info
 # fig-wpue, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', 
 
-knitr::include_graphics(paste0(Dir, '/SAFE_SizeFreqHist_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFE_SizeFreqHist_', RptYr, '.png'), )
 
 ```
 
@@ -236,7 +237,7 @@ Rationale: Tracking the progression of growing size classes through time can pro
 \
 Status: No above-average peaks in two-year-old bigeye CPUE were observed in `r RptYr-2`-`r RptYr`, suggesting that there will not be a peak in the CPUE of four- and five-year-old bigeye in `r RptYr+1` or `r RptYr+2`.\
 \
-Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in @fig-wpue. Bigeye weights are from sets using $\ge$ 15 hooks per float.\
+Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in Figure??. Bigeye weights are from sets using $\ge$ 15 hooks per float.\
 \
 Timeframe: Quarterly.\
 \

@@ -11,22 +11,24 @@ format:
 ```{r}
 #| include: false
 ### Load libraries
+# Commenting out the plotly, reticulate, python stuff because it is 
+# inexplicably not working this year
 library(tidyverse)
 library(lubridate)
 library(here)
 library(stringr)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
-library(plotly)
-library(reticulate)
-
-reticulate::use_miniconda('r-reticulate')
+# library(plotly)
+# library(reticulate)
+# 
+# reticulate::use_miniconda('r-reticulate')
 ```
 
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Set path to variable: El_Nino_Southern_Oscillation
 # This is where the data are and where the plots will go
@@ -48,17 +50,23 @@ ONI_rounded <- round(ONI_full$ANOM, digits = 1)
 ```{r}
 #| include: false
 ### Identifying El Niños and La Niñas, based on the criterion that they persist for at least 5 consecutive seasons
+# First, identify values that are above or below the appropriate threshold
 ElNino_idx = which(ONI_rounded >= 0.5);
 LaNina_idx = which(ONI_rounded <= -0.5);
 Neutral_idx = which(ONI_rounded > -0.5 & ONI_rounded < 0.5);
+
+# Create empty arrays of the correct size
 ElNino <- array(0, dim = c(length(ONI_rounded), 3))
 LaNina <- array(0, dim = c(length(ONI_rounded), 3))
-Neutral <- array(0, dim = c(length(ONI_rounded), 3))
+Neutral <- array(NA, dim = c(length(ONI_rounded), 3))
 
+# Fill each phase's array with values that pass the appropriate threshold
 ElNino[ElNino_idx] = ONI_rounded[ElNino_idx]
 LaNina[LaNina_idx] = ONI_rounded[LaNina_idx]
 Neutral[Neutral_idx] = ONI_rounded[Neutral_idx]
 
+# This next part is a counter.  Fill the first row first, 
+# flagging with a 1 values at meet that phase's threshold
 if (ElNino[1,1] > 0) {
   ElNino[1,2] = 1
   ElNino[1,3] = 1
@@ -69,11 +77,14 @@ if (LaNina[1,1] < 0) {
   LaNina[1,3] = 1
 }
     
-if (Neutral[1,1] != 0) {
+if (!is.na(Neutral[1,1])) {
   Neutral[1,2] = 1
   Neutral[1,3] = 1
 }
 
+# Loop through the remaining rows
+# Column 2 is a yes/no flag (1 if true)
+# Column 3 is a counter
 for (r in seq(2, length(ONI_rounded), 1)) {
   if (ElNino[r,1] > 0) {
     ElNino[r,2] = 1
@@ -85,13 +96,14 @@ for (r in seq(2, length(ONI_rounded), 1)) {
     LaNina[r,3] = LaNina[r,2] + LaNina[r - 1,3]
   }
   
-  if (Neutral[r,1] != 0) {
+  if (!is.na(Neutral[r,1])) {
     Neutral[r,2] = 1
     Neutral[r,3] = Neutral[r,2] + Neutral[r - 1,3]
   }
 }
 
-
+# For months where the counter maxes out at <5 sequential seasons
+# set the counter to 0
 for (l in seq(4, 1, -1)) {
   for (r in seq(2, length(ONI_rounded), 1)) {
    if (ElNino[r,3] == 0 && ElNino[r - 1,3] <= l) {
@@ -106,6 +118,7 @@ for (l in seq(4, 1, -1)) {
   }
 }
 
+# Identify only months that meet the >= 5 season criterion
 pos_idx = which(ElNino[,3] == 0)
 ElNino[pos_idx,1] = NA
 neg_idx = which(LaNina[,3] == 0)
@@ -235,7 +248,7 @@ Description: The three-month running mean (referred to as a season) of satellite
 
 Timeframe: Three-month running average.
 
-Region/Location: Niño 3.4 region, 5°S – 5°N, 120° – 170°W.
+Region/Location: Niño3.4 region, 5°S – 5°N, 120° – 170°W.
 
 Measurement Platform: *In-situ* station, satellite, model.
 

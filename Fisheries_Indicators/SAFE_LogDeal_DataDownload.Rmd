@@ -17,15 +17,16 @@ This script downloads logbook and dealer data for use in the annual SAFE report.
 # Clear workspace
 rm(list=ls())
 
-# Set working directory
-mainDir <- here("Fisheries_Indicators")
-
 # Load libraries
 library(tidyverse)
 library(lubridate)
 library(rje)
 library(ROracle)
 library(zoo)
+library(here)
+
+# Set working directory
+mainDir <- here("Fisheries_Indicators")
 
 ```
 
@@ -62,7 +63,7 @@ table_deal <- dbListTables(con, schema=shma_deal)
 table_deal
 
 # Define table name
-tname_log <- paste(tolower(shma_log),table_log[grep(paste0('LLDS_HDR_',RptYr), table_log)], sep='.')  # this is the HDR table, not the DETAIL
+tname_log <- paste(tolower(shma_log),table_log[grep(paste0('LLDS_HDR_',RptYr+1), table_log)], sep='.')  # this is the HDR table, not the DETAIL
 tname_deal <- paste(tolower(shma_deal),table_deal[2], sep='.')
 
 # Look at column names available in the table

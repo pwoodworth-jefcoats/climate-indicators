@@ -152,7 +152,7 @@ indicator_data <- pH_dashboard |>
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
 crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])

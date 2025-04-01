@@ -219,7 +219,7 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
-     col = pal[2],
+     col = pal[4],
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(" ", seq(1960, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(300, 420, 20), 430), las = 1, col = "transparent", col.ticks = "transparent")

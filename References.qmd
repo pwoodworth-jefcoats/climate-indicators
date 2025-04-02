@@ -28,7 +28,7 @@ HOT 2025: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOG
 Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code available at: <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>, Accessed: 1 April 2025.  
 \
 **El Niño - Southern Oscillation**  
-NOAA CPC (2024): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 19 March 2024.  
+NOAA CPC (2025): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 1 April 2025.  
 \
 **Pacific Decadal Oscillation**  
 NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.  

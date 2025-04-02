@@ -58,7 +58,8 @@ Neutral_idx = which(ONI_rounded > -0.5 & ONI_rounded < 0.5);
 # Create empty arrays of the correct size
 ElNino <- array(0, dim = c(length(ONI_rounded), 3))
 LaNina <- array(0, dim = c(length(ONI_rounded), 3))
-Neutral <- array(NA, dim = c(length(ONI_rounded), 3))
+Neutral <- array(0, dim = c(length(ONI_rounded), 3))
+Neutral[,1] <- NA
 
 # Fill each phase's array with values that pass the appropriate threshold
 ElNino[ElNino_idx] = ONI_rounded[ElNino_idx]
@@ -180,7 +181,7 @@ indicator_data <- ENSO_dashboard |>
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = La Niña, 3 = previous years
 crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 2 = El Niño,  3 = annual average for Rpt Yr
-ann_grey <- "#D0D0D0" # annual means; in NMFS branding guide but not in package
+ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
@@ -203,61 +204,107 @@ indicator_data <- indicator_data |> mutate(Sign = sign(Value)) |>
 indicator_data[which(indicator_data$Sign == -1 & indicator_data$n >= 5),]$ENSO <- "La Niña"
 indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <- "El Niño"
 
-#color-coded bar chart for ENSO
-p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
-              height = plot_height, name = ~ENSO, color = ~ENSO, 
-              colors = c(coral[2], oceans[2], ann_grey))
+# Commented out the plotly code because it's not working this year.  So,
+# going with base R, because that's what I'm most familiar with
+# Fair warning, this coding is tedious.
 
-#apply same layout parameters for all plots
+# x axis ticks and grid
+x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
+            dmy(01011960),
+            dmy(01011970),
+            dmy(01011980),
+            dmy(01011990),
+            dmy(01012000),
+            dmy(01012010),
+            dmy(01012020),
+            max(dmy_hm(indicator_data$Date_Time)))
 
-#custom x axis (min, every decade, report year)
-all_years <- unique(indicator_data$Year)
-first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
-date_axis <- c(first_date, 
-              all_years[which(all_years %% 10 == 0)], 
-              RptYr)
+# Write a function to do the stem plot (we'll call it 'stem' like Matlabl does)
+# Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/
+stem <- function(x, y, stemcol) {
+  for (l in seq(1, length(x), 1)) {
+    lines(c(x[l], x[l]), c(0, y[l]), col = stemcol)
+  }
+}
 
-p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
-                   xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90, showgrid = TRUE),
-                   #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
-                   yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-3, 3), tickvals = list(-3, -2, -1, 0, 1, 2, 3)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
-                   paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
-                   hovermode = "x unified", #show data for all traces simultaneously
-                   hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
+plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
+     type = "l", lwd = 1,
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-3, 3),
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     xlab = "Year", ylab = "Oceanic Niño Index (ONI)",
+     # put a grid behind the plot
+     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
+                     abline(h = c(seq(-3, 3, 1)), col = "#F1F3F3")),
+     font.lab = 2)
+par(new = TRUE)
+stem(dmy_hm(indicator_data$Date_Time[ElNino_idx]), indicator_data$Value[ElNino_idx], pal[2])
+stem(dmy_hm(indicator_data$Date_Time[LaNina_idx]), indicator_data$Value[LaNina_idx], oceans[2])
+stem(dmy_hm(indicator_data$Date_Time[Neutral_idx]), indicator_data$Value[Neutral_idx], ann_grey)
+axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
+axis(2, at = c(seq(-3, 3, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+dev.off()
 
-#return plot
-save_image(p1, paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
+# Just a note that the plot was sensitive to the xlim values
+# if I used dmy(01011950) as the xlim-min, things did not work
 
-# Handy reference, in case this doesn't work in the future
-# from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
-# install.packages('reticulate')
-# reticulate::install_miniconda()
-# reticulate::conda_install('r-reticulate', 'python-kaleido')
-# reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
-# reticulate::use_miniconda('r-reticulate')
-# To export:
-# library(plotly)
-# kaleido(FINAL_plot, "FINAL_plot.pdf")
+# #color-coded bar chart for ENSO
+# p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
+#               height = plot_height, name = ~ENSO, color = ~ENSO, 
+#               colors = c(coral[2], oceans[2], ann_grey))
+# 
+# #apply same layout parameters for all plots
+# 
+# #custom x axis (min, every decade, report year)
+# all_years <- unique(indicator_data$Year)
+# first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
+# date_axis <- c(first_date, 
+#               all_years[which(all_years %% 10 == 0)], 
+#               RptYr)
+# 
+# p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
+#                    xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90, showgrid = TRUE),
+#                    #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
+#                    yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-3, 3), tickvals = list(-3, -2, -1, 0, 1, 2, 3)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
+#                    paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
+#                    hovermode = "x unified", #show data for all traces simultaneously
+#                    hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
+# 
+# #return plot
+# save_image(p1, paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
+# 
+# # Handy reference, in case this doesn't work in the future
+# # from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
+# # install.packages('reticulate')
+# # reticulate::install_miniconda()
+# # reticulate::conda_install('r-reticulate', 'python-kaleido')
+# # reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
+# # reticulate::use_miniconda('r-reticulate')
+# # To export:
+# # library(plotly)
+# # kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
-Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries. 
-
-Status: The Oceanic Niño Index (ONI) indicated a transition from La Niña to El Niño conditions in `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.
-
-Description: The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.
-
-Timeframe: Three-month running average.
-
-Region/Location: Niño3.4 region, 5°S – 5°N, 120° – 170°W.
-
-Measurement Platform: *In-situ* station, satellite, model.
-
-Data available at: <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>. 
-
-Sourced from NOAA CPC (2024).
-
-Graphics produced in part using Stawitz (2023).
-
+Rationale: The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries.   
+\
+Status: The Oceanic Niño Index (ONI) indicated a transition from El Niño to neutral conditions in `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.  
+\
+Description: The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.  
+\
+Timeframe: Three-month running average.  
+\
+Region/Location: Niño3.4 region, 5°S – 5°N, 120° – 170°W.  
+\
+Measurement Platform: *In-situ* station, satellite, model.  
+\
+Data available at: <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>.   
+\
+Sourced from NOAA CPC (2025).  
+\
+Graphics produced in part using Stawitz and Li (2025).  
+\
 ## Additional Information
 
 Data were manually copied and pasted into a .csv.  These data have precision to the hundredth of a degree.  They are subsequently rounded in this script to match the data on the more commonly used [CPC site](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php), which are rounded to the tenth of a degree.  

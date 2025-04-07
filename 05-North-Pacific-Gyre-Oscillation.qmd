@@ -1,0 +1,188 @@
+---
+title: "North_Pacific_Gyre_Oscillation"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## North Pacific Gyre Oscillation
+
+```{r}
+#| include: false
+### Load libraries
+# Commenting out the plotly, reticulate, python stuff because it is 
+# inexplicably not working this year
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+# library(plotly)
+# library(reticulate)
+# 
+# reticulate::use_miniconda('r-reticulate')
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2024
+
+# Set path to variable: North_Pacific_Gyre_Oscillation
+# This is where the data are and where the plots will go
+Dir <- here("North_Pacific_Gyre_Oscillation")
+```
+
+```{r}
+#| include: false
+### Load data
+NPGO_full <- read_csv(file = paste(Dir, '/NPGO_', RptYr, '.csv', sep = ""),
+                      show_col_types = FALSE)
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# Pull out the values we need for the report 
+yr_of_int <- which(NPGO_full$YEAR == RptYr)
+prev_yrs <- which(NPGO_full$YEAR < RptYr)
+all_yrs <- which(NPGO_full$YEAR <= RptYr)
+monthly_min_RptYr <- min(NPGO_full$NPGO[yr_of_int])
+monthly_min_PrevYrs <- min(NPGO_full$NPGO[prev_yrs])
+monthly_max_RptYr <- max(NPGO_full$NPGO[yr_of_int])
+monthly_max_PrevYrs <- max(NPGO_full$NPGO[prev_yrs])
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The highest monthly value was in the report year.')
+}
+
+if (monthly_max_RptYr > monthly_max_PrevYrs) {
+  print('The lowest monthly value was in the report year.')
+}
+```
+
+```{r}
+#| include: false
+# Write csv for dashboard
+# Note that dashboard output has its own folder
+# Thanks to Emily Conklin for this chunk of code!
+
+# Create a Date field
+NPGO_full <- NPGO_full |>
+  mutate(Date = paste(NPGO_full$YEAR, NPGO_full$MONTH, '01', sep = "-"))
+
+NPGO_dashboard <- NPGO_full %>%
+  mutate(Date_Time = as_datetime(Date), Year = year(Date_Time), 
+         Month = month(Date_Time)) %>%
+  mutate(Date_Time = Date_Time %>%
+           format('%d-%b-%Y %H:%M') %>%
+           toupper) %>%
+  select(Date_Time, Year, Month, Value = NPGO) %>%
+  mutate(Anom = NA, ID = "NPGO", Value_lm = NA, Anom_lm = NA, Units = "North Pacific Gyre Oscillation") |>
+  filter(Year <= RptYr) 
+
+write_csv(NPGO_dashboard, file = here("Indicator_Dashboard", "Data", paste('NPGO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+```
+
+```{r}
+#| include: false
+# Borrowing code from the dashboard for this chunk
+# so that figures look the same across products
+indicator_data <- NPGO_dashboard |>
+  filter(Year <= RptYr)
+
+# Create color palette for easy reference 
+oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = Negative PDO, 3 = previous years
+crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfs_palette("coral")(3) # 2 = Positive PDO,  3 = annual average for Rpt Yr
+ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide but not in package
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+
+# Formatting
+plot_title_font <- list(size = 14)
+plot_height <- 350 #in pixels
+
+indicator_data <- indicator_data |>
+  mutate(Units = "North Pacific Gyre Oscillation (NPGO)")
+
+# Identify the current year, to overlay on plot
+given_yr <- indicator_data |>
+  filter(Year == RptYr)
+
+# The plotly code isn't working this year.  So,
+# going with base R, because that's what I'm most familiar with
+# Fair warning, this coding is tedious.
+
+# x axis ticks and grid
+x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
+            dmy(01011960),
+            dmy(01011970),
+            dmy(01011980),
+            dmy(01011990),
+            dmy(01012000),
+            dmy(01012010),
+            dmy(01012020),
+            max(dmy_hm(indicator_data$Date_Time)))
+
+pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""))
+plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4, 4), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[1],
+     xlab = "Year", ylab = "North Pacific Gyre Oscillation (NPGO)",
+     # put a grid behind the plot
+     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
+                     abline(h = c(seq(-4, 4, 1)), col = "#F1F3F3")),
+     font.lab = 2)
+par(new = TRUE)
+plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4,4), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[2],
+     xlab = " ", ylab = " ")
+par(new = TRUE)
+plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
+     type = "l", lwd = 1,
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4, 4),
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     xlab = " ", ylab = " ")
+axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
+axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+dev.off()
+
+```
+
+Rationale: The North Pacific Gyre Oscillation (NPGO) is related to, but distinct from, the Pacific Decadal Oscillation.  It captures basin-scale processes, making it well suited to capture change across the Hawaiʻi-based longline fishing grounds.    
+\
+Status: The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.  
+\
+Description: The NPGO is driven by regional and basin-scale changes in wind patterns.  Changed to the wind field driver changes in ocean circulation that affect nutrients and, in turn, phytoplankton.  Because phytoplankton are the foundational food source for marine ecosystems, the NPGO offers insight into potential ecosystem change.  Description paraphrased from Di Lorenzo et al. (2008).  
+\
+Timeframe: Monthly.  
+\
+Region/Location: 180°–110°W; 25°N–62°N.  
+\
+Measurement Platform: satellite, model.  
+\
+Data available at: <https://www.o3d.org/npgo/data/NPGO.txt>.  
+\
+Sourced from Di Lorenzo et al. (2008).  
+\
+Graphics produced in part using Stawitz and Li (2025).  
+\
+## Additional Information
+
+Data were manually copied and pasted into a .csv.  Each column was formatted to remove scientific notation which was resulting in rounding errors (data type set to 'numeric').
+
+No data are saved for the Council portal because the NPGO isn't examined as an annual mean.

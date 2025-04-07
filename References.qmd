@@ -37,6 +37,9 @@ Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Fran
 \
 Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1  
 \
+**North Pacific Gyre Oscillation**
+Di Lorenzo et al. (2008): Di Lorenzo, E., Schneider, N., Cobb, K. M., Franks, P. J. S., Chhak, K., Miller, A. J., McWilliams, J. C., Bograd, S. J., Arango, H., Curchitser, E., Powell, T. M., and Rivière, P., 2008: North Pacific Gyre Oscillation links ocean climate and ecosystem change. Geophysical Research Letters, 35(8), L08607, doi:10.1029/2007GL032838.  
+\
 **Tropical Cyclones**  
 Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1  
 \

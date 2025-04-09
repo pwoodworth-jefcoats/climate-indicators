@@ -23,7 +23,7 @@ library(sf)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Set path to variable: Tropical_Cyclones
 # This is where the data are and where the plots will go
@@ -33,7 +33,7 @@ Dir <- here("Tropical_Cyclones")
 ```{r}
 #| include: false
 ### Load data
-ibtracs_full <- read_csv(file = paste(Dir, '/ibtracs.since1980.list.v04r00_', RptYr, '.csv', sep = ""))
+ibtracs_full <- read_csv(file = paste(Dir, '/ibtracs.since1980.list.v04r01_', RptYr, '.csv', sep = ""))
 ```
 
 ```{r}
@@ -240,30 +240,31 @@ rm(avg_idx)
 
 ```{r}
 #| include: false
-# And, now, a bunch of linear models to look for trends in storm counts or 
-EP_ns_lm <- lm(EP_counts$NumberNamed ~ EP_counts$Year)  # p-value: 0.739
-EP_htc_lm <- lm(EP_counts$NumberCyclones ~ EP_counts$Year)  # p-value: 0.4953
-EP_maj_lm <- lm(EP_counts$NumberMajor ~ EP_counts$Year)  # p-value: 0.8463
-EP_tot_lm <- lm(rowSums(EP_counts[,2:4]) ~ EP_counts$Year)  # p-value: 0.9799
-EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  # p-value: 0.163
+# And, now, a bunch of linear models to look for trends in storm counts or ACE
+# only p-values < 0.05 are noted
+EP_ns_lm <- lm(EP_counts$NumberNamed ~ EP_counts$Year)  
+EP_htc_lm <- lm(EP_counts$NumberCyclones ~ EP_counts$Year)  
+EP_maj_lm <- lm(EP_counts$NumberMajor ~ EP_counts$Year)  
+EP_tot_lm <- lm(rowSums(EP_counts[,2:4]) ~ EP_counts$Year)  
+EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  
 
-CP_ns_lm <- lm(CP_counts$NumberNamed ~ CP_counts$Year)  # p-value: 0.4082
-CP_htc_lm <- lm(CP_counts$NumberCyclones ~ CP_counts$Year)  # p-value: 0.9244
-CP_maj_lm <- lm(CP_counts$NumberMajor ~ CP_counts$Year)  # p-value: 0.4548
-CP_tot_lm <- lm(rowSums(CP_counts[,2:4]) ~ CP_counts$Year)  # p-value: 0.7836
-CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  # p-value: 0.662
+CP_ns_lm <- lm(CP_counts$NumberNamed ~ CP_counts$Year)  
+CP_htc_lm <- lm(CP_counts$NumberCyclones ~ CP_counts$Year)  
+CP_maj_lm <- lm(CP_counts$NumberMajor ~ CP_counts$Year)  
+CP_tot_lm <- lm(rowSums(CP_counts[,2:4]) ~ CP_counts$Year)  
+CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  
 
-WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.03345
-WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.007472
-WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  # p-value: 0.688
-WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.03563
-WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  # p-value: 0.09269
+WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.03278
+WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.00723
+WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  
+WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.03512
+WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  
 
-SP_ns_lm <- lm(SP_counts$NumberNamed ~ SP_counts$Year)  # p-value: 0.1809 
-SP_htc_lm <- lm(SP_counts$NumberCyclones ~ SP_counts$Year)  # p-value: 0.1147
-SP_maj_lm <- lm(SP_counts$NumberMajor ~ SP_counts$Year)  # p-value: 0.8666
-SP_tot_lm <- lm(rowSums(SP_counts[,2:4]) ~ SP_counts$Year)  # p-value: 0.2203
-SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  # p-value: 0.2479
+SP_ns_lm <- lm(SP_counts$NumberNamed ~ SP_counts$Year)   
+SP_htc_lm <- lm(SP_counts$NumberCyclones ~ SP_counts$Year)  
+SP_maj_lm <- lm(SP_counts$NumberMajor ~ SP_counts$Year)  
+SP_tot_lm <- lm(rowSums(SP_counts[,2:4]) ~ SP_counts$Year)  
+SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  
 ```
 
 ```{r}
@@ -427,7 +428,7 @@ barplot(as.matrix(WP_counts[,2:4]) ~ as.matrix(WP_counts$Year),
 barplot(as.matrix(SP_counts[,2:4]) ~ as.matrix(SP_counts$Year), 
         beside = TRUE, col = ct_pal, border = NA,
         ylim = c(0, 40), xlab = " ", las = 1, main = 'South Pacific (SP)')
-dev.off
+dev.off()
 
 # ACE (in the future, make this a function)
 pdf(paste(Dir, '/ACE_', RptYr, '.pdf', sep = ""))
@@ -482,14 +483,14 @@ dev.off()
 Rationale: The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.  
 \
 Status:
-*Eastern North Pacific.* Tropical cyclone activity was slightly above average in the Eastern Pacific in `r RptYr`.  There were `r EP_counts$NumberNamed[which(EP_counts$Year == RptYr)]` named storms, `r EP_counts$NumberCyclones[which(EP_counts$Year == RptYr)]` of which were hurricanes.  There were `r EP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` major hurricanes (category 3 or higher).  The number of named and major storms, as well as Accumulated Cyclone Energy (ACE), were slightly the above 1991–2020 average.  
+*Eastern North Pacific.* Tropical cyclone activity was below average in the Eastern Pacific in `r RptYr`.  There were `r EP_counts$NumberNamed[which(EP_counts$Year == RptYr)]` named storms, `r EP_counts$NumberCyclones[which(EP_counts$Year == RptYr)]` of which were hurricanes.  There were `r EP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` major hurricanes (category 3 or higher), all of which were below the 1991-2020 average.  Accumulated Cyclone Energy (ACE) was about 67% the 1991–2020 average in the Eastern North Pacific.  In addition to season totals, early season tropical cyclone activity and ACE were at a record low in 2024, with this being only the second year in this time series with no activity in June. 
+Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406> and <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>.  
 \
-*Central North Pacific.*  In July, Hurricane Calvin became a major hurricane as it moved from Mexico towards Hawaiʻi. Calvin led to tropical storm warnings in Hawaiʻi but caused minimal damage. Of note in `r RptYr` was Hurricane Dora, which formed in the Eastern Pacific on 31 July 2023, crossed into the Central Pacific on 6 August 2023, and carried on westward into the Western Pacific on 12 August 2023.  Overall, Central Pacific tropical cyclone activity was below the 1991–2020 average in `r RptYr`. There were `r CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]` named storms, one of which—Dora—reached hurricane status and became a major hurricane. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was slightly above the 1991–2020 average. Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202307>.  
+*Central North Pacific.*  Early season tropical cyclone activity and ACE were at a record low in 2024 in the Central North Pacific, with this being only the second year in this time series with no activity in June. On August 19th, Hurricane Hone formed in the Central Pacific and peaked as a Category 1 hurricane with winds of 85 mph and a minimum central pressure of 988 mb. Hone brought gusty winds and flooding rains to the Island of Hawaiʻi as it passed south of the island chain.  Overall, Central Pacific tropical cyclone activity was below the 1991–2020 average in `r RptYr`. There were `r CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]` named storms. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was well below the 1991–2020 average. Portions of this summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202407>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202408>.  
 \
-*Western North Pacific.* Typhoon Mawar, which formed in May, was just the third category 4 (winds ≥130 mph) typhoon to pass within 100 miles of Guam in the Western Pacific. It was the first major typhoon in that area since Mangkut in 2018. Mawar resulted in heavy rainfall and widespread power outages on the island.  Despite Typhoon Mawar, tropical cyclone activity in the Western Pacific was below average. The Western Pacific saw the second-fewest named storms since 1951, with only `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` forming in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` became major typhoons.   These counts were all below average (1991–2020), as was the ACE.  Since 1980, the number of named storms and typhoons has decreased slightly at a rate of about 1 storm per decade.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202305>, and
-<https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202313>.  
+*Western North Pacific.* Early season tropical cyclone activity and ACE were at a record low in 2024. The last four named storms of November were at one point all simultaneously active, becoming the first instance of four simultaneous named storms in the West Pacific during the month of November. Overall, due to the extremely high activity the ACE value in the West Pacific was over 200% of average for the month..  The Western Pacific saw `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` named storms in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` became major typhoons.   These counts were all close to average (1991–2020), although ACE was only about 67% the long-term average.  Since 1980, the number of named storms and typhoons has decreased slightly at a rate of about 1 storm per decade and the number of total storms has decreased at a rate of about 2 storms per decade.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202411>.  
 \
-*South Pacific.* South Pacific tropical cyclone activity was below average in `r RptYr`.  There were `r SP_counts$NumberNamed[which(SP_counts$Year == RptYr)]` named storms, `r SP_counts$NumberCyclones[which(SP_counts$Year == RptYr)]` of which became cyclones and `r SP_counts$NumberMajor[which(SP_counts$Year == RptYr)]`  major cyclones.  The `r RptYr` ACE was less than the 1991–2020 average.  
+*South Pacific.* South Pacific tropical cyclone activity was roughly average in `r RptYr`.  There were `r SP_counts$NumberNamed[which(SP_counts$Year == RptYr)]` named storms, `r SP_counts$NumberCyclones[which(SP_counts$Year == RptYr)]` of which became cyclones and `r SP_counts$NumberMajor[which(SP_counts$Year == RptYr)]`  major cyclones.  The `r RptYr` ACE was less than the 1991–2020 average.  
 \
 Description: This indicator uses historical data from the NOAA National Climate Data Center (NCDC) International Best Track Archive for Climate Stewardship to track the number of tropical cyclones in the western, central, eastern, and southern Pacific basins. This indicator also monitors the Accumulated Cyclone Energy (ACE) Index and the Power Dissipation Index which are two ways of monitoring the frequency, strength, and duration of tropical cyclones based on wind speed measurements.  
 \
@@ -507,11 +508,9 @@ Region/Location:
 \
 Measurement Platform: Satellite.  
 \
-Data available at: <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv>.  
+Data available at: <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/>.  
 \
-Sourced from: Knapp et al. (2010), Knapp et al. (2018), and NOAA (2024c).  
-\
-Graphics produced in part using Stawitz (2023).  
+Sourced from: Knapp et al. (2010), Knapp et al. (2018), and NOAA (2025c).  
 \
 ## Additional Information
 
@@ -529,7 +528,7 @@ The ibtracs.since1980.list.v04r00.csv file downloaded and manually renamed to in
 - USA_WIND
 - USA_SSHS
 
-were deleted and the resulting file was saved `r paste('ibtracs.since1980.list.v04r00_', RptYr, '.csv', sep = '') `.  Additionally, the 2-line header was manually condensed into a 1-line header.
+were deleted and the resulting file was saved `r paste('ibtracs.since1980.list.v04r00_', RptYr, '.csv', sep = '') `.  Additionally, the 2-line header was manually condensed into a 1-line header.  Note that the URL changes from year to year.  See <https://www.ncei.noaa.gov/products/international-best-track-archive> for latest link.
 
 Storms other than tropical cyclones were filtered out by selecting only storms with `USA_SSHS` $\geq$ -1.
 

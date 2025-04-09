@@ -43,9 +43,9 @@ Di Lorenzo et al. (2008): Di Lorenzo, E., Schneider, N., Cobb, K. M., Franks, P.
 **Tropical Cyclones**  
 Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1  
 \
-Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 19 March 2024].  
+Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 7 April 2025.  
 \
-NOAA (2024c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 19 March 2024, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
+NOAA (2025c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 7 April 2025, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
 \
 **Sea Surface Temperature**
 NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 3 April 2024.  

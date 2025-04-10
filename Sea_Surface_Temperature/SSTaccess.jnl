@@ -64,7 +64,7 @@ cancel var/all
 ! and to harmonize across remotely sensed variables
 use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim
 let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x025deg, GY=y025deg]
-! shade/palette=ocean_blue SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+! shade/palette=ocean_blue sst_regrid[x=120E:100W, y=0:55N, l=1]
 let sst_2024 = sst_regrid[x=120E:100W, y=0:55N, l=1]
 list/FILE=sst_yr2024.nc/FORMAT=cdf sst_2024
 

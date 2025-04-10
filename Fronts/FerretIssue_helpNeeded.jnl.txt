@@ -1,0 +1,9 @@
+! Ferret script to pull out Jan-Mar for each year and save it to a ncdf file. 
+
+! Load the dataset
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
+show data
+
+! Loop through and append the 1st quarter months each year to a nc file 
+! I'm not regridding here, just reducing the output file size a bit for this example only
+REPEAT/i=5:328:12 (let chl = chlor_a[x=180:240:0.5, y=5:45:0.5, l=`i`:`i+2`]; save/append/file=test_annual.nc chl)

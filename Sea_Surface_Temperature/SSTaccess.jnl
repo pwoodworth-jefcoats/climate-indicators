@@ -14,6 +14,8 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly
 ! 456 = Dec 2022
 ! 457 = Jan 2023
 ! 468 = Dec 2023
+! 469 = Jan 2024
+! 480 = Dec 2024
 
 ! Area of interest
 ! 15 - 45N, 180 - 120W
@@ -29,7 +31,7 @@ let sst_ts_0105 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=19
 let sst_ts_0610 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=253:312]
 let sst_ts_1115 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=313:372]
 let sst_ts_1620 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=373:432]
-let sst_ts_2123 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=433:468]
+let sst_ts_2124 = SEA_SURFACE_TEMPERATURE[x = 180:120W@ave, y = 15:45N@ave, l=433:480]
 
 list/FILE=sst_ts_8590.dat/FORMAT=comma sst_ts_8590
 list/FILE=sst_ts_9195.dat/FORMAT=comma sst_ts_9195
@@ -38,26 +40,33 @@ list/FILE=sst_ts_0105.dat/FORMAT=comma sst_ts_0105
 list/FILE=sst_ts_0610.dat/FORMAT=comma sst_ts_0610
 list/FILE=sst_ts_1115.dat/FORMAT=comma sst_ts_1115
 list/FILE=sst_ts_1620.dat/FORMAT=comma sst_ts_1620
-list/FILE=sst_ts_2123.dat/FORMAT=comma sst_ts_2123
+list/FILE=sst_ts_2124.dat/FORMAT=comma sst_ts_2124
 
 cancel data/all
 cancel var/all
 
-! Climo, 1985 - 2009, regridded to 0.1 degree resolution to try to decrease file size
+! Climo, 1985 - 2009, regridded to 0.25 degree resolution to try to decrease file size
+! and to harmonize across remotely sensed variables
 ! Now that we've standarized this climatological period, this should only have to be done once, ever
+! Define new axis
+DEFINE AXIS/X=120E:100W:0.25/UNITS=degrees x025deg
+DEFINE AXIS/Y=0:55N:0.25/UNITS=degrees y025deg
 use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim
-! shade/palette=ocean_blue SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
-let sst_climo = SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
-list/CLOBBER/FILE=sst_climo.nc/FORMAT=cdf sst_climo
+let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x025deg, GY=y025deg]
+! shade/palette=ocean_blue sst_regrid[x=120E:100W, y=0:55N, l=1]
+let sst_climo = sst_regrid[x=120E:100W, y=0:55N, l=1]
+list/CLOBBER/FILE=sst_climo_test.nc/FORMAT=cdf sst_climo
 
 cancel data/all
 cancel var/all
 
-! Current year, 2023, for anomaly calculation regridded to a 0.1 degree resolution to try to decrease file size
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2023-clim
+! Current year, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! and to harmonize across remotely sensed variables
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim
+let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x025deg, GY=y025deg]
 ! shade/palette=ocean_blue SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
-let sst_2023 = SEA_SURFACE_TEMPERATURE[x=120E:100W:0.1, y=0:55N:0.1, l=1]
-list/FILE=sst_yr2023.nc/FORMAT=cdf sst_2023
+let sst_2024 = sst_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=sst_yr2024.nc/FORMAT=cdf sst_2024
 
 cancel data/all
 cancel var/all

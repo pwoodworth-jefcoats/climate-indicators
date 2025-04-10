@@ -55,7 +55,7 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim
 let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x025deg, GY=y025deg]
 ! shade/palette=ocean_blue sst_regrid[x=120E:100W, y=0:55N, l=1]
 let sst_climo = sst_regrid[x=120E:100W, y=0:55N, l=1]
-list/CLOBBER/FILE=sst_climo_test.nc/FORMAT=cdf sst_climo
+list/CLOBBER/FILE=sst_climo.nc/FORMAT=cdf sst_climo
 
 cancel data/all
 cancel var/all

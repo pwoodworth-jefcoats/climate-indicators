@@ -15,6 +15,8 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
 ! 304 = Dec 2022
 ! 305 = Jan 2023
 ! 316 = Dec 2023
+! 317 = Jan 2024
+! 328 = Dec 2024
 
 ! Area of interest
 ! 15 - 45N, 180 - 120W
@@ -29,33 +31,40 @@ let chl_ts_0307 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=65:124]
 let chl_ts_0812 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=125:184]
 let chl_ts_1317 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=185:244]
 let chl_ts_1822 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=245:304]
-let chl_ts_23 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=305:316]
+let chl_ts_2324 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=305:328]
 
 list/CLOBBER/FILE=chl_ts_9802.dat/FORMAT=comma chl_ts_9802
 list/CLOBBER/FILE=chl_ts_0307.dat/FORMAT=comma chl_ts_0307
 list/CLOBBER/FILE=chl_ts_0812.dat/FORMAT=comma chl_ts_0812
 list/CLOBBER/FILE=chl_ts_1317.dat/FORMAT=comma chl_ts_1317
 list/CLOBBER/FILE=chl_ts_1822.dat/FORMAT=comma chl_ts_1822
-list/CLOBBER/FILE=chl_ts_23.dat/FORMAT=comma chl_ts_23
+list/CLOBBER/FILE=chl_ts_2324.dat/FORMAT=comma chl_ts_2324
 
 cancel data/all
 cancel var/all
 
-! Climo, 1998 - 2009, regridded to 0.1 degree resolution to try to decrease file size
+! Climo, 1985 - 2009, regridded to 0.25 degree resolution to try to decrease file size
+! and to harmonize across remotely sensed variables
 ! Because this dataset is reprocessed each year, it makes sense to redo this each year
+! Define new axis
+DEFINE AXIS/X=120E:100W:0.25/UNITS=degrees x025deg
+DEFINE AXIS/Y=0:55N:0.25/UNITS=degrees y025deg
 use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0
-! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1])
-let chl_climo = CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1]
+let chl_regrid = CHLOR_A[GX=x025deg, GY=y025deg]
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
+let chl_climo = chl_regrid[x=120E:100W, y=0:55N, l=1]
 list/CLOBBER/FILE=chl_climo.nc/FORMAT=cdf chl_climo
 
 cancel data/all
 cancel var/all
 
-! Current year for anomaly calculation, 2023, regridded to 0.1 degree resolution to try to decrease file size
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2023-clim_v6-0
-! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1])
-let chl_2023 = CHLOR_A[x=120E:100W:0.1, y=0:55N:0.1, l=1]
-list/FILE=chl_yr2023.nc/FORMAT=cdf chl_2023
+! Current year for anomaly calculation, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! and to harmonize across remotely sensed variables
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0
+let chl_regrid = CHLOR_A[GX=x025deg, GY=y025deg]
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
+let chl_2024 = chl_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=chl_yr2024.nc/FORMAT=cdf chl_2024
 
 ! Test everything out
 ! use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2019-clim-v5-0

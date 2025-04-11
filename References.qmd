@@ -48,7 +48,7 @@ Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J
 NOAA (2025c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 7 April 2025, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
 \
 **Sea Surface Temperature**
-NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 3 April 2024.  
+NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2024.  
 \
 **Temperature at 200-300 m Depth**  
 APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024.   

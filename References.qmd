@@ -51,11 +51,11 @@ NOAA (2025c): NOAA's International Best Track Archive for Climate Stewardship (I
 NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2024.  
 \
 **Temperature at 200-300 m Depth**  
-APDRC (2024): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 4 April 2024.   
+APDRC (2025): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2024.   
 \
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.  
 \
-NOAA (2024d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 4 April 2024.  
+NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2024.  
 \
 **Ocean Color**  
 NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 4 April 2024 & 3 May 2024.  

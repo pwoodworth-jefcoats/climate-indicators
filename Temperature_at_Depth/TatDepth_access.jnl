@@ -15,13 +15,15 @@ use http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/mont
 ! 516 = Dec 2022
 ! 517 = Jan 2023
 ! 528 = Dec 2023
+! 529 = Jan 2024
+! 540 = Dec 2024
 
 ! Area of interest
 ! 15 - 45 N, 180 - 120 W, 195 - 303 m
 ! x = 180:120W, y = 15:45N, k = 20:26@ave
 
 ! Full time series, spatially averaged
-let LLTatD = POTDSL[x = 180:120W@ave, y = 15:45N@ave, k = 20:26@ave, l = 1:528]-273.15
+let LLTatD = POTDSL[x = 180:120W@ave, y = 15:45N@ave, k = 20:26@ave, l = 1:540]-273.15
 list/CLOBBER/FILE=T_at_200300_ts.dat/FORMAT=comma LLTatD
 
 ! Climo, 1980 - 2009
@@ -30,10 +32,10 @@ shade POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 1:360@ave]-273.15
 let TatD_climo = POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 1:360@ave]-273.15
 list/FILE=T_at_200300_climo_1980thru2009.nc/FORMAT=cdf TatD_climo
 
-! Current year for anomaly calculation, 2023
-shade POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 517:528@ave]-273.15
-let TatD_2023 = POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 517:528@ave]-273.15
-list/FILE=T_at_200300_yr2023.nc/FORMAT=cdf TatD_2023
+! Current year for anomaly calculation, 2024
+shade POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 529:540@ave]-273.15
+let TatD_2024 = POTDSL[x = 120E:100W, y = 0:55N, k = 20:26@ave, l = 529:540@ave]-273.15
+list/FILE=T_at_200300_yr2024.nc/FORMAT=cdf TatD_2024
 
 ! Test things out
 ! use T200300_climo.nc

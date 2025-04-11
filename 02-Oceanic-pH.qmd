@@ -116,7 +116,10 @@ if (n_txt > 0 & n_txt < 4) {
 #| include: false
 # Write csv for portal
 # Note that output csvs go in their own folder
+# Rounding to avoid too many significant figures.
+# Thanks to Johanna Wren for the code! https://github.com/pwoodworth-jefcoats/climate-indicators/issues/29
 ann_pH <- rename(ann_pH, year = Year)
+ann_pH$pH <- format(round(ann_pH$pH, digits=2), nsmall = 2)
 write_csv(ann_pH, file = paste(here(), '/PelagicClimate_', RptYr, '/pH_', RptYr, '.csv', sep = ""))
 ```
 
@@ -209,6 +212,14 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type 
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[3],
+     xlab = " ", ylab = " ")
+par(new = TRUE)
+plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd = 2,
+     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+     xaxs = "i", yaxs = "i", # remove the padding R adds
+     bty = "n", # remove box
+     col = pal[5],
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 

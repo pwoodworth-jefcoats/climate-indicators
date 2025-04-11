@@ -65,16 +65,16 @@ Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, 
 **North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)**  
 Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson, C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004. On the seasonal and interannual migrations of the transition zone chlorophyll front. Geophysical Research Letters, 31, L17204. doi: 10.1029/2004GL020637.  
 \
-NOAA OceanWatch (2024a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 18 April 2024.  
+NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 18 April 2024.  
 \
-NOAA OceanWatch (2024b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 18 April 2024.  
+NOAA OceanWatch (2025b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 18 April 2024.  
 \
 Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic global feature defining migration and forage habitat for marine resources. Progress in Oceanography, 49, pp. 469-483.  
 \
 **Estimated Median Phytoplankton Size**  
 Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton community size structure form empirical relationships with remotely sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1093/plankt/fbq088  
 \
-NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 4 April 2024.  
+NOAA OceanWatch (2025c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 11 April 2025.  
 \
 **Fish Community Size Structure**  
 Pacific Islands Fisheries Science Center (PIFSC), 2024a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  

@@ -420,7 +420,7 @@ Sourced from: NOAA OceanWatch (2025b) and Sathyendranath et al. (2018). Graphics
 ## Additional Information
 Ocean color data are geographically subset and spatially averaged using the pyFerret script `CHLaccess.jnl` which can be found in the Ocean_Color folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  
 \
-A plot of the residuals from the linear model for the anomalies showed that they were evenly distributed, although were more positive (~0.03 max) than negative (~-0.02 min). These residual exhibited periodicity that closely track the time series pattern.  
+A plot of the residuals from the linear model for the observations and anomalies showed that they were evenly distributed, although the anomaly residuals were more positive (~0.03 max) than negative (~-0.02 min). These anomaly residual exhibited periodicity that closely track the time series pattern.  
 \
 To prepare the spatial data for mapping, you'll need to run `map_data_for_dashboard.R`, which can be found in the [PreProcessing](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard/PreProcessing) folder of the [Indicator_Dashboard](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard) folder in this repository.
 

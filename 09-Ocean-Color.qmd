@@ -432,33 +432,60 @@ To prepare the spatial data for mapping, you'll need to run `map_data_for_dashbo
 # land_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_land.RData'))
 # coast_proj <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_coast.RData'))
 # 
-# # Load data
-# maps <- read.csv(paste(Dir, '/Chl_map_data_', RptYr, '.csv', sep = ""))
-# 
-# # Filter to the given year and the anomaly
-# maps_RptYr <- maps |> filter(ID == "Chl")
-# maps_anom <- maps |> filter(ID == "Chl_anom")
-# 
-# # Map elements and aesthetics
-# seagrass <- nmfs_palette("seagrass")(3)
-# pal <- seagrass
-# ll_rect_color <- "white" #outline for ll fishing grounds box
-# fill_scale <- scale_fill_gradientn(name = "Chl", trans = log10_trans(),
-#                                    colors = pal, limits = c(0.01, 10), oob = squish) #log scale
-# 
-# # Create map
-# p <- ggplot() +
-#   geom_raster(data = maps_RptYr, mapping = aes(x = x, y = y, fill = layer)) + #data as raster
+# Load data
+maps <- read.csv(paste(Dir, '/Chl_map_data_', RptYr, '.csv', sep = ""))
+
+# Filter to the given year and the anomaly
+maps_RptYr <- maps |> filter(ID == "Chl")
+maps_anom <- maps |> filter(ID == "Chl_anom")
+
+# Adding a column that assignes line types to contours so we can make a legend
+maps_anom$ltyF <- factor(ifelse(maps_anom$layer > 0.02, '+0.02 mg chl m-3', ifelse(maps_anom$layer < -0.02, '-0.02 mg chl m-3', 'No Change')), levels=c('-0.02 mg chl m-3', '+0.02 mg chl m-3', 'No Change'))
+ 
+# Map elements and aesthetics
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- seagrass
+ll_rect_color <- "white" #outline for ll fishing grounds box
+fill_scale <- scale_fill_gradientn(name = "Chl", trans = log10_trans(),
+                                  colors = pal, limits = c(0.01, 10), oob = squish) #log scale
+
+# Create map
+p <- ggplot() +
+ geom_raster(data = maps_RptYr, mapping = aes(x = x_disp, y = y, fill = layer)) + #data as raster
+ borders('world2', fill='#A5AAAF', colour='gray40', linewidth=0.2) + #add land to the map
 #   geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
 #   annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
-#   fill_scale + #indicator-dependent color and scale from above
-#   geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) + #base map background
-#   geom_sf(data = coast_proj) + #base map outline
-#   coord_sf(expand = F) + #don't expand past x/y limits
-#   xlab("") + ylab("") +
-#   theme_bw() + theme(panel.grid = element_line(color = "black", linewidth = 0.1),
-#                      legend.background = element_rect(fill = 'transparent'))
-# # Add anomaly
+ fill_scale + #indicator-dependent color and scale from above
+coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
+ scale_x_continuous(breaks=seq(120,260,30), labels = paste0(c(seq(120,180,30), seq(150,100,-30)), c(rep('°E',2),"",rep('°W',2)))) + # adding degrees to the breaks
+ scale_y_continuous(breaks=seq(0,55,15), labels = paste0(seq(0,55,15), c('',rep('°N',3)))) + # adding degrees to the breaks
+ xlab("") + ylab("") +
+ theme_bw() +
+ theme(panel.grid = element_line(color = "black", linewidth = 0.1),
+      legend.background = element_rect(fill = 'transparent'), legend.key.height = unit(1, "null"),
+      legend.key.width = unit(0.5, 'cm'),  #scales color bar to height of the plot
+      legend.margin = margin(0, 0, 0, 0),  #fixing margins on color bar
+      legend.text = element_text(size = 10),  #text size for color bar
+      plot.title = element_text(hjust = 0.5)) + #centering the plot title. Default is left align
+ guides(fill = guide_colorbar(title.position='right', title="Chlorophyll-a (mg m-3)")) + #rotates the color bar text and centers it
+ labs(title = paste(RptYr, 'average (shaded) and anomaly (contours)'))  #add figure title
+
+# Add anomaly
+p <- p +
+  geom_contour(data = maps_anom, aes(x = x_disp, y = y, z = layer, linetype=ltyF, linewidth=ltyF),
+               breaks = seq(-0.04, 0.04, 0.02), color='black') +
+  geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
+  annotate("text", x = 210, y = 48, label = "Longline fishing grounds", size = 3.7, color = ll_rect_color) +
+  scale_linetype_manual(values = c('dashed','solid','solid'), name='Difference from 1998-2009 average +-0.02 mg chl m-3') +  #adding legend to bottom of plot. Keep name the same for legends you want to combine (here it's linetype and linewidth)
+  scale_linewidth_manual(values=c(0.25,0.25,1), name='Difference from 1998-2009 average +-0.02 mg chl m-3') +
+  guides(fill = guide_colorbar(title.position='right', title="Chlorophyll-a (mg m-3)",
+                               title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
+         linetype=guide_legend(position = 'bottom', title.position='top', title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
+
+pdf(paste(Dir, '/Chl_map_', RptYr, '.pdf', sep = ""))
+print(p)
+dev.off()
+
 # p <- p +
 #   geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), breaks = c(-0.02),
 #                color = "black", linetype = 3) # Dotted negative contour
@@ -470,8 +497,4 @@ To prepare the spatial data for mapping, you'll need to run `map_data_for_dashbo
 #                color = "black", lwd = 0.5) # solid positive contour
 # 
 # p
-# 
-# pdf(paste(Dir, '/Chl_map_', RptYr, '.pdf', sep = ""))
-# print(p)
-# dev.off()
 ```

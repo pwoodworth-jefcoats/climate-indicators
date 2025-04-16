@@ -476,8 +476,8 @@ p <- p +
                breaks = seq(floor(min(maps_anom$layer)), ceiling(max(maps_anom$layer)), 1), color='black') +
   geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
   annotate("text", x = 210, y = 48, label = "Longline fishing grounds", size = 3.7, color = ll_rect_color) +
-  scale_linetype_manual(values = c('dashed','solid','solid'), name='Difference from 1980-2009 average +-0.02 mg chl m-3') +  #adding legend to bottom of plot. Keep name the same for legends you want to combine (here it's linetype and linewidth)
-  scale_linewidth_manual(values=c(0.25,0.25,1), name='Difference from 1980-2009 average +-0.02 mg chl m-3') +
+  scale_linetype_manual(values = c('dashed','solid','solid'), name='Difference from 1998-2009 average +-0.02 mg chl m-3') +  #adding legend to bottom of plot. Keep name the same for legends you want to combine (here it's linetype and linewidth)
+  scale_linewidth_manual(values=c(0.25,0.25,1), name='Difference from 1998-2009 average +-0.02 mg chl m-3') +
   guides(fill = guide_colorbar(title.position='right', title="Chlorophyll-a (mg m-3)",
                                title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
          linetype=guide_legend(position = 'bottom', title.position='top', title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.

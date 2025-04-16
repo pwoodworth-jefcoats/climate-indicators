@@ -479,7 +479,7 @@ coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x
 # Add anomaly
 p <- p +
   geom_contour(data = maps_anom, aes(x = x_disp, y = y, z = layer, linetype=ltyF, linewidth=ltyF),
-               breaks = seq(floor(min(maps_anom$layer)), ceiling(max(maps_anom$layer)), 1), color='black') +
+               breaks = seq(floor(min(maps_anom$layer)), ceiling(max(maps_anom$layer)), 0.1), color='black') +
   geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
   annotate("text", x = 210, y = 48, label = "Longline fishing grounds", size = 3.7, color = ll_rect_color) +
   scale_linetype_manual(values = c('dashed','solid','solid'), name='Difference from 1998-2009 average in 0.1 um intervals') +  #adding legend to bottom of plot. Keep name the same for legends you want to combine (here it's linetype and linewidth)

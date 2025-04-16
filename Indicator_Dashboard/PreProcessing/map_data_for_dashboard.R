@@ -14,6 +14,7 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
   
   #calculate anomaly raster
   raster_anom <- raster_ann - raster_clim
+  names(raster_ann) <- 'layer'
   
   # #CRS to recenter for plotting
   # plot_crs <- "+proj=longlat +x_0=0 +y_0=0 +lat_0=0 +lon_0=180 +datum=WGS84 +no_defs"

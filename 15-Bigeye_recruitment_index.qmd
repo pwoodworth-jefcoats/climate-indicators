@@ -137,6 +137,8 @@ legend(2003.5, 172, legend=c(expression("CPUE Bigeye Tuna "<=15 ~"kg"), 'CPUE Al
 
 dev.off()
 
+write.csv(dealerYear, paste0(Dir, '/SAFE_BET_CPUE_WPUE_dealer_', RptYr, '.csv'), quote = F, row.names = F)
+
 ```
 
 ```{r}
@@ -145,7 +147,7 @@ dev.off()
 # Figure caption text
 # fig-recPulse, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', 
 
-knitr::include_graphics(paste0(Dir, 'SAFE_RecIndexRaw_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFE_RecIndexRaw_', RptYr, '.png'))
 
 ```
 

@@ -1,0 +1,188 @@
+---
+title: "Bigeye_Forecast"
+author: "phoebe.woodworth-jefcoats@noaa.gov"
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc.docx
+---
+
+## Bigeye Forecast
+
+```{r}
+#| include: false
+### Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(stringr)
+# remotes::install_github("nmfs-fish-tools/nmfspalette")
+library(nmfspalette)
+```
+
+```{r}
+#| include: false
+# Set report year (RptYr), to make things easier
+RptYr <- 2024
+
+# Set path to variable: Bigeye_Forecast
+# This is where the data are and where the plots will go
+Dir <- here("Bigeye_Forecast")
+```
+
+```{r}
+#| include: false
+### Load data
+# Annual estimated median phytoplankton size over forecast area
+med_phyto_fct_9802 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_9802.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_0307 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_0307.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_0812 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_0812.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_1317 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_1317.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_1822 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_1822.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_2324 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_2324.dat', sep = ""), skip = 5, col_names = FALSE)
+
+# Concatonate
+med_phyto_fct_full <- rbind(med_phyto_fct_9802, 
+                        med_phyto_fct_0307, 
+                        med_phyto_fct_0812, 
+                        med_phyto_fct_1317, 
+                        med_phyto_fct_1822,
+                        med_phyto_fct_2324)
+
+# CPUE and WPUE data
+Fishery_data <- read_csv(file = paste(Dir, '/CPUEWPUE_', RptYr, '.csv', sep = ""))
+```
+
+```{r}
+#| include: false
+### Annual values of median phytoplankton size
+yrs <- year(dmy_hm(med_phyto_fct_full$X1))
+med_phyto_fct_full <- bind_cols(med_phyto_fct_full, yrs)
+med_phyto_fct_full <- rename(med_phyto_fct_full, Date_Time = X1)
+med_phyto_fct_full <- rename(med_phyto_fct_full, ESD_um = X2)
+med_phyto_fct_full <- rename(med_phyto_fct_full, Year = ...3)
+```
+
+```{r}
+#| include: false
+### Linear fit 
+phyto_years <- which(med_phyto_fct_full$Year >= 1998 & med_phyto_fct_full$Year <= RptYr - 4)
+bigeye_years <- which(Fishery_data$LANDYR >= 2002 & Fishery_data$LANDYR <= RptYr)
+
+# Build data frames
+CPUE_model_data <- bind_cols(med_phyto_fct_full$ESD_um[phyto_years], Fishery_data$CPUEall[bigeye_years])
+CPUE_model_data <- rename(CPUE_model_data, ESD_um = ...1)
+CPUE_model_data <- rename(CPUE_model_data, CPUE = ...2)
+
+WPUE_model_data <- bind_cols(med_phyto_fct_full$ESD_um[phyto_years], Fishery_data$WPUE[bigeye_years])
+WPUE_model_data <- rename(WPUE_model_data, ESD_um = ...1)
+WPUE_model_data <- rename(WPUE_model_data, WPUE = ...2)
+
+CPUE_forecast_model <- lm(CPUE ~ ESD_um, data = CPUE_model_data)
+WPUE_forecast_model <- lm(WPUE ~ ESD_um, data = WPUE_model_data)
+```
+
+```{r}
+#| echo: false
+# Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+
+# This section includes some error checks to prompt fixing the text
+if (any(summary(CPUE_forecast_model)$coefficients[,4] > 0.05)) {
+  print('Double-check the CPUE forecast.')
+}
+
+if (any(summary(WPUE_forecast_model)$coefficients[,4] > 0.05)) {
+  print('Double-check the WPUE forecast.')
+}
+```
+
+```{r}
+# Forecasts & confidence intervals
+# note to self, compare the confidence intervals to Matlab approach
+Years <- seq(2002, RptYr + 4, 1)
+CPUE_forecast <- predict(CPUE_forecast_model, data.frame(ESD_um = med_phyto_fct_full$ESD_um), interval = "confidence", level = 0.95)
+WPUE_forecast <- predict(WPUE_forecast_model, data.frame(ESD_um = med_phyto_fct_full$ESD_um), interval = "confidence", level = 0.95)
+
+Bigeye_Forecast <- as_tibble(cbind(Years, CPUE_forecast[,1], WPUE_forecast[,1]))
+Bigeye_Forecast <- rename(Bigeye_Forecast, CPUEforecast = V2)
+Bigeye_Forecast <- rename(Bigeye_Forecast, WPUEforecast = V3)
+```
+
+```{r}
+#| include: false
+### Create plot for report
+# Note that there's some final work that happens in Illustrator, namely, making the shading work
+
+# Create color palette for easy reference
+waves <- nmfs_palette("waves")(4) # 3 = CPUE
+urchin <- nmfs_palette("urchin")(5) # 4 = WPUE
+
+pdf(paste(Dir, '/Bigeye_Forecast_CPUE_', RptYr, '.pdf', sep = ""),
+    width = 5.5, height = 3.5)
+plot(Bigeye_Forecast$Years, Bigeye_Forecast$CPUEforecast, type = "l", lty = 3, col = waves[3],
+     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "Year", ylab = "Bigeye Tuna CPUE (# fish/1000 hooks)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Fishery_data$LANDYR[bigeye_years], CPUE_model_data$CPUE, type = "l", lwd = 2, col = waves[3],
+     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Bigeye_Forecast$Years, CPUE_forecast[,2], type = "l", lwd = 0.5, col = waves[3],
+     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Bigeye_Forecast$Years, CPUE_forecast[,3], type = "l", lwd = 0.5, col = waves[3],
+     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = seq(2002, RptYr + 4, 1))
+axis((2), at = seq(2, 5, 0.5))
+dev.off()
+
+pdf(paste(Dir, '/Bigeye_Forecast_WPUE_', RptYr, '.pdf', sep = ""),
+    width = 5.5, height = 3.5)
+plot(Bigeye_Forecast$Years, Bigeye_Forecast$WPUEforecast, type = "l", lty = 3, col = urchin[4],
+     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "Year", ylab = "Bigeye Tuna WPUE (kg fish/1000 hooks)",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Fishery_data$LANDYR[bigeye_years], WPUE_model_data$WPUE, type = "l", lwd = 2, col = urchin[4],
+     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Bigeye_Forecast$Years, WPUE_forecast[,2], type = "l", lwd = 0.5, col = urchin[4],
+     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+par(new = TRUE)
+plot(Bigeye_Forecast$Years, WPUE_forecast[,3], type = "l", lwd = 0.5, col = urchin[4],
+     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+axis((1), at = seq(2002, RptYr + 4, 1))
+axis((2), at = seq(75, 175, 25))
+dev.off()
+```
+
+```{r}
+#| include: false
+# Write csv for portal
+# Note that output csvs go in their own folder
+Bigeye_Forecast <- rename(Bigeye_Forecast, `Fish per 1000 hooks (bigeye)` = CPUEforecast)
+Bigeye_Forecast <- rename(Bigeye_Forecast, `kg per 1000 hooks (bigeye)` = WPUEforecast)
+write_csv(Bigeye_Forecast, file = paste(here(), '/PelagicClimate_', RptYr, '/BigeyeForecast_', RptYr, '.csv', sep = ""))
+```
+
+Rationale: Rationale: Recent work has shown that average phytoplankton size can be used to predict bigeye tuna catch rates up to four years in advance (Woodworth-Jefcoats and Wren 2020). The hypothesized mechanism behind this relationship is that larger phytoplankton are indicative of higher quality food for the zooplankton upon which larval and juvenile bigeye tuna prey. With higher quality prey available, more bigeye tuna survive into adulthood and recruit to the fishery.   
+\
+Status: The catch rate forecasts suggest that catch rates will be fairly steady over the next four years.  
+\
+Description: Time series of observed bigeye tuna CPUE and WPUE are presented together with the annual forecast values and their associated 95% confidence interval.  The forecast is based on a linear regression between four-year-lagged median phytoplankton size and both CPUE and WPUE (individual).  
+\
+Timeframe: Annual  
+\
+Region: Hawaiʻi-based longline fishing grounds (0° – 40°N, 180° – 150°W and 15° – 36°N, 150° – 125°W).
+\
+Measurement Platform: Model-derived from satellite remotely sensed and in situ data.  
+\
+Sourced from: HDAR, Langley et al. (2006), NOAA OceanWatch (2025c), and Woodworth-Jefcoats and Wren (2020). Graphics produced in part using Stawitz and Li (2025).  
+\
+## Additional Information  
+Median phytoplankton size data are geographically subset and spatially averaged using the pyFerret script `BigeyeForecast_access.jnl` which can be found in the Bigeye_Forecast folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  Time series of bigeye tuna CPUE and WPUE and created using `SAFE_LogDeal_DataDownload.Rmd` in the Fisheries_Indicators folder.  Note that actually running this script requires access to a controlled database.
+\
+A plot of the residuals from the linear models showed that they were evenly distributed, although the WPUE residualswere more negative (~-20 min) than positive (~30 max). Both models' residuals exhibited periodicity found in the data.

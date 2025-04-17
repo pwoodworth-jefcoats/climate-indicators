@@ -96,15 +96,16 @@ if (any(summary(WPUE_forecast_model)$coefficients[,4] > 0.05)) {
 ```
 
 ```{r}
+#| include: FALSE
 # Forecasts & confidence intervals
 # note to self, compare the confidence intervals to Matlab approach
 Years <- seq(2002, RptYr + 4, 1)
 CPUE_forecast <- predict(CPUE_forecast_model, data.frame(ESD_um = med_phyto_fct_full$ESD_um), interval = "confidence", level = 0.95)
 WPUE_forecast <- predict(WPUE_forecast_model, data.frame(ESD_um = med_phyto_fct_full$ESD_um), interval = "confidence", level = 0.95)
 
-Bigeye_Forecast <- as_tibble(cbind(Years, CPUE_forecast[,1], WPUE_forecast[,1]))
-Bigeye_Forecast <- rename(Bigeye_Forecast, CPUEforecast = V2)
-Bigeye_Forecast <- rename(Bigeye_Forecast, WPUEforecast = V3)
+Bigeye_Forecast <- as_tibble(cbind(Years, CPUE_forecast[,1], WPUE_forecast[,1]), .name_repair = "unique")
+Bigeye_Forecast <- rename(Bigeye_Forecast, CPUEforecast = ...2)
+Bigeye_Forecast <- rename(Bigeye_Forecast, WPUEforecast = ...3)
 ```
 
 ```{r}
@@ -140,22 +141,22 @@ dev.off()
 pdf(paste(Dir, '/Bigeye_Forecast_WPUE_', RptYr, '.pdf', sep = ""),
     width = 5.5, height = 3.5)
 plot(Bigeye_Forecast$Years, Bigeye_Forecast$WPUEforecast, type = "l", lty = 3, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "Year", ylab = "Bigeye Tuna WPUE (kg fish/1000 hooks)",
+     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "Year", ylab = "Bigeye Tuna WPUE (kg fish/1000 hooks)",
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
 par(new = TRUE)
 plot(Fishery_data$LANDYR[bigeye_years], WPUE_model_data$WPUE, type = "l", lwd = 2, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
 par(new = TRUE)
 plot(Bigeye_Forecast$Years, WPUE_forecast[,2], type = "l", lwd = 0.5, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
 par(new = TRUE)
 plot(Bigeye_Forecast$Years, WPUE_forecast[,3], type = "l", lwd = 0.5, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(75, 175), xlab = "", ylab = "",
+     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
 axis((1), at = seq(2002, RptYr + 4, 1))
-axis((2), at = seq(75, 175, 25))
+axis((2), at = c(seq(70, 170, 20), 175))
 dev.off()
 ```
 
@@ -165,6 +166,12 @@ dev.off()
 # Note that output csvs go in their own folder
 Bigeye_Forecast <- rename(Bigeye_Forecast, `Fish per 1000 hooks (bigeye)` = CPUEforecast)
 Bigeye_Forecast <- rename(Bigeye_Forecast, `kg per 1000 hooks (bigeye)` = WPUEforecast)
+
+# Rounding to avoid too many significant figures.
+# Thanks to Johanna Wren for the code! https://github.com/pwoodworth-jefcoats/climate-indicators/issues/29
+Bigeye_Forecast$`Fish per 1000 hooks (bigeye)` <- format(round(Bigeye_Forecast$`Fish per 1000 hooks (bigeye)`, digits=2), nsmall = 2)
+Bigeye_Forecast$`kg per 1000 hooks (bigeye)` <- format(round(Bigeye_Forecast$`kg per 1000 hooks (bigeye)`, digits=2), nsmall = 2)
+
 write_csv(Bigeye_Forecast, file = paste(here(), '/PelagicClimate_', RptYr, '/BigeyeForecast_', RptYr, '.csv', sep = ""))
 ```
 

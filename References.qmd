@@ -12,7 +12,7 @@ This list includes the full references for all the sources in the pelagic ocean 
 **Atmospheric Carbon Dioxide**  
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551  
 \
-NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2024.  
+NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2025.  
 \
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565  
 \
@@ -31,7 +31,7 @@ Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in Seawater 
 NOAA CPC (2025): <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 1 April 2025.  
 \
 **Pacific Decadal Oscillation**  
-NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.  
+NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.  
 \
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079.   
 \
@@ -48,14 +48,14 @@ Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J
 NOAA (2025c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 7 April 2025, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
 \
 **Sea Surface Temperature**
-NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2024.  
+NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 10 April 2025.  
 \
 **Temperature at 200-300 m Depth**  
-APDRC (2025): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2024.   
+APDRC (2025): <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp> Accessed 10 April 2025.   
 \
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010. Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior in the central North Pacific Ocean. Progress in Oceanography, 86, pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.  
 \
-NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2024.  
+NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth System Research Laboratories’ Physical Sciences Laboratory, <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April 2025.  
 \
 **Ocean Color**  
 NOAA OceanWatch (2025b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 11 April 2025.  
@@ -65,9 +65,9 @@ Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, 
 **North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)**  
 Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson, C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004. On the seasonal and interannual migrations of the transition zone chlorophyll front. Geophysical Research Letters, 31, L17204. doi: 10.1029/2004GL020637.  
 \
-NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 18 April 2024.  
+NOAA OceanWatch (2025a): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly> Accessed: 18 April 2025.  
 \
-NOAA OceanWatch (2025b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 18 April 2024.  
+NOAA OceanWatch (2025b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 18 April 2025.  
 \
 Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R., and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic global feature defining migration and forage habitat for marine resources. Progress in Oceanography, 49, pp. 469-483.  
 \
@@ -77,42 +77,42 @@ Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A., Maxwell, D.
 NOAA OceanWatch (2025c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 11 April 2025.  
 \
 **Fish Community Size Structure**  
-Pacific Islands Fisheries Science Center (PIFSC), 2024a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15 April 2025.  
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 15 April 2025.  
 \
 Farley et al. (2018): Farley J, Eveson P, Krusic-Golub K, Sanchez C, Roupsard F, McKechnie S, Nicol S, Leroy B, Smith N, Chang SK. 2018. Project 35: Age, growth and maturity of bigeye tuna in the western and central Pacific Ocean. WCPFC Scientific Committee, 13th meeting, Rarotonga, Cook Islands, 9 – 17 August 2017, WCPFC-SC13-2017/SA-WP-01, 45p.  
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
 \
 **Bigeye Weight-Per-Unit-Effort**  
-Pacific Islands Fisheries Science Center (PIFSC), 2024a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15 April 2025.  
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 15 April 2025.  
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
 \
 **Bigeye Recruitment Index**  
-Pacific Islands Fisheries Science Center (PIFSC), 2024: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15 April 2025.  
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 15 April 2025.  
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
 \
 **Bigeye Tuna Catch Rate Forecast**  
-Pacific Islands Fisheries Science Center (PIFSC), 2024: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 18 April 2024 and 30 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15 April 2025.  
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2024b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 18 April 2024 and 30 April 2024.  
+Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 15 April 2025.  
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
 \
-NOAA OceanWatch (2024c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 30 April 2024.  
+NOAA OceanWatch (2025c): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 15 April 2025.  
 \
 Woodworth-Jefcoats and Wren (2020): Woodworth-Jefcoats P, Wren J. 2020. Toward an environmental predictor of tuna recruitment. Fish Oceanogr, 29(5):436-441. <https://doi.org/10.1111/fog.12487>.   
 \
 **Software**  
 R is used in creating all indicators.
-R Core Team (2022). R: A language and environment for statistical computing. R Foundation   for Statistical Computing, Vienna, Austria. URL <https://www.R-project.org/>.  
+R Core Team (2024). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL <https://www.R-project.org/>.  
   \
 PyFerret is used in creating the Sea Surface Temperature, Temperature at 200–300 m Depth, Ocean Color, Estimated Median Phytoplankton Size, and Bigeye Tuna Catch Rate Forecast indicators.
 PyFerret. (2021). PyFerret: Version 7.64 [Software]. Github. <https://github.com/NOAA-PMEL/PyFerret>  
@@ -127,15 +127,12 @@ The following R packages are used to calculate the oceanic and climate indicator
 |lubridate| X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |  X        | X    | X           |  X       |
 |here     | X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             |  X       |
 |nmfspalette| X   | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             |  X       |
-|plotly   | X     | X  |  X   | X   |     | X   | X             | X   |        |  X         |           |      |             |          |
-|reticulate| X    | X  |  X   | X   |     | X   | X             | X   |        |  X         |           |      |             |          |
 |stringr  |       | X  |  X   | X   | X   | X   | X             | X   |        |  X         |           |      |             | X        |
 |sf       |       |    |      |     | X   |     |               |     |        |            |           |      |             |          |
 |scales   |       |    |      |     |     |     |               | X   |        |            | X         |      |             |          |
 |raster   |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
 |rasterVis|       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
 |mapdata  |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
-|maptools |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
 |cmocean  |       |    |      |     |     |     |               |     | X      |            |           |      |             |          |
 |RColorBrewer|    |    |      |     |     |     |               |     | X      |            |           |      |             |          |
 |latticeExtra|    |    |      |     |     |     |               |     | X      |            |           |      |             |          |
@@ -158,10 +155,6 @@ here:  Müller K (2020). _here: A Simpler Way to Find Your Files_. R package ver
 \
 nmfspalette: Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000.  
 \
-plotly: C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.  
-\
-reticulate: Ushey K, Allaire J, Tang Y (2023). _reticulate: Interface to 'Python'_. R package version 1.31,   <https://CRAN.R-project.org/package=reticulate>.  
-\
 stringr: Wickham H (2022). _stringr: Simple, Consistent Wrappers for Common String Operations_. R package version 1.5.0,   <https://CRAN.R-project.org/package=stringr>.  
 \
 sf: 
@@ -176,8 +169,6 @@ raster: Hijmans R (2023). _raster: Geographic Data Analysis and Modeling_. R pac
 rasterVis: Oscar Perpinan Lamigueiro and Robert Hijmans (2023), rasterVis. R package version 0.51.5.  
 \
 mapdata: Becker OScbRA, Brownrigg. ARWRvbR (2022). _mapdata: Extra Map Databases_. R package version 2.3.1,   <https://CRAN.R-project.org/package=mapdata>.  
-\
-maptools: Bivand R, Lewin-Koh N (2023). _maptools: Tools for Handling Spatial Objects_. R package version 1.1-8,   <https://CRAN.R-project.org/package=maptools>.  
 \
 cmocean: Thyng K, Greene C, Hetland R, Zimmerle H, DiMarco S (2016). “True colors of oceanography: Guidelines for effective and accurate colormap selection.” _Oceanography_, *29*(3). doi:10.5670/oceanog.2016.66 <https://doi.org/10.5670/oceanog.2016.66>.  
 \

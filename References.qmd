@@ -86,6 +86,8 @@ Farley et al. (2018): Farley J, Eveson P, Krusic-Golub K, Sanchez C, Roupsard F,
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N, Bigelow K. 2006. A summary of the data available for the estimation of conversion factors (processed to whole fish weights) for yellowfin and bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 – 18 August 2006, WCPFC-SC2-2006/ME IP-3.  
 \
 **Bigeye Weight-Per-Unit-Effort**  
+Aires-da-Silva, Alexandre M., Mark N. Maunder, Kurt M. Schaefer, and Daniel W. Fuller. 2015. “Improved Growth Estimates from Integrated Analysis of Direct Aging and Tag–Recapture Data: An Illustration with Bigeye Tuna (Thunnus Obesus) of the Eastern Pacific Ocean with Implications for Management.” Fisheries Research 163 (March): 119–26.  
+\
 Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15 April 2025.  
 \
 Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>. Accessed 15 April 2025.  

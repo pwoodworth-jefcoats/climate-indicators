@@ -34,11 +34,12 @@ Dir <- here("Fisheries_Indicators")
 
 ```{r}
 #| include: false
-setwd(Dir)
+# setwd(Dir)
 
 # Import fisheries the data from saved files
 # This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
-dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
+# dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
+dealer <- readRDS(paste0(Dir, '/SAFE_dealer_', RptYr, '_processed.rds'))
 
 # Read in images as rasters
 beye <- readPNG("Bigeye_blue.png")

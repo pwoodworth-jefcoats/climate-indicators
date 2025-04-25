@@ -100,7 +100,8 @@ logbookRaw <- logbookRaw %>%
 str(logbookRaw)
 
 # Save dataset
-saveRDS(object = logbookRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr ,'.rds'))
+# saveRDS(object = logbookRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_logbook_', RptYr ,'.rds'))
+saveRDS(object = logbookRaw, file = paste0(mainDir, '/SAFE_logbook_', RptYr ,'.rds'))
 
 # Clear your query results
 dbClearResult(res)
@@ -122,7 +123,8 @@ head(dealerRaw)
 str(dealerRaw) 
 
 # Save dataset
-saveRDS(object = dealerRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'.rds'))
+# saveRDS(object = dealerRaw, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'.rds'))
+saveRDS(object = dealerRaw, file = paste0(mainDir, '/SAFE_dealer_', RptYr ,'.rds'))
 
 # Clear your query results
 dbClearResult(res)
@@ -169,8 +171,8 @@ dealer <- dealer %>%
   mutate(NUM_SOLD=1)  # make a num sold column since it was removed during the uncount operation
 
 # Save dataset
-saveRDS(object = dealer, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'_processed.rds'))
-
+# saveRDS(object = dealer, file = paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr ,'_processed.rds'))
+saveRDS(object = dealer, file = paste0(mainDir, '/SAFE_dealer_', RptYr ,'_processed.rds'))
 ```
 
 

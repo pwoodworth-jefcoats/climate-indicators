@@ -37,13 +37,15 @@ Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Fran
 \
 Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1  
 \
+Wren et al. (2019): Wren, J. K. L., Shaffer, S. A., and Polovina, J. J., 2019: Variations in black-footed albatross sighting in a North Pacific transitional are due to changes in fleet dynamics and oceanography 2006-2017. Deep-Sea Research, Part II, 169-170, 104605. doi: 10.1016/j.dsr2.2019.06.013  
+\
 **North Pacific Gyre Oscillation**
-Di Lorenzo et al. (2008): Di Lorenzo, E., Schneider, N., Cobb, K. M., Franks, P. J. S., Chhak, K., Miller, A. J., McWilliams, J. C., Bograd, S. J., Arango, H., Curchitser, E., Powell, T. M., and Rivière, P., 2008: North Pacific Gyre Oscillation links ocean climate and ecosystem change. Geophysical Research Letters, 35(8), L08607, doi:10.1029/2007GL032838.  
+Di Lorenzo et al. (2008): Di Lorenzo, E., Schneider, N., Cobb, K. M., Franks, P. J. S., Chhak, K., Miller, A. J., McWilliams, J. C., Bograd, S. J., Arango, H., Curchitser, E., Powell, T. M., and Rivière, P., 2008: North Pacific Gyre Oscillation links ocean climate and ecosystem change. Geophysical Research Letters, 35(8), L08607, doi: 10.1029/2007GL032838.  
 \
 **Tropical Cyclones**  
 Knapp et al. (2010): Knapp, K. R., M. C. Kruk, D. H. Levinson, H. J. Diamond, and C. J. Neumann, 2010: The International Best Track Archive for Climate Stewardship (IBTrACS): Unifying tropical cyclone best track data. Bulletin of the American Meteorological Society, 91, 363-376. doi:10.1175/2009BAMS2755.1  
 \
-Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 7 April 2025.  
+Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C. Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for Environmental Information. doi:10.25921/82ty-9e16 [Accessed: 7 April 2025].  
 \
 NOAA (2025c): NOAA's International Best Track Archive for Climate Stewardship (IBTrACS) data, <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/> Accessed: 7 April 2025, Dataset identifier: <https://doi.org/10.25921/82ty-9e16>  
 \

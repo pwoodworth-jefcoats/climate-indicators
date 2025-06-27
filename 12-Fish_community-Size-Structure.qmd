@@ -142,6 +142,67 @@ ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', 
 
 ```
 
+
+```{r}
+#| eval: false
+#| include: false
+
+library(purrr)
+library(ggridges)
+
+# Get the total number of fish sold each year
+numSold <- aggregate(NUM_SOLD ~ Year, data=dealerDat, FUN=sum)
+numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
+
+# Make a function to put the total sold catch at the end of the density plot
+numSold_annotation <- map2(numSold$pretty, seq_along(unique(dealerDat$Year)),
+                            function(nSold, Year) {
+                              geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
+                                        aes(label = paste('n =', nSold), x = Inf, y = Year),
+                                        hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
+                            })
+
+# Basic code for ridge plot instead of violin
+ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01) {
+  # Get the total number of fish sold each year
+  numSold <- aggregate(NUM_SOLD ~ Year, data=dealerDat, FUN=sum)
+  numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
+
+  # Make a function to put the total sold catch at the end of the density plot
+  numSold_annotation <- map2(numSold$pretty, seq_along(unique(dealerDat$Year)),
+                            function(nSold, Year) {
+                              geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
+                                        aes(label = paste('n =', nSold), x = Inf, y = Year),
+                                        hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
+                            })
+  # Make the ridge plot
+  rdg <- ggplot(dealerDat, aes(x=WholeWeight, y=Year, group=Year)) + 
+    stat_density_ridges(scale = 2, 
+                        rel_min_height = cutoff, 
+                        quantile_lines = T, quantiles = 0.5, 
+                        fill=col, alpha=0.8
+                        ) +
+    geom_vline(xintercept = L50, color=L50col, linetype='dashed') + 
+    scale_y_reverse(limits=c(RptYr+0.5, 1998), expand=c(0,0), breaks=seq(RptYr, 2000,by=-4)) + 
+    theme_ridges(center_axis_labels = T) + 
+    xlim(xmin,xmax) +
+    xlab('Whole Weight [kg]') + 
+    ylab(NULL) +
+    numSold_annotation
+  
+  return(rdg)
+}
+
+i <- ridgefunc(dealer, col='#63a298', L50=-10, L50col=NA, xmax=90, xmin=-5, cutoff=0.02)
+#a2 <- violfunc(dealer, '#63a298', w, -1, NA, yMax=200)
+j <- ridgefunc(dealerBE, '#5b84a1', BET_L50_kg, 'gray30', 105)
+k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray30', 310, -10)
+
+ggsave(plot = i, filename = '~/Desktop/SAFE_all_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = j, filename = '~/Desktop/SAFE_BET_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = k, filename = '~/Desktop/SAFE_SWO_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
+```
+
 ```{r}
 #| include: false
 

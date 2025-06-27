@@ -198,9 +198,9 @@ i <- ridgefunc(dealer, col='#63a298', L50=-10, L50col=NA, xmax=90, xmin=-5, cuto
 j <- ridgefunc(dealerBE, '#5b84a1', BET_L50_kg, L50col='gray30', xmax=105, bwidth=2)
 k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray30', xmax=310, xmin=-10, overlap=2, alpha=1, bwidth=5)
 
-ggsave(plot = i, filename = '~/Desktop/SAFE_all_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
-ggsave(plot = j, filename = '~/Desktop/SAFE_BET_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
-ggsave(plot = k, filename = '~/Desktop/SAFE_SWO_test_ridges.png', width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgesSWO_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
 ```
 
 ```{r}

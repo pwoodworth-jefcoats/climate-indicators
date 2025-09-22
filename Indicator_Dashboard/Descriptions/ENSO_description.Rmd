@@ -42,13 +42,13 @@ ann_mean_RptYr <- indicator_data |> filter(Year == RptYr) |>
 
 # Increase over time from linear model
 if (!is.na(indicator_data$Value_lm[1])) {
-  delta_SST_lm <- indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
+  delta_enso_lm <- indicator_data$Value_lm[length(indicator_data$Value_lm)] - 
     indicator_data$Value_lm[1]
 }
 
 # Increase in anomaly over time from linear model
 if (!is.na(indicator_data$Anom_lm[1])) {
-  delta_SST_anom_lm <- indicator_data$Anom_lm[length(indicator_data$Anom_lm)] - 
+  delta_enso_anom_lm <- indicator_data$Anom_lm[length(indicator_data$Anom_lm)] - 
     indicator_data$Anom_lm[1]
 }
 

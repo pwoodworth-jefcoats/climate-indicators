@@ -6,10 +6,11 @@ surface, which provides information on phytoplankton abundance.
 Phytoplankton are the foundational food source for the fishery. Changes
 in phytoplankton abundance have been linked to both natural climate
 variability and anthropogenic climate change. These changes have the
-potential to impact fish abundance, size, and catch. Increased
-phytoplankton abundance can lead to the transition zone chlorophyll
-front (TZCF) being farther south and vice versa, and changes in the
-location of this front particularly impact Hawaiʻi’s swordfish fishery.
+potential to impact fish abundance, size, and catch.  
+Increased phytoplankton abundance can lead to the transition zone
+chlorophyll front (TZCF) being farther south and vice versa, and changes
+in the location of this front particularly impact Hawaiʻi’s swordfish
+fishery.
 
 Climate change is projected to lead to lower phytoplankton abundance.
 Combined, rising ocean temperatures and lower phytoplankton abundance
@@ -22,16 +23,14 @@ anthropogenic climate change on the ocean, marine ecosystems, and the
 fishery is an active area of research.
 
 **Status of the Indicator**  
-The mean monthly chlorophyll concentration was 0.14 mg chl
-m<sup>-3</sup> in 2023. Monthly mean chlorophyll concentrations ranged
-from 0.088–0.18 mg chl m<sup>-3</sup>, which was within the range of
+The mean monthly chlorophyll concentration was 0.13 mg chl
+m<sup>-3</sup> in 2024. Monthly mean chlorophyll concentrations ranged
+from 0.09–0.17 mg chl m<sup>-3</sup>, which was within the range of
 values observed during the previous years of the time series (0.079–0.18
-mg chl m<sup>-3</sup>). There has been no significant trend in monthly
-average chlorophyll concentration over the time period, however
-chlorophyll anomalies have declined by 0.008 mg chl m<sup>-3</sup>.
-Chlorophyll concentrations were fairly average across the southern
-portion of the longline fishing grounds and a little below average north
-of 30–35°N.
+mg chl m<sup>-3</sup>). Both monthly average chlorophyll concentration
+and chlorophyll anomalies have declined by 0.009 mg chl m<sup>-3</sup>
+over the period of record. Chlorophyll concentrations were fairly
+average across the Hawaiʻi-based longline fishing grounds in 2024.
 
 **Indicator Data**  
 Description: Satellite remotely sensed ocean color is used to determine
@@ -44,7 +43,7 @@ al. 2018).
 
 Timeframe: Monthly
 
-Region/Location: Hawaii longline region: 5° – 45°N, 180° – 120°W
+Region/Location: Hawaiʻi longline region: 5°–45°N, 180°–120°W
 
 Measurement Platform: Satellite
 
@@ -52,17 +51,16 @@ Data available at:
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>,
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0>,
 and
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2023-clim_v6-0>.
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0>.
 
-Sourced from: NOAA OceanWatch (2024b) and Sathyendranath et al. (2018).
-Graphics produced in part using Stawitz (2023).
+Sourced from: NOAA OceanWatch (2025b) and Sathyendranath et al. (2018).
+Graphics produced in part using Stawitz and Li (2025).
 
 **References**  
-NOAA OceanWatch (2024b):
+NOAA OceanWatch (2025b):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
-Accessed: 4 April 2024 & 3 May 2024.
+Accessed: 11 April 2025.
 
-Sathyendranath et al. (2018): Sathyendranath et al. (2018) =
 Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin
 A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H,
 Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D,
@@ -78,6 +76,6 @@ Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative
 Analysis 04 July 2018. <doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>.
 <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>
 
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 3.0.0.000.
+Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
+R package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

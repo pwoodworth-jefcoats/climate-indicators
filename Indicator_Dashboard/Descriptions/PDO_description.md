@@ -3,7 +3,7 @@
 **About the Indicator**  
 The Pacific Decadal Oscillation (PDO) is one of the most prominent modes
 of natural climate variability in the North Pacific. PDO cycles, which
-typically last 20 - 30 years, are known to impact Pacific fisheries,
+typically last 20–30 years, are known to impact Pacific fisheries,
 including tuna fisheries, because they cause interannual changes in sea
 surface temperature and phytoplankton abundance.
 
@@ -18,7 +18,7 @@ the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
 **Status of the Indicator**  
-The PDO was negative in 2023. The index ranged from -2.47 to -0.949 over
+The PDO was negative in 2024. The index ranged from -3.04 to -1.07 over
 the course of the year. This is within the range of values observed
 previously in the time series.
 
@@ -46,12 +46,12 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at: <https://psl.noaa.gov/pdo/>.  
   
-Sourced from NOAA (2024b), Mantua (1997), and Newman (2016). Graphics
-produced in part using Stawitz (2023).
+Sourced from NOAA (2025b), Mantua (1997), and Newman (2016). Graphics
+produced in part using Stawitz and Li (2025).
 
 **References**  
-NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal
-Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.
+NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal
+Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R.
 C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with
@@ -63,6 +63,6 @@ Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and
 C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim.,
 DOI: 10.1175/JCLI-D-15-0508.1
 
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 3.0.0.000.
+Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
+R package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

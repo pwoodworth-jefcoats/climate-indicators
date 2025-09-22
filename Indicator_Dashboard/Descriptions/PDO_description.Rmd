@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Identify the variable we're focused on
 var <- 'PDO'
@@ -67,7 +67,7 @@ monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
 
 ## Pacific Decadal Oscillation
 __About the Indicator__  
-The Pacific Decadal Oscillation (PDO) is one of the most prominent modes of natural climate variability in the North Pacific.  PDO cycles, which typically last 20 - 30 years, are known to impact Pacific fisheries, including tuna fisheries, because they cause interannual changes in sea surface temperature and phytoplankton abundance.
+The Pacific Decadal Oscillation (PDO) is one of the most prominent modes of natural climate variability in the North Pacific.  PDO cycles, which typically last 20–30 years, are known to impact Pacific fisheries, including tuna fisheries, because they cause interannual changes in sea surface temperature and phytoplankton abundance.
 
 The PDO was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics.   
 
@@ -87,13 +87,13 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at: <https://psl.noaa.gov/pdo/>.  
 \
-Sourced from NOAA (2024b), Mantua (1997), and Newman (2016).  Graphics produced in part using Stawitz (2023).
+Sourced from NOAA (2025b), Mantua (1997), and Newman (2016).  Graphics produced in part using Stawitz and Li (2025).
 
 __References__  
-NOAA (2024b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 19 March 2024.  
+NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.  
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079.   
 
 Newman (2016): Newman, M., M. A. Alexander, T. R. Ault, K. M. Cobb, C. Deser, E. Di Lorenzo, N. J. Mantua, A. J. Miller, S. Minobe, H. Nakamura, N. Schneider, D. J. Vimont, A. S. Phillips, J. D. Scott, and C. A. Smith, 2016: The Pacific Decadal Oscillation, Revisited. J. Clim., DOI: 10.1175/JCLI-D-15-0508.1  
 
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>

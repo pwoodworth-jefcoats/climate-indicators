@@ -3,9 +3,9 @@
 **About the Indicator**  
 The El Niño – Southern Oscillation (ENSO) is one of the most prominent
 modes of natural climate variability in the North Pacific. ENSO cycles,
-which typically last 6 - 18 months, are known to impact Pacific
-fisheries, including tuna fisheries, because they cause interannual
-changes in sea surface temperature and phytoplankton abundance.
+which typically last 6–18 months, are known to impact Pacific fisheries,
+including tuna fisheries, because they cause interannual changes in sea
+surface temperature and phytoplankton abundance.
 
 The Oceanic Niño Index (ONI) is a measure of ENSO phase that focuses on
 ocean temperature, which has a direct effect on these fisheries.

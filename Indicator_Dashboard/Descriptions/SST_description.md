@@ -33,27 +33,25 @@ are impacted and the time scales of these impacts is an area of active
 research.
 
 **Status of the Indicator**  
-Annual mean SST was 21.1 ºC in 2023. Over the period of record, SST
+Annual mean SST was 21.2 ºC in 2024. Over the period of record, SST
 across the longline fishing grounds has increased by 1 ºC and the
-monthly SST anomaly increased by 0.8 ºC, both at a rate of roughly 0.03
-ºC yr<sup>-1</sup>. Monthly SST values in 2023 ranged from 18.5–24.3 ºC,
+monthly SST anomaly increased by 0.9 ºC, both at a rate of roughly 0.03
+ºC yr<sup>-1</sup>. Monthly SST values in 2024 ranged from 18.5–24.4 ºC,
 within the range of temperatures experienced over the past several
 decades (17.6–24.7 ºC). Overall, SST was above the long-term average
-across most of the Hawaiʻi longline region in 2023. The exception to
-this was a patch of slightly cooler waters in the southeastern corner of
-the fishing grounds where very little fishing takes place.
+across most of the Hawaiʻi longline region in 2024.
 
 **Indicator Data**  
 Description: Satellite remotely sensed monthly sea surface temperature
-(SST) is averaged across the Hawaiʻi-based longline fishing grounds (15°
-– 45°N, 180° – 120°W). A time series of monthly mean SST averaged over
+(SST) is averaged across the Hawaiʻi-based longline fishing grounds
+(15°–45°N, 180°–120°W). A time series of monthly mean SST averaged over
 the Hawaiʻi longline region is presented. Additionally, spatial
 climatologies and anomalies are shown. CoralTemp data are used to
 calculate this indicator.
 
 Timeframe: Monthly.
 
-Region/Location: Hawaiʻi longline region: 15° – 45°N, 180° – 120°W.
+Region/Location: Hawaiʻi longline region: 15°–45°N, 180°–120°W.
 
 Measurement Platform: Satellite.
 
@@ -61,16 +59,16 @@ Data available at:
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>,
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim>,
 and
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2023-clim>.
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim>.
 
-Sourced from: NOAA OceanWatch (2024a). Graphics produced in part using
-Stawitz (2023).
+Sourced from: NOAA OceanWatch (2025a). Graphics produced in part using
+Stawitz and Li (2025).
 
 **References**  
-NOAA OceanWatch (2024a):
+NOAA OceanWatch (2025a):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>
-Accessed: 3 April 2024.
+Accessed: 10 April 2025.
 
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R
-package version 3.0.0.000.
+Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
+R package version 3.0.0.000.
 <https://nmfs-fish-tools.github.io/nmfspalette/>

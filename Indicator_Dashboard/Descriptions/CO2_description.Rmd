@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2023
+RptYr <- 2024
 
 # Identify the variable we're focused on
 var <- 'CO2'
@@ -85,13 +85,13 @@ Measurement Platform: *In-situ* station.
 
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
 
-Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2024a).  Graphics produced in part using Stawitz (2023).
+Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2025a).  Graphics produced in part using Stawitz and Li (2025).
 
 __References__  
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551  
 
-NOAA (2024a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 13 March 2024.  
+NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2025.   
 
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565  
 
-Stawitz C (2023): nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>
+Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>

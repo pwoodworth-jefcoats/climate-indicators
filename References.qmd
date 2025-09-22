@@ -62,7 +62,7 @@ NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth System R
 **Ocean Color**  
 NOAA OceanWatch (2025b): <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0> Accessed: 11 April 2025.  
 \
-Sathyendranath et al. (2018): Sathyendranath et al. (2018) =  Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>  
+Sathyendranath et al. (2018): Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H, Lavender S, Martinez Vicente V, Mazeran C, Mélin F, Moore TS, Müller D, Platt T, Regner P, Roy S, Steinmetz F, Swinton J, Valente A, Zühlke M, Antoine D, Arnone R, Balch W.M, Barker K, Barlow R, Bélanger S, Berthon J-F, Beşiktepe Ş, Brando VE, Canuti E, Chavez F, Claustre H, Crout R, Feldman G, Franz B, Frouin R, García-Soto C, Gibb SW, Gould R, Hooker S, Kahru M, Klein H, Kratzer S, Loisel H, McKee D, Mitchell BG, Moisan T, Muller-Karger F, O'Dowd L, Ondrusek M, Poulton AJ, Repecaud M, Smyth T, Sosik H.M, Taberner M, Twardowski M, Voss K, Werdell J, Wernand M, Zibordi G. (2018): ESA Ocean Colour Climate Change Initiative (Ocean_Colour_cci): Version 3.1 Data. Centre for Environmental Data Analysis 04 July 2018. doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5. <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>  
 \
 **North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)**  
 Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson, C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004. On the seasonal and interannual migrations of the transition zone chlorophyll front. Geophysical Research Letters, 31, L17204. doi: 10.1029/2004GL020637.  
@@ -123,8 +123,7 @@ PyFerret. (2021). PyFerret: Version 7.64 [Software]. Github. <https://github.com
 \
 Matlab is used in creating the Oceanic pH indicator.
 The MathWorks Inc. (2022). MATLAB version: 23.2.0.2428915 (R2023b) Update 4, Natick, Massachusetts: The MathWorks Inc. <https://www.mathworks.com>  
-\
-The following R packages are used to calculate the oceanic and climate indicators:  
+
 |         | CO~2~ | pH | ENSO | PDO | TCs | SST | Temp at Depth | Chl | Fronts | Phyto Size | Fish Size | WPUE | Recruitment | Forecast |
 |---------|:-----:|:--:|:----:|:---:|:---:|:---:|:-------------:|:---:|:------:|:----------:|:---------:|:----:|:-----------:|:--------:|
 |tidyverse| X     | X  |  X   | X   | X   | X   | X             | X   |        |  X         |  X        | X    | X           |  X       |
@@ -151,6 +150,9 @@ The following R packages are used to calculate the oceanic and climate indicator
 |dplyr    |       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
 |png      |       |    |      |     |     |     |               |     |        |            | X         |      |             |          |
 
+: The following R packages are used to calculate the oceanic and climate indicators: 
+
+\
 tidyverse: Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL,   Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H   (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686   <https://doi.org/10.21105/joss.01686>.  
 \
 lubridate: Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3),   1-25. URL https://www.jstatsoft.org/v40/i03/.  

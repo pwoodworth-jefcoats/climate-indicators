@@ -67,15 +67,44 @@ monthly_max_PrevYrs <- indicator_data |> filter(Year < RptYr) |>
 
 ## Atmospheric Carbon Dioxide
 __About the Indicator__  
-The primary driver of anthropogenic (human-caused) climate change is the increasing concentration of atmospheric carbon dioxide, CO~2~, due to the burning of fossil fuels. Therefore, atmospheric CO~2~ serves as a measure of what human activity has already done to affect the climate system through greenhouse gas emissions. It provides quantitative information in a simplified, standardized format that decision makers can easily understand.  The concentration of atmospheric CO~2~, and, in turn, its warming influence, is increasing more quickly over time. 
+The primary driver of anthropogenic (human-caused) climate change is the 
+increasing concentration of atmospheric carbon dioxide, CO~2~, due to the 
+burning of fossil fuels. Therefore, atmospheric CO~2~ serves as a measure of 
+what human activity has already done to affect the climate system through 
+greenhouse gas emissions. It provides quantitative information in a simplified, 
+standardized format that decision makers can easily understand.  The 
+concentration of atmospheric CO~2~, and, in turn, its warming influence, is 
+increasing more quickly over time. 
 
-Increasing CO~2~ concentrations cause the atmosphere to warm. Much of this heat is then absorbed by the ocean, raising ocean temperatures.  The ocean also becomes more acidic as it absorbs CO~2~. 
+Increasing CO~2~ concentrations cause the atmosphere to warm. Much of this heat 
+is then absorbed by the ocean, raising ocean temperatures.  The ocean also 
+becomes more acidic as it absorbs CO~2~. 
 
 __Status of the Indicator__  
-Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ is increasing more quickly over time. In `r RptYr`, the annual mean concentration of CO~2~ was `r signif(ann_mean_RptYr,5)` ppm.  This is the highest annual value recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` ppm. In 1959, the first year full of the time series, the atmospheric concentration of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
+Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ 
+is increasing more quickly over time. In `r RptYr`, the annual mean concentration 
+of CO~2~ was `r signif(ann_mean_RptYr,5)` ppm.  This is the highest annual value 
+recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` 
+ppm. In 1959, the first year full of the time series, the atmospheric concentration 
+of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
 
 __Indicator Data__  
-Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The observed increase in monthly average carbon dioxide concentration is primarily due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the atmosphere for a very long time, and emissions from any location mix throughout the atmosphere in approximately one year. The annual variations at Mauna Loa, Hawaiʻi are due to the seasonal imbalance between the photosynthesis and respiration of terrestrial plants. During the summer growing season, photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In the winter (outside the growing season), respiration exceeds photosynthesis, and CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern hemisphere because of its larger land mass. Note that due to the eruption of the Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 29 November 2022. Observations from December 2022 to 4 July 2023 are from a site at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa Observatory.  Mauna Loa observations resumed in July 2023.  
+Description: Monthly mean atmospheric carbon dioxide (CO~2~) at Mauna Loa 
+Observatory, Hawaiʻi in parts per million (ppm) from March 1958 to present. The 
+observed increase in monthly average carbon dioxide concentration is primarily 
+due to CO~2~ emissions from fossil fuel burning. Carbon dioxide remains in the 
+atmosphere for a very long time, and emissions from any location mix throughout 
+the atmosphere in approximately one year. The annual variations at Mauna Loa, 
+Hawaiʻi are due to the seasonal imbalance between the photosynthesis and 
+respiration of terrestrial plants. During the summer growing season, 
+photosynthesis exceeds respiration, and CO~2~ is removed from the atmosphere. In 
+the winter (outside the growing season), respiration exceeds photosynthesis, and 
+CO~2~ is returned to the atmosphere. The seasonal cycle is strongest in the northern 
+hemisphere because of its larger land mass. Note that due to the eruption of the 
+Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 
+29 November 2022. Observations from December 2022 to 4 July 2023 are from a site 
+at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa 
+Observatory.  Mauna Loa observations resumed in July 2023.  
 
 Timeframe: Annual, monthly.  
 

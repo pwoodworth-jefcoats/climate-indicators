@@ -32,7 +32,7 @@ Measurement Platform: satellite, model.
 Data available at: <https://www.o3d.org/npgo/data/NPGO.txt>.
 
 Sourced from Di Lorenzo et al. (2008). Graphics produced in part using
-Stawitz and Li (2023).
+Stawitz and Li (2025).
 
 **References**  
 Di Lorenzo et al. (2008): Di Lorenzo, E., Schneider, N., Cobb, K. M.,

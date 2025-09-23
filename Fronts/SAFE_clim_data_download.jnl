@@ -1,0 +1,99 @@
+! Script to download chlorophyll data for SAFE report front chapters
+! We are downloading Jan-Mar data for each year of available data, averaging those months so we have a 1st quarter average each year, then saving that. We are also regridding to 0.1 degree resolution. 
+
+!-------------TZCF--------------
+! Load the dataset
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
+show data
+
+! We want to first average the data, then regrid it. The regridding is only for looks, not for analysis, so we do that last. 
+! Define quarterly axis
+DEFINE AXIS/T="15-FEB-1998":"15-FEB-2024":1/UNIT=year tannual
+DEFINE GRID/T=tannual gannual
+LET timestamp = T[G=gannual] * 0 ! always 0
+! Define your variable with subset region and first year of data
+LET chl_q1 = CHLOR_A[x=180:240, y=5:45, t=1-jan-1998:1-mar-1998@ave] + timestamp
+
+! Save first year of data to a file
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave_2024.nc chl_q1[L=1]
+
+! Loop through and append the 1st quarter average each year to the file you made above. 
+REPEAT/i=1:26 (LET chl_q1 = CHLOR_A[x=180:240, y=5:45, t=1-jan-`1998+i`:1-mar-`1998+i`@AVE] + timestamp ; shade chl_q1[l=`1+i`]; SAVE/APPEND/FILE=SAFE_CHL_Q1ave_2024.nc chl_q1[L=`1+i`])
+
+! Read in the previously made data and regrid it to 0.25 degree resolution for plotting purpouses
+cancel data/all
+cancel var/all
+use SAFE_CHL_Q1ave_2024.nc
+! Define regrinding to 0.25 coarser grid
+DEFINE AXIS/X=180:240:0.25/UNITS=degrees x025deg
+DEFINE AXIS/Y=5:45:0.25/UNITS=degrees y025deg
+LET chl_q1_025 = chl_q1[gx=x025deg, gy=y025deg]
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave025_2024.nc chl_q1_025
+
+! And one with 0.5 degree resolution for coutourline plotting
+DEFINE AXIS/X=180:240:0.5/UNITS=degrees x050deg
+DEFINE AXIS/Y=5:45:0.5/UNITS=degrees y050deg
+LET chl_q1_050 = chl_q1[gx=x050deg, gy=y050deg]
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave050_2024.nc chl_q1_050
+
+!-----
+! Quarter 1 climatology 1998-2009
+!-----
+cancel data/all
+cancel var/all
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
+
+use climatological_axes
+! limit the region and time
+let chl = chlor_a[l=5:136]   ! This dataset starts in september so starting counting at 5 which is january
+let chl_clim = chl[GT=seasonal_reg@mod]
+cancel data climatological_axes
+
+! Define regrinding to coarser grid
+DEFINE AXIS/X=180:240:0.5/UNITS=degrees x050deg
+DEFINE AXIS/Y=5:45:0.5/UNITS=degrees y050deg
+let chl_Q1 = chl_clim[l=1]
+let chl_q1_050 = chl_Q1[gx=x050deg, gy=y050deg]
+
+! Save a file with Q1 only
+save/clobber/file=SAFE_CHL_Q1_clim_1998_2009_050deg.nc chl_q1_050
+
+! Clear all data
+cancel data/all
+cancel var/all
+
+!-------------STF--------------
+! Load the dataset
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly
+show data
+
+!-----
+! Quarter 1 mean 1985-2024
+!-----
+! Define a time axis for the output file. If you don't do this, the file won't let you append to it. 
+DEFINE AXIS/T="15-FEB-1985":"15-FEB-2024":1/UNIT=year tannual
+DEFINE GRID/T=tannual gannual
+LET timestamp = T[G=gannual] * 0 ! always 0
+
+! Define your variable with subset region and first year of data
+LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-1985:31-mar-1985@ave] + timestamp
+
+! Save first year of data to a file
+SAVE/CLOBBER/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=1]
+
+! Loop through and append the 1st quarte average each year to the file you made above. 
+REPEAT/i=1:39 (LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-`1985+i`:31-mar-`1985+i`@AVE] + timestamp ; SAVE/APPEND/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=`1+i`])
+
+!-----
+! Quarter 1 climatology 1985-2009
+!-----
+! Only need data from 1985-2009 for the climatology
+use climatological_axes
+! limit the region and time
+let sst = sea_surface_temperature[l=1:300]
+let sst_clim = sst[GT=seasonal_reg@mod]
+cancel data climatological_axes
+! Save the file with Q1 only
+save/clobber/file=SAFE_SST_Q1_clim_1985_2009.nc sst_clim[x=180:240, y=5:45, l=1]
+
+

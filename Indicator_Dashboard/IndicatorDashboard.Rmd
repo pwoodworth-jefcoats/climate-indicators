@@ -62,6 +62,7 @@ indicator_list <- c('Atmospheric Carbon Dioxide' = 'CO2',
                     'Oceanic pH' = 'pH',
                     'El Niño - Southern Oscillation' = 'ENSO',
                     'Pacific Decadal Oscillation' = 'PDO',
+                    'North Pacific Gyre Oscillation' = 'NPGO',
                     'Sea Surface Temperature' = 'SST',
                     'Temperature at Depth' = 'TatD',
                     'Ocean Color' = 'Chl', 
@@ -256,7 +257,9 @@ output$ts_desc <- renderUI(
     markdown("Monthly and annual pH, as well as the long term trend")
   } else if (input$indicator == "TatD") {
     markdown("Monthly and annual temperature at 200 - 300 m depth (TatD), as well as the long-term trend")
-  } 
+  } else if (input$indicator == "NPGO") {
+    markdown("Time series of the North Pacific Gyre Oscillation (NPGO)")
+  }
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),
@@ -419,7 +422,7 @@ output$season_desc <- renderUI(
   } else if (input$indicator == "ENSO") {
     markdown("The seasonal cycle plot shows Oceanic Niño Index (ONI) values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in ONI values and that values tend to be closes to zero in May.")
   } else if (input$indicator == "PDO") {
-    markdown("The seasonal cycle plot show PDO values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in PDO values.")
+    markdown("The seasonal cycle plot shows PDO values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in PDO values.")
   } else if (input$indicator == "SST") {
     markdown("The seasonal cycle plot shows SST over time by month.  The horizontal black lines are the time series average for each month.  This figure shows both the annual SST cycle (coolest in March, warmest in September) and that SST is increasing over time in all months of the year.")
   } else if (input$indicator == "TatD") {
@@ -428,6 +431,8 @@ output$season_desc <- renderUI(
     markdown("The seasonal cycle plot shows ocean color over time by month.  The horizontal black lines are the time series average for each month.  This figure shows the annual ocean color cycle (greatest in February, least in August).")     
   } else if (input$indicator == "MD50") {
     markdown("The seasonal cycle plot shows median phytoplankton size over time by month.  The horizontal black lines are the time series average for each month.  This figure shows the annual cycle for phytoplankton size (largest in February, smallest in September) and illustrates the small decline in median phytoplankton size across months. ")    
+  } else if (input$indicator == "NPGO") {
+    markdown("The seasonal cycle plot shows NPGO values over time by month.  The horizontal black lines are the time series average for each month.  This figure shows that there is no long-term trend in NPGO values.")
   }
 )
 
@@ -529,7 +534,7 @@ output$map <- renderPlotly({
     #return plot
     g
     
-  } else{ #indicators without spatial data (CO2, pH, ENSO, PDO)
+  } else{ #indicators without spatial data (CO2, pH, ENSO, PDO, NPGO)
     
     ext <- st_bbox(land_proj)
     
@@ -641,6 +646,30 @@ output$map <- renderPlotly({
       #return plot
       g
       
+    } else if (input$indicator == "NPGO"){
+      
+      # Show NPGO calculation region
+      p <- p + 
+        geom_rect(aes(xmin = 0, xmax = 70, ymin = 25, ymax = 62), 
+                         color = crustacean[3], fill = crustacean[2], 
+                         alpha = 0.5, linewidth = 0.5) +
+        geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
+        geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
+        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
+        annotate("text", x = 20, y = 27, 
+                 label = "NPGO Region", size = 3.2, color = "black")
+      
+      #port to plotly
+      g <- ggplotly(p, height = plot_height) |> 
+        layout(paper_bgcolor = 'transparent', plot_bgcolor = 'transparent',
+               xaxis = list(fixedrange = TRUE), yaxis = list(fixedrange = TRUE)) |>
+        style(hoverinfo = "skip", traces = c(1:6, 8:10))
+            
+      #customize tooltip
+      g$x$data[[7]]$text <- "180.0 to 110.0W<br />25.0N to 62.0N<br />NPGO Region"
+      
+      #return plot
+      g
     }
   }
     
@@ -660,14 +689,16 @@ output$map_desc <- renderUI(
   } else if (input$indicator == "PDO") {
     markdown("The Pacific Decadal Index is measured across the North Pacific basin, north of 20°N.  The longline fishing grounds are also shown for reference.")
   } else if (input$indicator == "SST") {
-    markdown("This map shows the climatological average SST (1985-2021).  The data in the graphs above is averaged over the longline fishing grounds.")
+    markdown("This map shows the climatological average SST (1985-2009).  The data in the graphs above is averaged over the longline fishing grounds.")
   } else if (input$indicator == "TatD") {
-    markdown("This map shows the climatological average temperature at depth (1980-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
+    markdown("This map shows the climatological average temperature at depth (1980-2009).  The data in the graphs above is averaged over the longline fishing grounds.")    
   } else if (input$indicator == "Chl") {
-    markdown("This map shows the climatological average ocean color (1998-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
+    markdown("This map shows the climatological average ocean color (1998-2009).  The data in the graphs above is averaged over the longline fishing grounds.")    
   } else if (input$indicator == "MD50") {
-    markdown("This map shows the climatological average median phytoplankton size (1998-2021).  The data in the graphs above is averaged over the longline fishing grounds.")    
-  }  
+    markdown("This map shows the climatological average median phytoplankton size (1998-2009).  The data in the graphs above is averaged over the longline fishing grounds.")    
+  } else if (input$indicator == "NPGO") {
+    markdown("The North Pacific Gyre Oscillation index is measured across the region from 180° to 110°W and 25°N to 62°N.  The longline fishing grounds are also shown for reference.")
+  } 
 )
 
 div(style = paste0('color: #A5A5A5; margin-right: 15px; margin-left: 15px; margin-bottom: ', plot_spacer_1, 'px;'),

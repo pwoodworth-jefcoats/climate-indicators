@@ -9,7 +9,7 @@ output:
       version: 4
       bg: "#FFFFFF"
       fg: "#000000" 
-      primary: "#005AA8"
+      primary: "#003087"
       
 runtime: shiny
 resource_files:
@@ -147,7 +147,7 @@ output$summary_img <- renderImage({
 
   #Return a list containing filename and alt text
   list(src = filename,
-       alt = "This is alternate text",
+       alt = "Summary graphic that highlights the chosen variable and describes and summarizes all variables",
        width = "100%")
 
 }, deleteFile = FALSE)

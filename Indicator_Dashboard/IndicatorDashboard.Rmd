@@ -205,7 +205,10 @@ output$ts <- renderPlotly({
     
     p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
                 type = "scatter", mode = "lines", line = list(color = pal[1]),
-                name = ~ID[1], height = plot_height) 
+                name = ~ID[1], height = plot_height)  |>
+      add_trace(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value_lm,
+               type = "scatter", mode = "lines", line = list(color = pal[5]),
+               name = "Long-term Trend")
   }
   else{ # all other indicators - line chart with annual mean and long-term trend (if included)
     

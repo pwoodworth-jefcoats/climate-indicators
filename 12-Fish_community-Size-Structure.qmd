@@ -147,6 +147,9 @@ ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', 
 #| eval: false
 #| include: false
 
+#######################
+# Try ridge plots instead of violin plots
+#######################
 library(purrr)
 library(ggridges)
 

@@ -19,7 +19,6 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
   raster_df <- raster_ann %>%
     rasterToPoints(.) %>% #convert to points   
     as.data.frame() %>% #convert to dataframe
-    #mutate(x_disp = ifelse(x <= 0, x + 180, -(180 - x))) %>%
     mutate(x_180 = ifelse(x > 180, x-360, x)) %>%
     rename(x_disp=x, x=x_180) %>%  
     mutate(labels = paste0(signif(x, 3), ", ", signif(y, 3),
@@ -31,7 +30,6 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
   raster_anom_df <- raster_anom %>%
     rasterToPoints(.) %>% #convert to points   
     as.data.frame() %>% #convert to dataframe
-    #mutate(x_disp = ifelse(x <= 0, x + 180, -(180 - x))) %>% #recenter at 180
     mutate(x_180 = ifelse(x > 180, x-360, x)) %>%
     rename(x_disp=x, x=x_180) %>% 
     mutate(layer_disp = ifelse(layer > 0, paste0("+ ", layer), layer)) %>% #format hovertext

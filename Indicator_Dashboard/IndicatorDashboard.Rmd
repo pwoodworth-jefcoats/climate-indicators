@@ -86,13 +86,6 @@ plot_spacer_2 <- 70 #in pixels - space between horizontal line and next plot
 ### Access indicator data
 indicator_data <- read_csv(here('Data', paste0('Dashboard_Data_', report_year, '.csv')))
 indicator_map_data <- read_csv(here('Data', paste0('Dashboard_Map_Data_', report_year, '.csv')))
-
-#Access map base data
-land_proj <- readRDS(here('Data', 'rnatearth_land.RData'))
-coast_proj <- readRDS(here('Data', 'rnatearth_coast.RData'))
-land_proj_enso <- readRDS(here('Data', 'rnatearth_enso_land.RData'))
-coast_proj_enso <- readRDS(here('Data', 'rnatearth_enso_coast.RData'))
-
 ```
 
 ```{r, include = FALSE, global = TRUE}
@@ -527,8 +520,6 @@ output$map <- renderPlotly({
       geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5) + #ll fishing grounds box
       annotate("text", x = 210, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
       fill_scale + #indicator-dependent color and scale from above
-      # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) + #base map background
-      # geom_sf(data = coast_proj) + #base map outline
       borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
       coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
       scale_x_continuous(breaks=seq(120,260,30), 
@@ -536,7 +527,6 @@ output$map <- renderPlotly({
                                          c(rep('°E',2),"",rep('°W',2))), expand = c(0,0)) + # adding degrees to the breaks
       scale_y_continuous(breaks=seq(0,55,15), 
                          labels = paste0(seq(0,55,15), c('',rep('°N',3))), expand = c(0,0)) + # adding degrees to the breaks
-      # coord_sf(expand = F) + #don't expand past x/y limits
       xlab("") + ylab("") + 
       theme_bw() + theme(panel.grid = element_line(color="black", linewidth = 0.1),
                          legend.background = element_rect(fill='transparent'))
@@ -555,12 +545,8 @@ output$map <- renderPlotly({
     
     #make base map
     p <- ggplot() + 
-      # geom_rect(aes(xmin = 120, xmax = 260, ymin = -5, ymax = 55), #rectangle for coloring ocean
-      #           color = NA, fill = oceans[1])  +
       geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5) + #ll fishing grounds box
       annotate("text", x = 210, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
-      # geom_vline(xintercept = c(0, 60), color="black", linewidth = 0.1) + #manually add graticules (hidden by ocean rectangle)
-      # geom_hline(yintercept = seq(0, 60, 10), color="black", linewidth = 0.1) +
       xlab("") + ylab("") +
       theme_bw()
     
@@ -569,9 +555,6 @@ output$map <- renderPlotly({
       
       #show Mauna Loa Observatory location
       p <- p +       
-        # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        # geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-        # coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
         borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
         coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
         scale_x_continuous(breaks=seq(120,260,30), 
@@ -599,9 +582,6 @@ output$map <- renderPlotly({
       
       #show station ALOHA location
       p <- p + 
-        # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        # geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-        # coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
         borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
         coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
         scale_x_continuous(breaks=seq(120,260,30), 
@@ -633,9 +613,6 @@ output$map <- renderPlotly({
         geom_rect(aes(xmin = 190, xmax = 240, ymin = -5, ymax = 5),
                          color = crustacean[3], fill = crustacean[2],
                          alpha = 0.5, linewidth = 0.5) +
-        # geom_sf(data = land_proj_enso, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        # geom_sf(data = coast_proj_enso, color = "black", linewidth = 0.5) +
-        # coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(-5, ext$ymax), expand = F) +
         borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
         coord_quickmap(expand = F, xlim=c(120,260), ylim=c(-15,55)) + #don't expand past x/y limits
         scale_x_continuous(breaks=seq(120,260,30), 
@@ -643,7 +620,7 @@ output$map <- renderPlotly({
                                            c(rep('°E',2),"",rep('°W',2))), expand = c(0,0)) + # adding degrees to the breaks
         scale_y_continuous(breaks=seq(-15,55,15), 
                            labels = paste0(seq(-15,55,15), c('',rep('°N',3))), expand = c(0,0)) + # adding degrees to the breaks
-        annotate("text", x = 220, y = 7, label = "Niño 3.4 Region", size = 3.2, color = "black")
+        annotate("text", x = 220, y = 7, label = "Niño 3.4 Region", size = 3.2, color = "#853B00")
       
       #port to plotly
       g <- ggplotly(p, height = plot_height) |>
@@ -664,9 +641,6 @@ output$map <- renderPlotly({
         geom_rect(aes(xmin = 120, xmax = 260, ymin = 20, ymax = 55),
                          color = crustacean[3], fill = crustacean[2],
                          alpha = 0.5, linewidth = 0.5) +
-        # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        # geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-        # coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
         borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
         coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
         scale_x_continuous(breaks=seq(120,260,30), 
@@ -674,8 +648,8 @@ output$map <- renderPlotly({
                                            c(rep('°E',2),"",rep('°W',2))), expand = c(0,0)) + # adding degrees to the breaks
         scale_y_continuous(breaks=seq(0,55,15), 
                            labels = paste0(seq(0,55,15), c('',rep('°N',3))), expand = c(0,0)) + # adding degrees to the breaks
-        annotate("text", x = 190, y = 22, 
-                 label = "PDO Region", size = 3.2, color = "black")
+        annotate("text", x = 150, y = 22, 
+                 label = "PDO Region", size = 3.2, color = "#853B00")
       
       #port to plotly
       g <- ggplotly(p, height = plot_height) |> 
@@ -696,9 +670,6 @@ output$map <- renderPlotly({
         geom_rect(aes(xmin = 180, xmax = 250, ymin = 25, ymax = 62),
                          color = crustacean[3], fill = crustacean[2],
                          alpha = 0.5, linewidth = 0.5) +
-        # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-        # geom_sf(data = coast_proj, color = "black", linewidth = 0.5) +
-        # coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F) +
         borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
         coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,65)) + #don't expand past x/y limits
         scale_x_continuous(breaks=seq(120,260,30), 
@@ -707,7 +678,7 @@ output$map <- renderPlotly({
         scale_y_continuous(breaks=seq(0,65,15), 
                            labels = paste0(seq(0,65,15), c('',rep('°N',3))), expand = c(0,0)) + # adding degrees to the breaks
         annotate("text", x = 220, y = 27, 
-                 label = "NPGO Region", size = 3.2, color = "black")
+                 label = "NPGO Region", size = 3.2, color = "#853B00")
       
       #port to plotly
       g <- ggplotly(p, height = plot_height) |> 
@@ -784,9 +755,6 @@ output$anom_map <- renderPlotly({
     geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = "black", fill = NA, linewidth = 0.5)  +
     annotate("text", x = 210, y = 47, label = "Longline fishing grounds", size = 3.2, color = "black") +
     anom_fill_scale +
-    # geom_sf(data = land_proj, fill = "#A5A5A5", color = "#A5A5A5", linewidth = 0.5) +
-    # geom_sf(data = coast_proj) +
-    # coord_sf(expand = F) +
     borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
     coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
     scale_x_continuous(breaks=seq(120,260,30), 

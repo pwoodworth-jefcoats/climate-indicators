@@ -66,20 +66,23 @@ let chl_regrid = CHLOR_A[GX=x025deg, GY=y025deg]
 let chl_2024 = chl_regrid[x=120E:100W, y=0:55N, l=1]
 list/FILE=chl_yr2024.nc/FORMAT=cdf chl_2024
 
-! Test everything out
-! use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2019-clim-v5-0
-! use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2020-clim-v5-0
+! Dashboard maps files
+! Coarser resolution (0.5) needed to keep the file size reasonable
+! This coarsening used to be done in the code that aggregates the map data
+! But we'll regrid instead
+DEFINE AXIS/X=120E:100W:0.5/UNITS=degrees x05deg
+DEFINE AXIS/Y=0:55N:0.5/UNITS=degrees y05deg
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0
+let chl_regrid = CHLOR_A[GX=x05deg, GY=y05deg]
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
+let chl_climo = chl_regrid[x=120E:100W, y=0:55N, l=1]
+list/CLOBBER/FILE=chl_climo_dashboard.nc/FORMAT=cdf chl_climo
 
-! shade/palette=cmocean_algae ln(CHLOR_A[d=1,x=120E:100W, y=0:55N])
-! contour/over/levels=0.5DC CHLOR_A[d=2,x=120E:100W,y=0:55N,l=1]-CHLOR_A[d=1,x=120E:100W,y=0:55N,l=1]
+cancel data/all
+cancel var/all
 
-! shade/palette=cmocean_balance CHLOR_A[d=2,x=120E:100W,y=0:55N,l=1]-CHLOR_A[d=1,x=120E:100W,y=0:55N,l=1]
-
-! SET REGION/X=120:260/Y=0:55/L=1
-! go mp_orthographic 195 30
-! set GRID TATD_climo[d=1]
-! go mp_aspect
-! shade/palette=ocean_blue TATD_climo[d=1]
-! contour/over/levels=0.5DC TATD_2020[d=2]-TATD_climo[d=1]
-! go fland
-! go land
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0
+let chl_regrid = CHLOR_A[GX=x05deg, GY=y05deg]
+! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
+let chl_2024 = chl_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=chl_yr2024_dashboard.nc/FORMAT=cdf chl_2024

@@ -70,3 +70,27 @@ list/FILE=sst_yr2024.nc/FORMAT=cdf sst_2024
 
 cancel data/all
 cancel var/all
+
+! Dashboard maps files
+! Coarser resolution (0.5) needed to keep the file size reasonable
+! This coarsening used to be done in the code that aggregates the map data
+! But we'll regrid instead
+DEFINE AXIS/X=120E:100W:0.5/UNITS=degrees x05deg
+DEFINE AXIS/Y=0:55N:0.5/UNITS=degrees y05deg
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim
+let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x05deg, GY=y05deg]
+! shade/palette=ocean_blue sst_regrid[x=120E:100W, y=0:55N, l=1]
+let sst_climo = sst_regrid[x=120E:100W, y=0:55N, l=1]
+list/CLOBBER/FILE=sst_climo_dashboard.nc/FORMAT=cdf sst_climo
+
+cancel data/all
+cancel var/all
+
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim
+let sst_regrid = SEA_SURFACE_TEMPERATURE[GX=x05deg, GY=y05deg]
+! shade/palette=ocean_blue sst_regrid[x=120E:100W, y=0:55N, l=1]
+let sst_2024 = sst_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=sst_yr2024_dashboard.nc/FORMAT=cdf sst_2024
+
+cancel data/all
+cancel var/all

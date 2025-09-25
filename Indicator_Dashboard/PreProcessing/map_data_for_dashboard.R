@@ -50,14 +50,12 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
 #read in raster data
 tatd_2024 <- raster(here("Temperature_at_Depth","T_at_200300_yr2024.nc"))
 tatd_clim <- raster(here("Temperature_at_Depth", "T_at_200300_climo_1980thru2009.nc"))
-sst_2024 <- raster(here("Sea_Surface_Temperature", "sst_yr2024.nc"))
-sst_clim <- raster(here("Sea_Surface_Temperature", "sst_climo.nc"))
-chl_2024 <- raster(here("Ocean_Color", "chl_yr2024.nc")) #,
-                  #  varname = "CHL_2024")
-chl_clim <- raster(here("Ocean_Color", "chl_climo.nc")) #,
-                   # varname = "CHL_CLIMO")
-md50_2024 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2024.nc"))
-md50_clim <- raster(here("Median_Phytoplankton_Size", "medphyto_climo.nc"))
+sst_2024 <- raster(here("Sea_Surface_Temperature", "sst_yr2024_dashboard.nc"))
+sst_clim <- raster(here("Sea_Surface_Temperature", "sst_climo_dashboard.nc"))
+chl_2024 <- raster(here("Ocean_Color", "chl_yr2024_dashboard.nc")) 
+chl_clim <- raster(here("Ocean_Color", "chl_climo_dashboard.nc")) 
+md50_2024 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2024_dashboard.nc"))
+md50_clim <- raster(here("Median_Phytoplankton_Size", "medphyto_climo_dashboard.nc"))
 
 # get lat coordinates from raw data
 # Different data sources have different bounds

@@ -59,3 +59,26 @@ let medphyto_regrid = MD50[GX=x025deg, GY=y025deg]
 ! shade/palette=cmocean_algae MD50[x=120E:100W, y=0:55N, l=1]
 let medphyto_2024 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
 list/FILE=medphyto_yr2024.nc/FORMAT=cdf medphyto_2024
+
+! Dashboard maps files
+! Coarser resolution (0.5) needed to keep the file size reasonable
+! This coarsening used to be done in the code that aggregates the map data
+! But we'll regrid instead
+DEFINE AXIS/X=120E:100W:0.5/UNITS=degrees x05deg
+DEFINE AXIS/Y=0:55N:0.5/UNITS=degrees y05deg
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-1998-2009-clim
+let medphyto_regrid = MD50[GX=x05deg, GY=y05deg]
+! shade/palette=cmocean_algae MD50[x=120E:100W, y=0:55N, l=1]
+let medphyto_climo = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
+list/CLOBBER/FILE=medphyto_climo_dashboard.nc/FORMAT=cdf medphyto_climo
+
+cancel data/all
+cancel var/all
+
+! Current year for anomaly calculation, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! and to harmonize across remotely sensed variables
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2024-clim
+let medphyto_regrid = MD50[GX=x05deg, GY=y05deg]
+! shade/palette=cmocean_algae MD50[x=120E:100W, y=0:55N, l=1]
+let medphyto_2024 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=medphyto_yr2024_dashboard.nc/FORMAT=cdf medphyto_2024

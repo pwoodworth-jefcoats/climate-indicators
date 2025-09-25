@@ -34,12 +34,12 @@ Dir <- here("Fisheries_Indicators")
 
 ```{r}
 #| include: false
-# setwd(Dir)
+setwd(Dir)
 
 # Import fisheries the data from saved files
 # This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
-# dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
-dealer <- readRDS(paste0(Dir, '/SAFE_dealer_', RptYr, '_processed.rds'))
+dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
+#dealer <- readRDS(paste0(Dir, '/SAFE_dealer_', RptYr, '_processed.rds'))
 
 # Read in images as rasters
 beye <- readPNG("Bigeye_blue.png")
@@ -153,17 +153,19 @@ ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', 
 library(purrr)
 library(ggridges)
 
-# Get the total number of fish sold each year
-numSold <- aggregate(NUM_SOLD ~ Year, data=dealerDat, FUN=sum)
-numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
-
-# Make a function to put the total sold catch at the end of the density plot
-numSold_annotation <- map2(numSold$pretty, seq_along(unique(dealerDat$Year)),
-                            function(nSold, Year) {
-                              geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
-                                        aes(label = paste('n =', nSold), x = Inf, y = Year),
-                                        hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
-                            })
+# dealerDat <- dealer
+# 
+# # Get the total number of fish sold each year
+# numSold <- aggregate(NUM_SOLD ~ Year, data=dealerDat, FUN=sum)
+# numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
+# 
+# # Make a function to put the total sold catch at the end of the density plot
+# numSold_annotation <- map2(numSold$pretty, seq_along(unique(dealerDat$Year)),
+#                             function(nSold, Year) {
+#                               geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
+#                                         aes(label = paste('n =', nSold), x = Inf, y = Year),
+#                                         hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
+#                             })
 
 # Basic code for ridge plot instead of violin
 ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, overlap=2, alpha=0.8, bwidth=2) {
@@ -176,7 +178,7 @@ ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, ov
                             function(nSold, Year) {
                               geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
                                         aes(label = paste('n =', nSold), x = Inf, y = Year),
-                                        hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
+                                        hjust = 1, vjust = -0.3, size = 3.5, inherit.aes = FALSE)
                             })
   # Make the ridge plot
   rdg <- ggplot(dealerDat, aes(x=WholeWeight, y=Year, group=Year)) + 
@@ -186,7 +188,7 @@ ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, ov
                         fill=col, alpha=alpha, bandwidth=bwidth
                         ) +
     geom_vline(xintercept = L50, color=L50col, linetype='dashed') + 
-    scale_y_reverse(limits=c(RptYr+0.2, 1998), expand=c(0,0), breaks=seq(RptYr, 2000,by=-1)) + 
+    scale_y_reverse(limits=c(RptYr+0.2, 1998.5), expand=c(0,0), breaks=seq(RptYr, 2000,by=-1)) + 
     theme_ridges(center_axis_labels = T) + 
     xlim(xmin,xmax) +
     xlab('Whole Weight [kg]') + 
@@ -196,14 +198,13 @@ ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, ov
   return(rdg)
 }
 
-i <- ridgefunc(dealer, col='#63a298', L50=-10, L50col=NA, xmax=90, xmin=-5, cutoff=0.02)
-#a2 <- violfunc(dealer, '#63a298', w, -1, NA, yMax=200)
-j <- ridgefunc(dealerBE, '#5b84a1', BET_L50_kg, L50col='gray30', xmax=105, bwidth=2)
-k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray30', xmax=310, xmin=-10, overlap=2, alpha=1, bwidth=5)
+i <- ridgefunc(dealer, col='#63a298', L50=-10, L50col=NA, xmax=90, xmin=-5, cutoff=0.02, alpha=0.5)
+j <- ridgefunc(dealerBE, '#5b84a1', BET_L50_kg, L50col='gray30', xmax=105, bwidth=2, alpha=0.5)
+k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray30', xmax=310, xmin=-10, overlap=2, bwidth=10) # try binwidth=10 as well
 
-ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
-ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
-ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgesSWO_', RptYr, '.png'), width = 8, height = 16, dpi=300, units='in')
+ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
+ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
+ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgesSWO_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
 ```
 
 ```{r}
@@ -248,7 +249,7 @@ plotfunc <- function(x, y, color, img) {
   
 }
 # Make three part Density Kernel plot
-png(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'), width=5, height=7, res=300, units='in')
+png(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'), width=6, height=7, res=300, units='in')
 par(mfrow=c(3,1))
 par(mar=c(4,5,0.25,0.5))
 plotfunc(dealerClim, dealerYr, '#63A298A0') #alpha=180 of 250 for the violin version in plot above

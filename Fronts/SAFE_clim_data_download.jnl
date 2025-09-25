@@ -36,6 +36,14 @@ DEFINE AXIS/Y=5:45:0.5/UNITS=degrees y050deg
 LET chl_q1_050 = chl_q1[gx=x050deg, gy=y050deg]
 SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave050_2024.nc chl_q1_050
 
+! And one with 1 degree resolution for front trend calculations
+DEFINE AXIS/X=180:240:1/UNITS=degrees x1deg
+DEFINE AXIS/Y=5:45:1/UNITS=degrees y1deg
+LET chl_q1_1 = chl_q1[gx=x1deg, gy=y1deg]
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave1_2024.nc chl_q1_1
+
+
+
 !-----
 ! Quarter 1 climatology 1998-2009
 !-----
@@ -54,7 +62,6 @@ DEFINE AXIS/X=180:240:0.5/UNITS=degrees x050deg
 DEFINE AXIS/Y=5:45:0.5/UNITS=degrees y050deg
 let chl_Q1 = chl_clim[l=1]
 let chl_q1_050 = chl_Q1[gx=x050deg, gy=y050deg]
-
 ! Save a file with Q1 only
 save/clobber/file=SAFE_CHL_Q1_clim_1998_2009_050deg.nc chl_q1_050
 
@@ -84,6 +91,17 @@ SAVE/CLOBBER/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=1]
 ! Loop through and append the 1st quarte average each year to the file you made above. 
 REPEAT/i=1:39 (LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-`1985+i`:31-mar-`1985+i`@AVE] + timestamp ; SAVE/APPEND/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=`1+i`])
 
+! Clear all data
+cancel data/all
+cancel var/all
+
+! Define regrinding to 1 degree resolution for front trend calculations
+use SAFE_SST_Q1ave_2024.nc
+DEFINE AXIS/X=180:240:1/UNITS=degrees x1deg
+DEFINE AXIS/Y=5:45:1/UNITS=degrees y1deg
+LET sst_q1_1 = sst_q1[gx=x1deg, gy=y1deg]
+SAVE/CLOBBER/FILE=SAFE_SST_Q1ave1_2024.nc sst_q1_1
+
 !-----
 ! Quarter 1 climatology 1985-2009
 !-----
@@ -96,4 +114,14 @@ cancel data climatological_axes
 ! Save the file with Q1 only
 save/clobber/file=SAFE_SST_Q1_clim_1985_2009.nc sst_clim[x=180:240, y=5:45, l=1]
 
+! create a sample field
+let my_field = chl_q1_1[l=1]
+! extract a specific contour location
+let contour_mask=my_field eq 0.2
+! get coordinates where contours exist
+let contour_x = contour_mask * x
+let contour_y = contour_mask * y
+! create lists of points along the contour
+let contour_points_x = xsequence(contour_x)
+let contour_points_y = xsequence(contour_y
 

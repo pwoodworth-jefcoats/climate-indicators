@@ -153,20 +153,6 @@ ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', 
 library(purrr)
 library(ggridges)
 
-# dealerDat <- dealer
-# 
-# # Get the total number of fish sold each year
-# numSold <- aggregate(NUM_SOLD ~ Year, data=dealerDat, FUN=sum)
-# numSold$pretty <- prettyNum(c(numSold$NUM_SOLD), big.mark=",")
-# 
-# # Make a function to put the total sold catch at the end of the density plot
-# numSold_annotation <- map2(numSold$pretty, seq_along(unique(dealerDat$Year)),
-#                             function(nSold, Year) {
-#                               geom_text(data = numSold[numSold$Year == unique(dealerDat$Year)[Year],],
-#                                         aes(label = paste('n =', nSold), x = Inf, y = Year),
-#                                         hjust = 1, vjust = 0, size = 3, inherit.aes = FALSE)
-#                             })
-
 # Basic code for ridge plot instead of violin
 ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, overlap=2, alpha=0.8, bwidth=2) {
   # Get the total number of fish sold each year

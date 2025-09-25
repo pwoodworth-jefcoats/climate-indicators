@@ -15,8 +15,6 @@ runtime: shiny
 resource_files:
   - "Data/Dashboard_Data_2024.csv"
   - "Data/Dashboard_Map_Data_2024.csv"
-  - "Data/rnatearth_coast.RData"
-  - "Data/rnatearth_land.RData"
   - "Images/Indicator-Table-2024-Monthly-Variables.png"
   - "Images/CO2-Indicator-Table-2024-Monthly-Variables.png"
   - "Images/Chl-Indicator-Table-2024-Monthly-Variables.png"

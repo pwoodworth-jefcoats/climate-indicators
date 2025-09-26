@@ -249,35 +249,35 @@ lmSTF <- coef(lm(mean_lat ~ lyr, data = STFindex))
 lmTZCF <- coef(lm(mean_lat ~ lyr, data = TZCFindex))
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
+oceans <- nmfs_palette("oceans")(4) # 1 = report_year, 3 = previous years
 crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
 coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
 ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
 waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
 seagrass <- nmfs_palette("seagrass")(3)
-pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+#pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+#coral  "#FF6C57" "#C91A03" "#901200"
+#oceans "#C6E6F0" "#005AA8" "#001743".  "#C6E6F0" "#1F95CF" "#002B7B" "#001743"
+#crusta "#FFAB38" "#FF8400" "#DB6015" "#853B00"
+#waves  "#90DFE3" "#0E9BA3" "#005E5E"
+#seagra "#B1DC6B" "#609F20" "#365E17"
 
 # Make plot
-# ggplot() +
-#     geom_line(data=Index, aes(x=year, y=mean_lat, group=front, color=front)) +
-#     geom_point(data=Index, aes(x=year, y=mean_lat, color=front)) +
-#     scale_color_manual(values = c('red4', 'blue4'), name='Front') +
-#     theme_classic() + xlab('Latitude') + ylab('Year')
-
-
 ptrend <- ggplot() +
   geom_line(data = STFindex, aes(x = lyr, y = mean_lat, color='L1'), linewidth=1) +
   geom_line(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L2'), linewidth=1) +
   geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F) +
   geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F) +
-  #geom_line(data = given_yr, aes(x = lyr, y = mean_lat, color="STF annual avg, Report Year")) +
-  #geom_line(data = given_yr_ann, aes(x = lyr, y = mean_lat, color="TZCF annual avg, Report Year")) +
+  geom_line(data = STFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L5"), linewidth=1) +
+  geom_line(data = TZCFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L6"), linewidth=1) +
   scale_color_manual(values = c(
-    'L1' = pal[1],
-    'L2' = pal[3],
-    'L3' = pal[4],
-    'L4' = pal[5]), # Figure our how to use RptYr variable instead
-    breaks = c("L1", "L2", "L3", "L4"), labels=c(paste0('STF Jan-Mar avg, 1985-',RptYr-1), paste0('TZCF Jan-Mar avg, 1998-',RptYr-1), 'STF long-term trend', 'TZCF long-term trend')
+    'L1' = oceans[4],
+    'L2' = waves[3],
+    'L3' = oceans[2],
+    'L4' = waves[1],
+    'L5' = coral[2], 
+    'L6' = crustacean[2] ),
+    breaks = c("L1", "L2", "L3", "L4", "L5", "L6"), labels=c(paste0('STF Jan-Mar avg, 1985-',RptYr-1), paste0('TZCF Jan-Mar avg, 1998-',RptYr-1), 'STF long-term trend', 'TZCF long-term trend', paste('STF Jan-Mar avg,',RptYr), paste('TZCF Jan-Mar avg,',RptYr))
   ) +
   theme(
     axis.line = element_line(color='#F1F3F3', ),
@@ -291,7 +291,7 @@ ptrend <- ggplot() +
                      expand = c(0,0)) + # remove padding
   scale_y_continuous(name = "Mean latitude (°N)",
                      expand = c(0,0)) + # remove padding
-  guides(color=guide_legend(nrow=2, byrow=FALSE))
+  guides(color=guide_legend(nrow=2, byrow=F))
 
 ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', yr[i], '.png'), plot = ptrend, width=6, height=4, dpi=300, units='in')
 

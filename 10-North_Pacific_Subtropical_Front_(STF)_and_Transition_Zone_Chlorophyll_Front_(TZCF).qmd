@@ -225,6 +225,17 @@ for (i in seq_along(yr)) {
 
 ```
 
+
+```{r}
+#| echo: false
+
+# Figure caption text
+# Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
+
+knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
+
+```
+
 ```{r}
 #| include: false
 library(elementalist)
@@ -280,10 +291,12 @@ ptrend <- ggplot() +
                      expand = c(0,0)) + # remove padding
   scale_y_continuous(name = "Mean latitude (°N)",
                      expand = c(0,0)) + # remove padding
-  guides(color=guide_legend(nrow=2,byrow=TRUE))
+  guides(color=guide_legend(nrow=2, byrow=FALSE))
 
+ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', yr[i], '.png'), plot = ptrend, width=6, height=4, dpi=300, units='in')
 
 ```
+
 
 ```{r}
 #| echo: false
@@ -291,7 +304,7 @@ ptrend <- ggplot() +
 # Figure caption text
 # Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
 
-knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
+knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
 
 ```
 

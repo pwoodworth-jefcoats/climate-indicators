@@ -11,16 +11,16 @@ format:
 ```{r}
 #| include: false
 ### Load libraries
-library(raster)
-library(rasterVis)
-library(mapdata)
+library(dplyr)
 library(cmocean)
-library(RColorBrewer)
-library(latticeExtra)
-library(rerddap)
 library(here)
-library(sf)
 library(nmfspalette)
+library(ggplot2)
+library(scales)
+library(tidyr)
+library(terra)
+library(tidyterra)
+library(lubridate)
 ```
 
 ```{r}
@@ -36,94 +36,78 @@ Dir <- here('Fronts')
 ```{r}
 #| include: false
 
-# Set variables that are used by both STF and TZCF figures
-# Area for which to make the maps
-lat1 <- 45
-lat2 <- 5
-lon1 <- 180
-lon2 <- 240
-
-# Get land information and make it into a spatial object for plotting
-land <- maps::map('world2', fill=TRUE, xlim=c(180,240), ylim=c(20,45), plot=FALSE)
-landSpat <- as_Spatial(st_as_sf(land))
-
-# Make map themes
-mapThemeSST <- rasterTheme(region=rev(brewer.pal(11, 'Spectral')))
-mapThemeChl <- rasterTheme(region=cmocean('algae')(50))
-mapThemeChl <- rasterTheme(region=nmfs_palette('seagrass')(50))
-mapThemeSST <- rasterTheme(region=rev(nmfs_palette('waves')(50)))
-
-
-```
-
-```{r}
-#| eval: false
-#| include: false
-
 #----------------------------------------------------------
 #   STF  
 #----------------------------------------------------------
-## Download data from erddap
-# For temp we are using the Coral Reef Watch product https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly.html
-# for ease I'm downloading one month at a time for all years, so first Jan then Feb and then March
-sstInfo <- info(url = 'https://oceanwatch.pifsc.noaa.gov/erddap', datasetid = 'CRW_sst_v3_1_monthly')
-monthIdx <- c(31,28,31)
-# Comment below out if you have already downloaded and saved the .nc file
-# Looping through to grab files for Jan, then Feb, then March
-for (i in 1:3) {
-  sstDat <- griddap(sstInfo, time = c(paste0('1985-0',i, '-', monthIdx[i],'T12:00:00Z'), paste0(RptYr, '-0',i,'-', monthIdx[i],'T12:00:00Z')), latitude = c(lat1, lat2), longitude = c(lon1, lon2),
-                    fields = sstInfo$variables$variable_name[1],
-                    stride = c(12,1,1),
-                    store=disk(paste0(Dir,'/STFdata')))
+# Load in first quarter averages for the full time series. 
+# These data are downloaded and regridded in pyFerret using the SAFE_clim_data_download.jnl script
+# load the chlorophyll data for the figure background
+sstRas <- rast(paste0(Dir, '/SAFE_SST_Q1ave_', RptYr, '.nc'))
+sstRas <- rotate(sstRas)  # this changes it from -180 to 360
+# Fix the year indexing and add projection and minmax
+yr <- year(as.Date('1901-01-15') + depth(sstRas)*365.25)
+names(sstRas) <- yr
+crs(sstRas) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(sstRas)
+# Read in 1 degree data for the front index
+sstRas1 <- rast(paste0(Dir, '/SAFE_SST_Q1ave1_', RptYr, '.nc'))
+names(sstRas1) <- yr
+crs(sstRas1) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(sstRas1)
+# Load the climatology from 1985-2009
+tclimRas <- rast(paste0(Dir, '/SAFE_SST_Q1_clim_1985_2009.nc'))
+tclimRas <- rotate(tclimRas)  # this changes it from -180 to 360
+names(tclimRas) <- 'SST_Clim'
+crs(tclimRas) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(tclimRas)
+
+# Make a 18 degree contour using the 1 degree resolution data and extract the underlying ggplot data
+# I'm doing this for calculating the front index (ave of all lats)
+p <- ggplot() + geom_spatraster_contour(data=sstRas1, breaks=18)
+pp <- ggplot_build(p)$data[[1]]
+pp$lyr <- as.numeric(as.character(pp$lyr))
+# Make the STF index
+STFindex <- pp %>% 
+  group_by(lyr) %>% 
+  summarise(mean_lat=mean(y, na.rm=T)) %>% 
+  mutate(front = 'STF')
+
+# Make a high res version for plotting
+pHiRes <- ggplot() + geom_spatraster_contour(data=sstRas, breaks=18)
+ppHiRes <- ggplot_build(pHiRes)$data[[1]]
+ppHiRes$lyr <- as.numeric(as.character(ppHiRes$lyr))
+
+# Start a loop over all the years and make a plot with background SST for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghost' lines
+for (i in seq_along(yr)) {
+
+  # Make subset data for the ith year and the ghost lines separately
+  sstNow <- ppHiRes %>% filter(lyr == yr[i])
+  sstGhost <- ppHiRes %>% filter(lyr <= yr[i])
+  
+  psst <- ggplot() +
+    geom_spatraster(data=sstRas[[i]]) +
+    geom_path(data=sstGhost, aes(x, y, group=lyr), color='lightgray', linewidth=0.3) + 
+    geom_spatraster_contour(data=tclimRas, breaks=18, color='black', linetype='dashed', linetype=0.7) +
+    geom_path(data=sstNow, aes(x, y, group=lyr), color='black', linewidth=0.5) +
+    coord_sf(expand = F, xlim=c(180,240), ylim=c(5,45)) +
+    borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
+    annotate('text', x=-Inf, y=Inf, label=yr[i], vjust=2, hjust=-0.5) +
+    scale_fill_gradientn(name = "SST", colors = rev(nmfs_palette('waves')(3)), limits = c(3.9, 30)) + #indicator-dependent color and scale from above
+    scale_y_continuous(breaks=seq(5,45,by=10)) +
+xlab("") + ylab("") +
+    theme_bw() + 
+    theme(panel.grid = element_line(color = "black", linewidth = 0.1),
+          legend.background = element_rect(fill = 'transparent'),
+          legend.key.height = unit(1, "null"),
+          legend.key.width = unit(0.5, 'cm'),
+          legend.margin = margin(0, 0, 0, 0),
+          legend.text = element_text(size = 10),
+          plot.title = element_text(hjust = 0.5)) + 
+    guides(fill = guide_colorbar(title.position='right', title="Temperature (°C)",
+                                 title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)))
+  
+  ggsave(filename = paste0(Dir, '/STFfigures/SAFE_STFfigs_', yr[i], '_terra.png'), plot = psst, width=6, height=4, dpi=300, units='in')
 }
-
-```
-
-```{r}
-#| include: false
-
-# Read in the files
-STFfiles <- list.files(paste0(Dir,'/STFdata'), full.names = T)
-# Read all three files into R and combine as stack and sort them after the date (name)
-t1 <- brick(STFfiles[1])
-t2 <- brick(STFfiles[2])
-t3 <- brick(STFfiles[3])
-
-# Make a climatology for 1985-2009
-# list years and grab index you need
-yr <- substr(names(t1), 2, 5)
-climIdx <- which(yr == 2009)
-# Average average all the first quarter months for the climatology
-tclim <- mean(stack(t1[[1:climIdx]], t2[[1:climIdx]], t3[[1:climIdx]]))
-
-## Make the plot
-# Isolate the Report Year for background SST and emphasized contourline and make a dataset
-RptIdx <- which(yr==RptYr)
-datRptYr <- mean(brick(t1[[RptIdx]],t2[[RptIdx]],t3[[RptIdx]]))
-# Start your plot by making the report year background SST with a land overlay
-p0 <- levelplot(datRptYr, pretty=T, margin=F, par.setting=mapThemeSST, at=seq(4,29.5,by=0.3), colorkey=list(title=list(label='Sea Surface Temperature (°C)', cex=1), title.control=list(side='right'))) +
-        layer(sp.polygons(landSpat, fill='gray50', col='gray30', lwd=0.75))
-
-# Loop through all years of the dataset to add gray ghost contours for each year
-# Add each contour to the plot initiated above
-for (i in 1:nlayers(t1)) {
-  # Average Jan-Mar data for year i
-  dat <- mean(brick(t1[[i]],t2[[i]],t3[[i]]))
-  # Make ith year contour
-  p1 <- contourplot(dat, pretty=T, margin=F, cuts=1, at=18, labels=F, lwd=0.5, par.settings = list(add.line = list(col = "lightgray")))
-  # Add contour to plot
-  p0 <- p0+p1
-}
-# Finally add the climatology contour as a dashed line and the report year contour as a solid black line
-p0 <- p0 + 
-        contourplot(datRptYr, pretty=T, margin=F, cuts=1, at=18, labels=F) + 
-        contourplot(tclim, pretty=T, margin=F, cuts=1, at=18, labels=F, lty=2)
-        
-
-# Save plot
-png(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'), width=7, height=5, res=300, units='in') 
-p0
-dev.off()
 
 ```
 
@@ -138,23 +122,105 @@ knitr::include_graphics(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'))
 ```
 
 ```{r}
-#| eval: false
 #| include: false
 
 #----------------------------------------------------------
 #   TCZF
 #----------------------------------------------------------
+# load the chlorophyll data for the figure background
+chlRas <- rast(paste0(Dir, '/SAFE_CHL_Q1ave_', RptYr, '.nc'))
+chlRas <- rotate(chlRas)  # this changes it from -180 to 360
+# Fix the year indexing and add projection and minmax
+yr <- year(as.Date('1901-01-15') + depth(chlRas)*365.25)  # the time stamp is saved as depth in this file
+names(chlRas) <- yr
+crs(chlRas) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(chlRas)
 
-## Download data from erddap
-# for ease I'm downloading one month at a time for all years, so first Jan then Feb and then March
-chlInfo <- info(url = 'https://oceanwatch.pifsc.noaa.gov/erddap', datasetid = 'esa-cci-chla-monthly-v6-0')
-# Comment below out if you have already downloaded and saved the .nc file
-# Looping through to grab files for Jan, then Feb, then March
-for (i in 1:3) {
-  chlDat <- griddap(chlInfo, time = c(paste0('1998-0',i, '-01'),paste0(RptYr, '-0',i, '-01')), latitude = c(lat2, lat1), longitude = c(lon1, lon2),
-                    fields = chlInfo$variables$variable_name[1],
-                    stride = c(12,1,1),
-                    store=disk(paste0(Dir,'/TZCFdata')))
+# And 1 degree resolution for the contour line and for the front index calculations
+chlRas1 <- rast(paste0(Dir, '/SAFE_CHL_Q1ave1_', RptYr, '.nc'))
+names(chlRas1) <- yr
+crs(chlRas1) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(chlRas1)
+
+# load the climatology
+cclimRas <- rast(paste0(Dir, '/SAFE_CHL_Q1_clim_1998_2009_050deg.nc'))
+names(cclimRas) <- 'CHL_Clim'
+crs(cclimRas) <- '+proj=longlat +datum=WGS84 +no_defs'
+setMinMax(cclimRas)
+# cut the climatology at 26°N to avoid the southern contour line
+extN <- ext(cclimRas)
+extN$ymin <- 26
+cclimRas <- crop(cclimRas, extN)
+
+# Make a 0.2 contour and extract the underlying ggplot data
+# I'm doing this becuase the chl data is messy, and this way I can pick just the longest contour and plot that
+# This is also helpful for calculating the front index (ave of all lats)
+p <- ggplot() + geom_spatraster_contour(data=chlRas1, breaks=0.2)
+pp <- ggplot_build(p)$data[[1]]
+pp$lyr <- as.numeric(as.character(pp$lyr))
+
+# Find the longest contour for each year
+pieceMax <- pp %>%
+  group_by(lyr, piece) %>%
+  summarise(length=n()) %>%
+  slice_max(length) %>% 
+  ungroup()
+# join the contour data with the longest piece data to remove all data but for the longest contour
+contourDat <- left_join(pieceMax, pp)
+# Make the tzcf index (the mean lat for each year)
+TZCFindex <- contourDat %>% 
+  group_by(lyr) %>% 
+  summarise(mean_lat=mean(y, na.rm=T)) %>% 
+  mutate(front = 'TZCF')
+
+yr <- yr[7:10]
+# Start a loop over all the years and make a plot with background chl for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghose' lines
+for (i in seq_along(yr)) {
+  # Subset by year and rescale the spatraster for better color plotting
+  test <- chlRas[[i]]
+  test2 <- ifel(test < 1, test*500, test+499)
+  # Make subset data for the ith year and the ghost lines separately
+  chlNow <- contourDat %>% filter(lyr == yr[i])
+  chlGhost <- contourDat %>% filter(lyr <= yr[i])
+  
+  # make plot
+  pchl <- ggplot() +
+    geom_spatraster(data=test2) +
+    geom_path(data=chlGhost, aes(x, y, group=lyr), color='lightgray', linewidth=0.3) + 
+    geom_spatraster_contour(data=cclimRas, breaks=0.2, color='black', linetype='dashed', linewidth=0.5) +
+    geom_path(data=chlNow, aes(x, y, group=lyr), color='black', linewidth=0.5) +
+    borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
+    annotate('text', x=-Inf, y=Inf, label=yr[i], vjust=2, hjust=-0.5) +
+    coord_sf(expand = F, xlim=c(180,240), ylim=c(5,45)) +
+    scale_y_continuous(breaks=seq(5,45,by=10)) +
+    scale_fill_gradientn(name = "CHL", colors =
+                           c(nmfs_palette('seagrass')(32),'black'),
+                         values=scales::rescale(c(seq(0,200,10),
+                                                  seq(225,500,25),519)),
+                         breaks=c(seq(0,500,50),519), labels= ~ifelse(.x<500, .x/500, .x-499), limits=c(0,519)) + # we have to undo the rescaling that we did in the geom_raster for the labels
+    xlab("") + ylab("") +
+    theme_bw() +
+    theme(
+      panel.grid = element_line(color = "black", linewidth = 0.1),
+      legend.background = element_rect(fill = 'transparent'),
+      legend.key.height = unit(1, "null"),
+      legend.key.width = unit(0.5, 'cm'),
+      legend.margin = margin(0, 0, 0, 0),
+      legend.text = element_text(size = 10),
+      plot.title = element_text(hjust = 0.5)
+  ) +
+  guides(fill = guide_colorbar(
+    title.position = 'right',
+    title = expression(Chlorophyll - a ~ Concentration ~ (mg / m^3)),
+    title.theme = element_text(
+      angle = 270,
+      hjust = 0.5,
+      vjust = 0.5
+    )
+  ))
+  
+  ggsave(filename = paste0(Dir, '/TZCFfigures/SAFE_TZCFfigs_', yr[i], '_terra.png'), plot = pchl, width=6, height=4, dpi=300, units='in')
+  
 }
 
 ```
@@ -162,60 +228,17 @@ for (i in 1:3) {
 ```{r}
 #| include: false
 
-# Read in the files
-TZCFfiles <- list.files(paste0(Dir,'/TZCFdata/'), full.names = T)
-# Read all three files into R and combine as stack and sort them after the date (name)
-c1 <- brick(TZCFfiles[1])
-c2 <- brick(TZCFfiles[2])
-c3 <- brick(TZCFfiles[3])
-# Make a climatology for 1998-2009
-# list years and grab index you need
-yr <- substr(names(c1), 2, 5)
-climIdx <- which(yr == 2009)
-# Average average all the first quarter months for the climatology
-cclim <- mean(stack(c1[[1:climIdx]], c2[[1:climIdx]], c3[[1:climIdx]]), na.rm=T)
-# aggregate the raster to 0.5 degree for nicer plotting. Take the mean of aggregated cells
-cclim <- aggregate(cclim, fact=12, fun=mean)
-cclim_crop <- crop(cclim, extent(c(180, 240.5, 29, 40))) # to clean up the areas around the front and make figure less busy
+# Make a plot for both the TZCF and STF index. 
+# We defined the index as the mean latitude for the front between 180-120°W (following Shi et al. 2025)
+# make a plot
+Index <- rbind(TZCFindex, STFindex) %>% 
+  dplyr::rename(year = lyr)
 
-## Make the plot
-# Isolate the Report Year for background SST and emphasized contourline and make a dataset
-RptIdx <- which(yr==RptYr)
-datRptYrC <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=3, fun=mean)
-datRptYrC5 <- aggregate(mean(brick(c1[[RptIdx]],c2[[RptIdx]],c3[[RptIdx]])), fact=12, fun=mean)
-
-# Start your plot by making the report year background SST with a land overlay
-pC0 <- levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,0.8,by=0.01),
-                 colorkey=list(title=list(label=expression(Chlorophyll-a ~ Concentration ~ (mg/m^3)), cex=1), 
-                               title.control=list(side='right'))) 
-
-# Loop through all years of the dataset to add gray ghost contours for each year
-# Add each contour to the plot initiated above
-for (i in 1:nlayers(c1)) {
-  # Average Jan-Mar data for year i
-  datC <- crop(aggregate(mean(brick(c1[[i]],c2[[i]],c3[[i]])), fact=12, fun=mean), extent(c(180, 240.5, 27, 42)))
-  # Make ith year contour
-  pC1 <- contourplot(datC, pretty=T, margin=F, at=0.2, labels=F, par.settings = list(add.line = list(col = "gray60")))
-  # Add contour to plot
-  pC0 <- pC0+pC1
-}
-# Finally add the climatology contour as a dashed line and the report year contour as a solid black line
-pC0 <- pC0 + 
-        contourplot(crop(datRptYrC5, extent(c(180, 240.5, 25, 40))), pretty=T, margin=F, at=0.2, labels=F, lwd=1.25) +
-        contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2, lwd=1.25) +
-        layer(sp.polygons(landSpat, fill='gray50', col='gray30', lwd=0.75))
-
-# Save plot
-png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'), width=7, height=5, res=300, units='in') 
-pC0
-dev.off()
-
-# png(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '_only25All.png'), width=7, height=5, res=300, units='in') 
-# levelplot(datRptYrC, pretty=T, margin=F, par.setting=mapThemeChl, at=seq(0,1,by=0.01), colorkey=list(title=list(label=expression(Chlorophyll-a ~ Concentration ~ (mg/m^3)), cex=1), title.control=list(side='right'))) +
-#   contourplot(crop(datRptYrC,extent(c(180, 240.5, 29, 40))), pretty=T, margin=F, at=0.2, labels=F, lwd=1.25) +
-#   contourplot(cclim_crop, pretty=T, margin=F, at=0.2, labels=F, lty=2, lwd=1.25) +
-#   layer(sp.polygons(landSpat, fill='gray40', col='gray30'))
-# dev.off()
+ggplot() +
+    geom_line(data=Index, aes(x=year, y=Mean_lat, group=front, color=front)) +
+    geom_point(data=Index, aes(x=year, y=Mean_lat, color=front)) +
+    scale_color_manual(values = c('red4', 'blue4'), name='Front') +
+    theme_classic() + xlab('Latitude') + ylab('Year')
 
 ```
 

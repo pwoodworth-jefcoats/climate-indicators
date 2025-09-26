@@ -238,7 +238,7 @@ knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
 
 ```{r}
 #| include: false
-library(elementalist)
+library(elementalist)  # devtools::install_github("teunbrand/elementalist")
 # Make a plot for both the TZCF and STF index. 
 # We defined the index as the mean latitude for the front between 180-120°W (following Shi et al. 2025)
 # make a plot

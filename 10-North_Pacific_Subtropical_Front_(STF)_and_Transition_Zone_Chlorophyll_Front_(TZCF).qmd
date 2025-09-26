@@ -234,11 +234,53 @@ for (i in seq_along(yr)) {
 Index <- rbind(TZCFindex, STFindex) %>% 
   dplyr::rename(year = lyr)
 
-ggplot() +
-    geom_line(data=Index, aes(x=year, y=Mean_lat, group=front, color=front)) +
-    geom_point(data=Index, aes(x=year, y=Mean_lat, color=front)) +
-    scale_color_manual(values = c('red4', 'blue4'), name='Front') +
-    theme_classic() + xlab('Latitude') + ylab('Year')
+lmSTF <- coef(lm(mean_lat ~ lyr, data = STFindex))
+lmTZCF <- coef(lm(mean_lat ~ lyr, data = TZCFindex))
+
+# Create color palette for easy reference 
+oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
+crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
+coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
+ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
+waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
+seagrass <- nmfs_palette("seagrass")(3)
+pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+
+# Make plot
+# ggplot() +
+#     geom_line(data=Index, aes(x=year, y=mean_lat, group=front, color=front)) +
+#     geom_point(data=Index, aes(x=year, y=mean_lat, color=front)) +
+#     scale_color_manual(values = c('red4', 'blue4'), name='Front') +
+#     theme_classic() + xlab('Latitude') + ylab('Year')
+
+
+ptrend <- ggplot() +
+  geom_line(data = STFindex, aes(x = lyr, y = mean_lat, color='L1')) +
+  geom_line(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L2')) +
+  geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F) +
+  geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F) +
+  #geom_line(data = given_yr, aes(x = lyr, y = mean_lat, color="STF annual avg, Report Year")) +
+  #geom_line(data = given_yr_ann, aes(x = lyr, y = mean_lat, color="TZCF annual avg, Report Year")) +
+  scale_color_manual(values = c(
+    'L1' = pal[1],
+    'L2' = pal[3],
+    'L3' = pal[4],
+    'L4' = pal[5]), # Figure our how to use RptYr variable instead
+    breaks = c("L1", "L2", "L3", "L4"), labels=c(paste0('STF Jan-Mar avg, 1985-',RptYr-1), paste0('TZCF Jan-Mar avg, 1998-',RptYr-1), 'STF long-term trend', 'TZCF long-term trend')
+  ) +
+  theme(
+    axis.line = element_line(color='#F1F3F3', ),
+    panel.grid.major = element_line(colour = '#F1F3F3'),
+    panel.background = element_rect(fill = "transparent"),
+    legend.position = "bottom",
+    legend.title = element_blank(), 
+    legend.background = element_rect(fill='lightgray')) +
+  scale_x_continuous(name = "Year",
+                     breaks = c(seq(1985,2024,5),RptYr-1),  # major breaks 
+                     expand = c(0,0)) + # remove padding
+  scale_y_continuous(name = "Mean latitude (°N)",
+                     expand = c(0,0)) # remove padding
+
 
 ```
 

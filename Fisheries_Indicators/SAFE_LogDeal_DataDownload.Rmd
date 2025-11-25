@@ -56,7 +56,6 @@ shma_log <- 'LLDS'
 shma_deal <- 'WP_HAWAII_WH'
 
 # Look at what views are available in schema.
-# We want the DR_113292_SEAHUNT_MARIEM view
 table_log <- dbListTables(con, schema=shma_log)
 table_log
 table_deal <- dbListTables(con, schema=shma_deal)

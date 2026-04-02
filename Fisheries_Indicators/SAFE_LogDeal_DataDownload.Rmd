@@ -35,7 +35,7 @@ Access data from Oracle using ROracle.
 
 ```{r}
 # Set the year for which you are generating the report
-RptYr <- 2024
+RptYr <- 2025
 ```
 
 
@@ -81,7 +81,7 @@ We are getting data from the logbook so we can calculate effort so we don't need
 # Download the LOGBOOK data
 # Download (logbook) data from Karen's view to get effort
 # Query the database
-res <- dbSendQuery(con, paste("SELECT TRIPNUM, HOOKSSET, LANDYR, LANDMON, FLEET, RSCH_EXPMTL_CODE, SET_TYPE",
+res <- dbSendQuery(con, paste("SELECT TRIPNUM, HOOKSSET, LANDYR, LANDMON, FLEET, RSCH_EXPMTL_CODE, SET_TYPE, MAXHKSFLT",
                               "FROM", tname_log,
                               "WHERE LANDYR >= '2000' AND RSCH_EXPMTL_CODE IS NULL AND FLEET = 'HI'")) 
 
@@ -94,7 +94,7 @@ str(logbookRaw)  # It looks like a lot of the numeric fields are read in as char
 
 # Convert character fields to numeric
 logbookRaw <- logbookRaw %>% 
-  mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON'), as.numeric) %>% 
+  mutate_at(c('TRIPNUM', 'HOOKSSET', 'LANDYR', 'LANDMON', 'MAXHKSFLT'), as.numeric) %>% 
   mutate(Quarter=quarter(LANDMON), Year=LANDYR)
 str(logbookRaw)
 

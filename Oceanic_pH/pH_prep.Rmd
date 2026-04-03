@@ -19,11 +19,15 @@ library(here)
 ```{r}
 # Set report year (RptYr), to make things easier
 # Note that there's a one year lag for HOTS data
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: Atmospheric_CO2
 # This is where the data are and where the plots will go
 Dir <- here("Oceanic_pH")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}

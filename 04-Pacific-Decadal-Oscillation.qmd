@@ -28,11 +28,15 @@ library(nmfspalette)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: Pacific_Decadal_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("Pacific_Decadal_Oscillation")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}
@@ -140,7 +144,8 @@ stem <- function(x, y, stemcol) {
   }
 }
 
-pdf(paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""))
+pdf(paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
+par(mar=c(4.1, 4.1, 2.1, 2.1))
 plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
      type = "l", lwd = 1,
      xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-5, 5),
@@ -157,6 +162,15 @@ stem(dmy_hm(indicator_data$Date_Time[Pos_idx]), indicator_data$Value[Pos_idx], p
 stem(dmy_hm(indicator_data$Date_Time[Neg_idx]), indicator_data$Value[Neg_idx], oceans[2])
 axis(1, at = x_grid, label = c("1854", " ", seq(1880, 2020, 20), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-5, 5, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+legend('topright',
+       legend=c('Negative PDO', 'Positive PDO'),
+       col=c(oceans[2], pal[2]),
+       pch=c(15,15),
+       pt.cex = 2,
+       bty='n', 
+       horiz = F,
+       inset = c(0,-0.03),
+       x.intersp=1.3)
 dev.off()
 
       

@@ -28,11 +28,15 @@ library(nmfspalette)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: El_Nino_Southern_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("El_Nino_Southern_Oscillation")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}
@@ -228,6 +232,7 @@ stem <- function(x, y, stemcol) {
 }
 
 pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
+par(mar=c(4.1, 4.1, 2.1, 6.1))
 plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
      type = "l", lwd = 1,
      xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-3, 3),
@@ -245,6 +250,14 @@ stem(dmy_hm(indicator_data$Date_Time[LaNina_idx]), indicator_data$Value[LaNina_i
 stem(dmy_hm(indicator_data$Date_Time[Neutral_idx]), indicator_data$Value[Neutral_idx], ann_grey)
 axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-3, 3, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+legend('topright',
+       legend=c('El Niño', 'La Niña', 'Neutral'),
+       col=c(pal[2], oceans[2], ann_grey),
+       pch=c(15,15,15),
+       pt.cex = 2,
+       bty='n', 
+       horiz = F,
+       inset = c(-0.22,-0.015), xpd=T)
 dev.off()
 
 # Just a note that the plot was sensitive to the xlim values

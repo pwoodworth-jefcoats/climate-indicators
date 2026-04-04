@@ -23,11 +23,15 @@ library(sf)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: Tropical_Cyclones
 # This is where the data are and where the plots will go
 Dir <- here("Tropical_Cyclones")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}

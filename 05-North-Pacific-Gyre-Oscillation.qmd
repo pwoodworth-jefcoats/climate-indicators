@@ -28,11 +28,15 @@ library(nmfspalette)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: North_Pacific_Gyre_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("North_Pacific_Gyre_Oscillation")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}
@@ -129,7 +133,8 @@ x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
             dmy(01012020),
             max(dmy_hm(indicator_data$Date_Time)))
 
-pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""))
+pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
+par(mar=c(6.6, 5.1, 2.1, 2.1))
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
      xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4, 4), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
@@ -159,6 +164,14 @@ plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Tim
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+legend('bottom', 
+       legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
+       col=c(pal[1], pal[2]), 
+       lty=1, lwd=1.5, 
+       bg='gray80', 
+       horiz=T, 
+       inset = -0.31, xpd=T, 
+       box.lwd = 0, box.col = 'gray80')
 dev.off()
 
 ```

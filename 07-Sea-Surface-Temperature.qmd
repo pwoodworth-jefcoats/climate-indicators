@@ -45,38 +45,35 @@ if (!dir.exists(Dir)) {
 # Monthly SST
 # Generated in ~5-yr batches due to memory limitations
 # There's gotta be a way to append a year that's way better than this.  Implement this next year.
-SST_8590 <- read_delim(file = paste(Dir, '/sst_ts_8590.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_9195 <- read_delim(file = paste(Dir, '/sst_ts_9195.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_9600 <- read_delim(file = paste(Dir, '/sst_ts_9600.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_0105 <- read_delim(file = paste(Dir, '/sst_ts_0105.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_0610 <- read_delim(file = paste(Dir, '/sst_ts_0610.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_1115 <- read_delim(file = paste(Dir, '/sst_ts_1115.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_1620 <- read_delim(file = paste(Dir, '/sst_ts_1620.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_2124 <- read_delim(file = paste(Dir, '/sst_ts_2124.dat', sep = ""), skip = 8, col_names = FALSE)
-SST_2528 <- read_delim(file = paste(Dir, '/sst_ts_2528.dat', sep = ""), skip = 8, col_names = FALSE)
+# read in all the time series file names
+SST_files <- list.files(path=Dir, pattern='sst_ts_', full.names = T)
+# Read in all the files
+SST_full <- lapply(SST_files, read.csv, skip=8, header=F) %>% 
+  bind_rows() %>% 
+  rename(Date_Time=V1, SST_degC=V2) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time)) %>% 
+  arrange(Date_Time) # note that this method doesn't read the files in chronological order, so we sort them here to make sure everything lines up properly down the line
 
-# Concatenate
-SST_full <- rbind(SST_8590, SST_9195, SST_9600, SST_0105, SST_0610, SST_1115, SST_1620, SST_2124, SST_2528)
 ```
 
 ```{r}
 #| include: false
 # Remove seasonal means to calculate anomalies
-SST_climo <- matrix(NA, nrow = length(SST_full$X2), ncol = 1)
+SST_climo <- matrix(NA, nrow = nrow(SST_full), ncol = 1)
 for (m in seq(1,12,1)) {
-  mo_of_int <- which(month(dmy_hm(SST_full$X1)) == m)
-  SST_climo[mo_of_int,1] <- mean(SST_full$X2[mo_of_int])
+  mo_of_int <- which(month(SST_full$Date_Time) == m)
+  SST_climo[mo_of_int,1] <- mean(SST_full$SST_degC[mo_of_int])
 }
 
-SST_anom_ts <- SST_full$X2 - SST_climo
+SST_anom_ts <- SST_full$SST_degC - SST_climo
 ```
 
 ```{r}
 #| include: false
 ### Linear fit 
 # Note that this assumes that observations are equally spaced in time, which they're  not
-n_obs <- seq(1, length(SST_full$X2), 1)
-SST_lm <- lm(SST_full$X2 ~ n_obs)
+n_obs <- seq(1, nrow(SST_full), 1)
+SST_lm <- lm(SST_full$SST_degC ~ n_obs)
 SST_anom_lm <- lm(SST_anom_ts ~ n_obs)
 
 # Change over time
@@ -89,16 +86,9 @@ delta_SST_anom_lm <- SST_anom_lm$fitted.values[length(n_obs)] -
 ```{r}
 #| include: false
 ### Annual values
-yrs <- year(dmy_hm(SST_full$X1))
-SST_full <- bind_cols(SST_full, yrs)
-SST_full <- rename(SST_full, Date_Time = X1)
-SST_full <- rename(SST_full, SST_degC = X2)
-SST_full <- rename(SST_full, Year = ...3)
-
-# Add in anomaly to make things easier down the road
-SST_anom_ts <- as_tibble(SST_anom_ts)
-SST_full <- bind_cols(SST_full, SST_anom_ts)
-SST_full <- rename(SST_full, Anom = V1)
+SST_full <- SST_full %>% 
+    mutate(Year=year(Date_Time), 
+           Anom=SST_anom_ts)
 
 ann_SST <- SST_full %>%
   group_by(Year) %>%
@@ -162,31 +152,41 @@ write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/SSTanomaly
 # Note that dashboard output has its own folder
 
 # Add columns for month, variable ID, and units
-Month <- month(dmy_hm(SST_full$Date_Time))
-ID <- rep('SST', dim(SST_full)[1])
-Units <- rep('Deg C', dim(SST_full)[1])
+# Month <- month(dmy_hm(SST_full$Date_Time))
+# ID <- rep('SST', dim(SST_full)[1])
+# Units <- rep('Deg C', dim(SST_full)[1])
 
-SST_dashboard <- bind_cols(SST_full$Date_Time, 
-                           SST_full$Year, 
-                           Month,
-                           SST_full$SST_degC,
-                           SST_full$Anom,
-                           ID,
-                           SST_lm$fitted.values,
-                           SST_anom_lm$fitted.values,
-                           Units)
-# Need to figure out how to render this unnecessary
-SST_dashboard <- rename(SST_dashboard, Date_Time = ...1)
-SST_dashboard <- rename(SST_dashboard, Year = ...2)
-SST_dashboard <- rename(SST_dashboard, Month = ...3)
-SST_dashboard <- rename(SST_dashboard, Value = ...4)
-SST_dashboard <- rename(SST_dashboard, Anom = ...5)
-SST_dashboard <- rename(SST_dashboard, ID = ...6)
-SST_dashboard <- rename(SST_dashboard, Value_lm = ...7)
-SST_dashboard <- rename(SST_dashboard, Anom_lm = ...8)
-SST_dashboard <- rename(SST_dashboard, Units = ...9)
+SST_dashboard <- SST_full %>% 
+  mutate(Month=month(Date_Time), 
+         ID='SST', 
+         Value_lm=SST_lm$fitted.values, 
+         Anom_lm=SST_anom_lm$fitted.values, 
+         Units='Deg C', 
+         Value=SST_degC) %>% 
+  dplyr::select(Date_Time, Year, Month, Value, Anom, ID, Value_lm, Anom_lm, Units)
 
-write_csv(SST_dashboard, file = here("Indicator_Dashboard", "Data", paste('SST_Dashboard_Data_', RptYr, '.csv', sep = "")))
+# 
+# SST_dashboard <- bind_cols(SST_full$Date_Time, 
+#                            SST_full$Year, 
+#                            Month,
+#                            SST_full$SST_degC,
+#                            SST_full$Anom,
+#                            ID,
+#                            SST_lm$fitted.values,
+#                            SST_anom_lm$fitted.values,
+#                            Units)
+# # Need to figure out how to render this unnecessary
+# SST_dashboard <- rename(SST_dashboard, Date_Time = ...1)
+# SST_dashboard <- rename(SST_dashboard, Year = ...2)
+# SST_dashboard <- rename(SST_dashboard, Month = ...3)
+# SST_dashboard <- rename(SST_dashboard, Value = ...4)
+# SST_dashboard <- rename(SST_dashboard, Anom = ...5)
+# SST_dashboard <- rename(SST_dashboard, ID = ...6)
+# SST_dashboard <- rename(SST_dashboard, Value_lm = ...7)
+# SST_dashboard <- rename(SST_dashboard, Anom_lm = ...8)
+# SST_dashboard <- rename(SST_dashboard, Units = ...9)
+
+write.csv(SST_dashboard, file = here("Indicator_Dashboard", "Data", paste0('SST_Dashboard_Data_', RptYr, '.csv')), row.names =F)
 ```
 
 ```{r}

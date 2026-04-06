@@ -293,10 +293,10 @@ legend('bottom',
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
        lty=1, lwd=1.5, 
-       bg='gray80', 
+       bg='gray90', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray80')
+       box.lwd = 0, box.col = 'gray90')
 dev.off()
 
 
@@ -394,10 +394,10 @@ legend('bottom',
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
        lty=1, lwd=1.5, 
-       bg='gray80', 
+       bg='gray90', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray80')
+       box.lwd = 0, box.col = 'gray90')
 dev.off()
 
 # p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,

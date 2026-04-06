@@ -193,40 +193,32 @@ ann_vals <- indicator_data |>
 given_yr <- indicator_data |>
   filter(Year == RptYr)
 
-given_yr_ann <- bind_cols(rep(ann_vals$Value[dim(ann_vals)[1]]),
-                          given_yr$Date_Time,
-                          ann_anom$`Degrees C`[which(ann_anom$Year == RptYr)])
-given_yr_ann <- rename(given_yr_ann, Value = ...1)
-given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
-given_yr_ann <- rename(given_yr_ann, Anom = ...3)
+given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
+                          Date_Time = given_yr$Date_Time,
+                          Anom = ann_anom$`Degrees C`[which(ann_anom$Year == RptYr)])
 
 # Commented out the plotly code because it's not working this year.  So,
 # going with base R, because that's what I'm most familiar with
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-# x_grid <- c(min(dmy_hm(indicator_data$Date_Time)), 
-#                 dmy(01011990),
-#                 dmy(01011995),
-#                 dmy(01012000),
-#                 dmy(01012005),
-#                 dmy(01012010),
-#                 dmy(01012015),
-#                 dmy(01012020),
-#                 dmy(01012024),
-#                 max(dmy_hm(indicator_data$Date_Time)))
-x_grid <- c(seq.POSIXt(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time)), by='5 year'),
-            max(dmy_hm(indicator_data$Date_Time)))
+# Made a sequence instead so we don't have to manually update it every five years
+x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='5 year'),
+            max(indicator_data$Date_Time))
+
+# x axis limit
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
+
 # y-axis limits
 ts_y_lim <-c(17, 25)
 anom_y_lim <- c(-1.5, 1.5)
 
 # p <- ggplot() +
-#   geom_line(data = indicator_data, aes(x = dmy_hm(Date_Time), y = Value, color="Monthly avg, previous yrs")) +
+#   geom_line(data = indicator_data, aes(x = Date_Time, y = Value, color="Monthly avg, previous yrs")) +
 #   geom_line(data = ann_vals, aes(x = ymd_hm(paste(Year, '0601 00:00', sep = "")), y = Value, color='Annual avg, previous yrs')) +
-#   geom_line(data = indicator_data, aes(x = dmy_hm(Date_Time), y = Value_lm, color='Long-term trend')) +
-#   geom_line(data = given_yr, aes(x = dmy_hm(Date_Time), y = Value, color="Monthly avg, Report Year")) +
-#   geom_line(data = given_yr_ann, aes(x = dmy_hm(Date_Time), y = Value, color="Annual avg, Report Year")) +
+#   geom_line(data = indicator_data, aes(x = Date_Time, y = Value_lm, color='Long-term trend')) +
+#   geom_line(data = given_yr, aes(x = Date_Time, y = Value, color="Monthly avg, Report Year")) +
+#   geom_line(data = given_yr_ann, aes(x = Date_Time, y = Value, color="Annual avg, Report Year")) +
 #   scale_color_manual(values = c(
 #     'Monthly avg, previous yrs' = pal[1],
 #     'Annual avg, previous yrs' = pal[3],
@@ -241,19 +233,19 @@ anom_y_lim <- c(-1.5, 1.5)
 #     legend.position = "bottom",
 #     legend.title = element_blank()) +
 #   scale_x_continuous(name = "Year",
-#                      breaks = x_grid,  # major breaks 
+#                      breaks = x_grid,  # major breaks
 #                      labels = c(year(head(x_grid, -1)), ""),  # label with just the year
 #                      expand = c(0,0)) + # remove padding
-#   scale_y_continuous(name = "Sea Surface Temperature (°C)", 
+#   scale_y_continuous(name = "Sea Surface Temperature (°C)",
 #                      breaks = seq(17, 25, 1), # major breaks and labels
 #                      expand = c(0,0)) # remove padding
 # 
-# p  
+# p
 
 pdf(paste(Dir, '/SST_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -265,31 +257,31 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2
      font.lab = 2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[3],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+plot(indicator_data$Date_Time, indicator_data$Value_lm, type = "l", lwd = 2,
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[5],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+plot(given_yr_ann$Date_Time, given_yr_ann$Value, type = "l", lwd = 2,
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -353,8 +345,8 @@ ann_vals <- indicator_data |>
 
 pdf(paste(Dir, '/SST_anom_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+plot(indicator_data$Date_Time, indicator_data$Anom, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -366,31 +358,31 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2,
      font.lab = 2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[3],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom_lm, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+plot(indicator_data$Date_Time, indicator_data$Anom_lm, type = "l", lwd = 2,
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[5],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Anom, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+plot(given_yr$Date_Time, given_yr$Anom, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+plot(given_yr_ann$Date_Time, given_yr_ann$Anom, type = "l", lwd = 2,
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box

@@ -152,10 +152,6 @@ write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/SSTanomaly
 # Note that dashboard output has its own folder
 
 # Add columns for month, variable ID, and units
-# Month <- month(dmy_hm(SST_full$Date_Time))
-# ID <- rep('SST', dim(SST_full)[1])
-# Units <- rep('Deg C', dim(SST_full)[1])
-
 SST_dashboard <- SST_full %>% 
   mutate(Month=month(Date_Time), 
          ID='SST', 
@@ -164,27 +160,6 @@ SST_dashboard <- SST_full %>%
          Units='Deg C', 
          Value=SST_degC) %>% 
   dplyr::select(Date_Time, Year, Month, Value, Anom, ID, Value_lm, Anom_lm, Units)
-
-# 
-# SST_dashboard <- bind_cols(SST_full$Date_Time, 
-#                            SST_full$Year, 
-#                            Month,
-#                            SST_full$SST_degC,
-#                            SST_full$Anom,
-#                            ID,
-#                            SST_lm$fitted.values,
-#                            SST_anom_lm$fitted.values,
-#                            Units)
-# # Need to figure out how to render this unnecessary
-# SST_dashboard <- rename(SST_dashboard, Date_Time = ...1)
-# SST_dashboard <- rename(SST_dashboard, Year = ...2)
-# SST_dashboard <- rename(SST_dashboard, Month = ...3)
-# SST_dashboard <- rename(SST_dashboard, Value = ...4)
-# SST_dashboard <- rename(SST_dashboard, Anom = ...5)
-# SST_dashboard <- rename(SST_dashboard, ID = ...6)
-# SST_dashboard <- rename(SST_dashboard, Value_lm = ...7)
-# SST_dashboard <- rename(SST_dashboard, Anom_lm = ...8)
-# SST_dashboard <- rename(SST_dashboard, Units = ...9)
 
 write.csv(SST_dashboard, file = here("Indicator_Dashboard", "Data", paste0('SST_Dashboard_Data_', RptYr, '.csv')), row.names =F)
 ```

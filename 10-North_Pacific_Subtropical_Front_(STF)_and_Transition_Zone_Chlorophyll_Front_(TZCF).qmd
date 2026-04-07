@@ -26,11 +26,15 @@ library(lubridate)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: Fisheries Indicators
 # This is where the data are and where the plots will go
 Dir <- here('Fronts')
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}
@@ -78,7 +82,8 @@ ppHiRes <- ggplot_build(pHiRes)$data[[1]]
 ppHiRes$lyr <- as.numeric(as.character(ppHiRes$lyr))
 
 # Start a loop over all the years and make a plot with background SST for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghost' lines
-for (i in seq_along(yr)) {
+#for (i in seq_along(yr)) { # Use this if you are making all the figures starting in 1985
+for (i in which(yr==RptYr)) { # Use this if you are only making a figure for the report year
 
   # Make subset data for the ith year and the ghost lines separately
   sstNow <- ppHiRes %>% filter(lyr == yr[i])
@@ -87,10 +92,11 @@ for (i in seq_along(yr)) {
   psst <- ggplot() +
     geom_spatraster(data=sstRas[[i]]) +
     geom_path(data=sstGhost, aes(x, y, group=lyr), color='lightgray', linewidth=0.3) + 
-    geom_spatraster_contour(data=tclimRas, breaks=18, color='black', linetype='dashed', linetype=0.7) +
+    geom_spatraster_contour(data=tclimRas, breaks=18, color='black', linetype='dashed', linewidth=0.7) +
     geom_path(data=sstNow, aes(x, y, group=lyr), color='black', linewidth=0.5) +
     coord_sf(expand = F, xlim=c(180,240), ylim=c(5,45)) +
-    borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
+    #borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
+    annotation_borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
     annotate('text', x=-Inf, y=Inf, label=yr[i], vjust=2, hjust=-0.5) +
     scale_fill_gradientn(name = "SST", colors = rev(nmfs_palette('waves')(3)), limits = c(3.9, 30)) + #indicator-dependent color and scale from above
     scale_y_continuous(breaks=seq(5,45,by=10)) +
@@ -142,6 +148,12 @@ names(chlRas1) <- yr
 crs(chlRas1) <- '+proj=longlat +datum=WGS84 +no_defs'
 setMinMax(chlRas1)
 
+# # 0.5 degree resolution
+# chlRas05 <- rast(paste0(Dir, '/SAFE_CHL_Q1ave050_', RptYr, '.nc'))
+# names(chlRas05) <- yr
+# crs(chlRas05) <- '+proj=longlat +datum=WGS84 +no_defs'
+# setMinMax(chlRas05)
+
 # load the climatology
 cclimRas <- rast(paste0(Dir, '/SAFE_CHL_Q1_clim_1998_2009_050deg.nc'))
 names(cclimRas) <- 'CHL_Clim'
@@ -153,7 +165,7 @@ extN$ymin <- 26
 cclimRas <- crop(cclimRas, extN)
 
 # Make a 0.2 contour and extract the underlying ggplot data
-# I'm doing this becuase the chl data is messy, and this way I can pick just the longest contour and plot that
+# I'm doing this because the chl data is messy, and this way I can pick just the longest contour and plot that
 # This is also helpful for calculating the front index (ave of all lats)
 p <- ggplot() + geom_spatraster_contour(data=chlRas1, breaks=0.2)
 pp <- ggplot_build(p)$data[[1]]
@@ -173,8 +185,7 @@ TZCFindex <- contourDat %>%
   summarise(mean_lat=mean(y, na.rm=T)) %>% 
   mutate(front = 'TZCF')
 
-yr <- yr[7:10]
-# Start a loop over all the years and make a plot with background chl for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghose' lines
+# Start a loop over all the years and make a plot with background chl for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghost' lines
 for (i in seq_along(yr)) {
   # Subset by year and rescale the spatraster for better color plotting
   test <- chlRas[[i]]
@@ -189,7 +200,7 @@ for (i in seq_along(yr)) {
     geom_path(data=chlGhost, aes(x, y, group=lyr), color='lightgray', linewidth=0.3) + 
     geom_spatraster_contour(data=cclimRas, breaks=0.2, color='black', linetype='dashed', linewidth=0.5) +
     geom_path(data=chlNow, aes(x, y, group=lyr), color='black', linewidth=0.5) +
-    borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
+    annotation_borders('world2', fill='#A5A5A5', colour='gray40', linewidth=0.2) +
     annotate('text', x=-Inf, y=Inf, label=yr[i], vjust=2, hjust=-0.5) +
     coord_sf(expand = F, xlim=c(180,240), ylim=c(5,45)) +
     scale_y_continuous(breaks=seq(5,45,by=10)) +
@@ -285,7 +296,7 @@ ptrend <- ggplot() +
     panel.background = element_rect(fill = "transparent"),
     legend.position = "bottom",
     legend.title = element_blank(), 
-    legend.background = element_rect_round(fill='lightgray')) +
+    legend.background = element_rect(fill='gray90')) +
   scale_x_continuous(name = "Year",
                      breaks = c(seq(1985,2024,5),RptYr-1),  # major breaks 
                      expand = c(0,0)) + # remove padding

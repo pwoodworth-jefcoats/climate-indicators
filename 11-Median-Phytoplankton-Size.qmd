@@ -21,6 +21,7 @@ library(stringr)
 library(nmfspalette)
 # library(plotly)
 # library(reticulate)
+library(grid)
 # 
 # reticulate::use_miniconda('r-reticulate')
 ```
@@ -296,14 +297,16 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2025, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(1.1, 1.9, 0.1)), las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.5, y=0.08, width=0.6, height=0.12, 
+               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
        lty=1, lwd=1.5, 
-       bg='gray90', 
+       bg='transparent',#'gray90', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 # p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
@@ -398,14 +401,16 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
 axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2024, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-0.15, -0.05, 0.05),0,seq(0.05,0.15,0.05)), labels=as.character(c(seq(-0.15, -0.05, 0.05),0,seq(0.05,0.15,0.05))), 
      las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.5, y=0.08, width=0.6, height=0.12, 
+               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
        lty=1, lwd=1.5, 
-       bg='gray90', 
+       bg='transparent',#'gray90', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
   
 # p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,

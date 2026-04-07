@@ -20,6 +20,7 @@ library(here)
 library(nmfspalette)
 # library(plotly)
 # library(reticulate)
+library(grid)
 
 # reticulate::install_miniconda()
 # reticulate::py_install("packaging")
@@ -48,6 +49,13 @@ Dir_csv <- here(paste0("PelagicClimate_",RptYr))
 # Check if it exists; if not, create it
 if (!dir.exists(Dir_csv)) {
   dir.create(Dir_csv)
+}
+
+# The indicator dashboard files go in their own directory, so we are making that here if it doesn't already exist
+Dir_dash <- here("Indicator_Dashboard")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir_dash)) {
+  dir.create(Dir_dash)
 }
 
 ```
@@ -155,7 +163,8 @@ write_csv(CO2_dashboard, file = here("Indicator_Dashboard", "Data",
 # Borrowing code from the dashboard for this chunk
 # so that figures look the same across products
 indicator_data <- CO2_dashboard |>
-  filter(Year <= RptYr)
+  filter(Year <= RptYr) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
@@ -179,30 +188,24 @@ ann_vals <- indicator_data |>
 given_yr <- indicator_data |>
   filter(Year == RptYr)
 
-given_yr_ann <- bind_cols(rep(ann_vals$Value[dim(ann_vals)[1]]),
-                          given_yr$Date_Time)
-given_yr_ann <- rename(given_yr_ann, Value = ...1)
-given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
+given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
+                          Date_Time = given_yr$Date_Time)
 
 # Commented out the plotly code because it's not working this year.  So,
 # going with base R, because that's what I'm most familiar with
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-x_grid <- c(min(dmy_hm(indicator_data$Date_Time)), 
-                dmy(01011960),
-                dmy(01011970),
-                dmy(01011980),
-                dmy(01011990),
-                dmy(01012000),
-                dmy(01012010),
-                dmy(01012020),
-                max(dmy_hm(indicator_data$Date_Time)))
+x_grid <- c(min(indicator_data$Date_Time), 
+            seq.POSIXt(dmy_hm(010119600000), max(indicator_data$Date_Time), by='10 year'),
+            max(indicator_data$Date_Time))
+# x axis limit
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)+(86400*16))
 
-pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""))
-par(mar=c(8.6, 5.1, 2.1, 3.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))+(86400*16)), ylim = c(300, 435), 
+pdf(paste(Dir, '/AtmosphericCO2_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
+par(mar=c(8.6, 5.1, 2.1, 2.1))
+plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = c(300, 435), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -214,31 +217,41 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2
      font.lab = 2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))+(86400*16)), ylim = c(300, 435), 
+     xlim = ts_x_lim, ylim = c(300, 435), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[3],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))+(86400*16)), ylim = c(300, 435), 
+plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = c(300, 435), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))+(86400*16)), ylim = c(300, 435), 
+plot(given_yr_ann$Date_Time, given_yr_ann$Value, type = "l", lwd = 2,
+     xlim = ts_x_lim, ylim = c(300, 435), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[4],
      xlab = " ", ylab = " ")
-axis(1, at = x_grid, label = c(" ", seq(1960, 2025, 10), " "), col = "transparent", col.ticks = "transparent") 
+axis(1, at = x_grid, label = c(" ", seq(1960, 2025, 10), 2025), col = "transparent", col.ticks = "transparent",xpd=T) 
+mtext(adj = 0, side=1, line=0.9, text=1960, xpd=T) # This is to add in the 1960 that is too close to the edge for the plot to print for some reason
 axis(2, at = c(seq(300, 420, 20), 435), las = 1, col = "transparent", col.ticks = "transparent")
-legend('bottom', legend=c(paste0('Monthly average, 1958-',RptYr-1), paste0('Annual average, 1958-',RptYr-1), paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), col=c(pal[1],pal[3], pal[2], pal[4]), lty=1, lwd=1.5, bg='gray80', horiz=F, ncol=2, inset = -0.31, xpd=T, box.lwd = 0, box.col = 'gray80')
+grid.roundrect(x=0.51, y=0.08, width=0.6, height=0.1, 
+               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+legend('bottom', 
+       legend=c(paste0('Monthly average, 1958-',RptYr-1), paste0('Annual average, 1958-',RptYr-1), paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
+       col=c(pal[1], pal[3], pal[2], pal[4]), lty=1, 
+       lwd=1.75, 
+       bg='transparent', 
+       horiz=F, ncol=2, 
+       inset = -0.4, xpd=T, 
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 # p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,

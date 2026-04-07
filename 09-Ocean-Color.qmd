@@ -29,11 +29,15 @@ library(plotly)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Set path to variable: Ocean_Color
 # This is where the data are and where the plots will go
 Dir <- here("Ocean_Color")
+# Check if it exists; if not, create it
+if (!dir.exists(Dir)) {
+  dir.create(Dir)
+}
 ```
 
 ```{r}
@@ -47,7 +51,7 @@ Chl_0307 <- read_delim(file = paste(Dir, '/chl_ts_0307.dat', sep = ""), skip = 8
 Chl_0812 <- read_delim(file = paste(Dir, '/chl_ts_0812.dat', sep = ""), skip = 8, col_names = FALSE)
 Chl_1317 <- read_delim(file = paste(Dir, '/chl_ts_1317.dat', sep = ""), skip = 8, col_names = FALSE)
 Chl_1822 <- read_delim(file = paste(Dir, '/chl_ts_1822.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_2324 <- read_delim(file = paste(Dir, '/chl_ts_2324.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_2324 <- read_delim(file = paste(Dir, '/chl_ts_2325.dat', sep = ""), skip = 8, col_names = FALSE)
 
 # Concatonate
 Chl_full <- rbind(Chl_9802, Chl_0307, Chl_0812, Chl_1317, Chl_1822, Chl_2324)
@@ -230,27 +234,30 @@ x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
                 dmy(01012010),
                 dmy(01012015),
                 dmy(01012020),
-                dmy(01012024),
+                dmy(01012025),
                 max(dmy_hm(indicator_data$Date_Time)))
+# x-axis limits
+ts_x_lim <- c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time)))
 # y-axis limits
 ts_y_lim <-c(0.07, 0.19)
 anom_y_lim <- c(-0.035, 0.035)
 
-pdf(paste(Dir, '/Chl_ts_', RptYr, '.pdf', sep = ""))
+pdf(paste(Dir, '/Chl_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
+par(mar=c(8.6, 5.1, 2.1, 2.1))
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[1],
-     xlab = "Year", ylab = "Chlorophyll-a Concentration (mg m-3)",
+     xlab = "Year", ylab = expression(bold("Chlorophyll-a Concentration (mg " * m^-3* ")")),
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
                      abline(h = c(0.07, seq(0.08, 0.8, 0.02), 0.19), col = "#F1F3F3")),
      font.lab = 2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -258,7 +265,7 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type 
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -266,7 +273,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd 
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -274,14 +281,22 @@ plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = ts_y_lim, 
+     xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[4],
      xlab = " ", ylab = " ")
-axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2024, " "), col = "transparent", col.ticks = "transparent") 
+axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2025, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(0.07, seq(0.08, 0.8, 0.02), 0.19), las = 1, col = "transparent", col.ticks = "transparent")
+legend('bottom', 
+       legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
+       col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
+       lty=1, lwd=1.5, 
+       bg='gray90', 
+       horiz=F, ncol=2,
+       inset = -0.435, xpd=T, 
+       box.lwd = 0, box.col = 'gray90')
 dev.off()
 
 # p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
@@ -327,21 +342,24 @@ ann_vals <- indicator_data |>
   group_by(Year) |>
   summarise(Anom = mean(Anom, na.rm = TRUE)) 
 
-pdf(paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""))  
+pdf(paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
+par(mar=c(8.6, 5.1, 2.1, 2.1))
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[1],
-     xlab = "Year", ylab = "Chlorophyll-a Concentration Anomaly (mg m3)",
+     xlab = "Year", ylab = "", #expression("Chlorophyll-a Concentration Anomaly (mg " * m^-3 *")"),
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-                     abline(h = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), col = "#F1F3F3")),
+                     abline(h = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), col = "#F1F3F3"),
+                     abline(h = 0, col='black')),
      font.lab = 2)
+title(ylab=expression(bold("Chlorophyll-a Concentration Anomaly (mg " * m^-3 *")")), line=3.75)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -349,7 +367,7 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type =
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom_lm, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -357,7 +375,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom_lm, type = "l", lwd =
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr$Date_Time), given_yr$Anom, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -365,14 +383,23 @@ plot(dmy_hm(given_yr$Date_Time), given_yr$Anom, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = anom_y_lim, 
+     xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[4],
      xlab = " ", ylab = " ")
-axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2024, " "), col = "transparent", col.ticks = "transparent") 
-axis(2, at = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), las = 1, col = "transparent", col.ticks = "transparent")
+axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2025, " "), col = "transparent", col.ticks = "transparent") 
+axis(2, at = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), labels = as.character(c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01))), 
+     las = 1, col = "transparent", col.ticks = "transparent")
+legend('bottom', 
+       legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
+       col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
+       lty=1, lwd=1.5, 
+       bg='gray90', 
+       horiz=F, ncol=2,
+       inset = -0.435, xpd=T, 
+       box.lwd = 0, box.col = 'gray90')
 dev.off()
 
 # p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,

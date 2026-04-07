@@ -96,7 +96,8 @@ write_csv(NPGO_dashboard, file = here("Indicator_Dashboard", "Data", paste('NPGO
 # Borrowing code from the dashboard for this chunk
 # so that figures look the same across products
 indicator_data <- NPGO_dashboard |>
-  filter(Year <= RptYr)
+  filter(Year <= RptYr) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = Negative PDO, 3 = previous years
@@ -123,20 +124,15 @@ given_yr <- indicator_data |>
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
-            dmy(01011960),
-            dmy(01011970),
-            dmy(01011980),
-            dmy(01011990),
-            dmy(01012000),
-            dmy(01012010),
-            dmy(01012020),
-            max(dmy_hm(indicator_data$Date_Time)))
+x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'),
+            max(indicator_data$Date_Time))
+# x axis limit
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
-pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
+pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
 par(mar=c(6.6, 5.1, 2.1, 2.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4, 4), 
+plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = c(-4, 4), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -147,31 +143,33 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2
                      abline(h = c(seq(-4, 4, 1)), col = "#F1F3F3")),
      font.lab = 2)
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4,4), 
+plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
+     xlim = ts_x_lim, ylim = c(-4,4), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
+plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
      type = "l", lwd = 1,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-4, 4),
+     xlim = ts_x_lim, ylim = c(-4, 4),
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.51, y=0.04, width=0.55, height=0.06, 
+               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
        col=c(pal[1], pal[2]), 
-       lty=1, lwd=1.5, 
-       bg='gray80', 
+       lty=1, lwd=1.75, 
+       bg='transparent', 
        horiz=T, 
-       inset = -0.31, xpd=T, 
-       box.lwd = 0, box.col = 'gray80')
+       inset = -0.3, xpd=T, 
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 ```

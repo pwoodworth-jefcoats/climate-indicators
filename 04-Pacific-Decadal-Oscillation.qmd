@@ -97,7 +97,8 @@ write_csv(PDO_dashboard, file = here("Indicator_Dashboard", "Data", paste('PDO_D
 # Borrowing code from the dashboard for this chunk
 # so that figures look the same across products
 indicator_data <- PDO_dashboard |>
-  filter(Year <= RptYr)
+  filter(Year <= RptYr) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = Negative PDO, 3 = previous years
@@ -120,17 +121,11 @@ indicator_data <- indicator_data |>
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
-            dmy(01011860),
-            dmy(01011880),
-            dmy(01011900),
-            dmy(01011920),
-            dmy(01011940),
-            dmy(01011960),
-            dmy(01011980),
-            dmy(01012000),
-            dmy(01012020),
-            max(dmy_hm(indicator_data$Date_Time)))
+x_grid <- c(min(indicator_data$Date_Time), 
+            seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year'),
+            max(indicator_data$Date_Time))
+# x axis limit
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
 # Identify positive and negative phases
 Pos_idx <- which(indicator_data$Value > 0)
@@ -146,9 +141,9 @@ stem <- function(x, y, stemcol) {
 
 pdf(paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
 par(mar=c(4.1, 4.1, 2.1, 2.1))
-plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
+plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
      type = "l", lwd = 1,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-5, 5),
+     xlim = ts_x_lim, ylim = c(-5, 5),
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -158,8 +153,8 @@ plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Tim
                      abline(h = c(seq(-5, 5, 1)), col = "#F1F3F3")),
      font.lab = 2)
 par(new = TRUE)
-stem(dmy_hm(indicator_data$Date_Time[Pos_idx]), indicator_data$Value[Pos_idx], pal[2])
-stem(dmy_hm(indicator_data$Date_Time[Neg_idx]), indicator_data$Value[Neg_idx], oceans[2])
+stem(indicator_data$Date_Time[Pos_idx], indicator_data$Value[Pos_idx], pal[2])
+stem(indicator_data$Date_Time[Neg_idx], indicator_data$Value[Neg_idx], oceans[2])
 axis(1, at = x_grid, label = c("1854", " ", seq(1880, 2020, 20), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-5, 5, 1)), las = 1, col = "transparent", col.ticks = "transparent")
 legend('topright',

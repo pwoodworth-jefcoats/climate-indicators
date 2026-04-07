@@ -179,7 +179,8 @@ write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO
 # Borrowing code from the dashboard for this chunk
 # so that figures look the same across products
 indicator_data <- ENSO_dashboard |>
-  filter(Year <= RptYr)
+  filter(Year <= RptYr) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
 oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = La Niña, 3 = previous years
@@ -213,15 +214,10 @@ indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <-
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
-            dmy(01011960),
-            dmy(01011970),
-            dmy(01011980),
-            dmy(01011990),
-            dmy(01012000),
-            dmy(01012010),
-            dmy(01012020),
-            max(dmy_hm(indicator_data$Date_Time)))
+x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'),
+            max(indicator_data$Date_Time))
+# x axis limit
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
 # Write a function to do the stem plot (we'll call it 'stem' like Matlabl does)
 # Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/
@@ -233,9 +229,9 @@ stem <- function(x, y, stemcol) {
 
 pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
 par(mar=c(4.1, 4.1, 2.1, 6.1))
-plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), c(0, 0), col = "black", 
+plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
      type = "l", lwd = 1,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(-3, 3),
+     xlim = ts_x_lim, ylim = c(-3, 3),
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -245,10 +241,10 @@ plot(c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Tim
                      abline(h = c(seq(-3, 3, 1)), col = "#F1F3F3")),
      font.lab = 2)
 par(new = TRUE)
-stem(dmy_hm(indicator_data$Date_Time[ElNino_idx]), indicator_data$Value[ElNino_idx], pal[2])
-stem(dmy_hm(indicator_data$Date_Time[LaNina_idx]), indicator_data$Value[LaNina_idx], oceans[2])
-stem(dmy_hm(indicator_data$Date_Time[Neutral_idx]), indicator_data$Value[Neutral_idx], ann_grey)
-axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
+stem(indicator_data$Date_Time[ElNino_idx], indicator_data$Value[ElNino_idx], pal[2])
+stem(indicator_data$Date_Time[LaNina_idx], indicator_data$Value[LaNina_idx], oceans[2])
+stem(indicator_data$Date_Time[Neutral_idx], indicator_data$Value[Neutral_idx], ann_grey)
+axis(1, at = x_grid, label = c(seq(1950, 2025, 10), " "), col = "transparent", col.ticks = "transparent", xpd=T) 
 axis(2, at = c(seq(-3, 3, 1)), las = 1, col = "transparent", col.ticks = "transparent")
 legend('topright',
        legend=c('El Niño', 'La Niña', 'Neutral'),

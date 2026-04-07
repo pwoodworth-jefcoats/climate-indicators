@@ -357,7 +357,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2,
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[1],
-     xlab = "Year", ylab = "Median Phytoplankton Size Anomaly (um ESD)",
+     xlab = "Year", ylab = expression(bold("Median Phytoplankton Size Anomaly (" * mu * "m ESD)")),
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
                      abline(h = c(seq(-0.15, 0.15, 0.05)), col = "#F1F3F3"),
@@ -396,7 +396,8 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
      col = pal[4],
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2024, " "), col = "transparent", col.ticks = "transparent") 
-axis(2, at = c(seq(-0.15, 0.15, 0.05)), las = 1, col = "transparent", col.ticks = "transparent")
+axis(2, at = c(seq(-0.15, -0.05, 0.05),0,seq(0.05,0.15,0.05)), labels=as.character(c(seq(-0.15, -0.05, 0.05),0,seq(0.05,0.15,0.05))), 
+     las = 1, col = "transparent", col.ticks = "transparent")
 legend('bottom', 
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 

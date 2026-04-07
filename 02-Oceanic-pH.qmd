@@ -193,7 +193,7 @@ given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
 
 # x axis ticks and grid
 x_grid <- c(min(dmy_hm(indicator_data$Date_Time)), 
-                dmy(01011990),
+                dmy(01021990),
                 dmy(01011995),
                 dmy(01012000),
                 dmy(01012005),
@@ -201,10 +201,23 @@ x_grid <- c(min(dmy_hm(indicator_data$Date_Time)),
                 dmy(01012015),
                 dmy(01012020),
                 max(dmy_hm(indicator_data$Date_Time)))
+# Second grid to force the first date onto the x-axis. Only used in an attempt to avoid using Illustrator.
+x_grid2 <- c(min(dmy_hm(indicator_data$Date_Time)), 
+                dmy(01101990),
+                dmy(01011995),
+                dmy(01012000),
+                dmy(01012005),
+                dmy(01012010),
+                dmy(01012015),
+                dmy(01012020),
+                max(dmy_hm(indicator_data$Date_Time)))
+# Set x-axis limits
+ts_x_lim <- c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time)))
 
-pdf(paste(Dir, '/Oceanic_pH_ts_', RptYr, '.pdf', sep = ""))
+pdf(paste(Dir, '/Oceanic_pH_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
+par(mar=c(8.6, 5.1, 2.1, 2.1))
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xlim = ts_x_lim , ylim = c(8.02, 8.14), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -216,7 +229,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2
      font.lab = 2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xlim = ts_x_lim , ylim = c(8.02, 8.14), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -224,7 +237,7 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type 
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xlim = ts_x_lim , ylim = c(8.02, 8.14), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -232,7 +245,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd 
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xlim = ts_x_lim , ylim = c(8.02, 8.14), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
@@ -240,15 +253,26 @@ plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 par(new = TRUE)
 plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
-     xlim = c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time))), ylim = c(8.02, 8.14), 
+     xlim = ts_x_lim , ylim = c(8.02, 8.14), 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
      bty = "n", # remove box
      col = pal[4],
      xlab = " ", ylab = " ")
-axis(1, at = x_grid, label = c(" ", seq(1990, 2020, 5), " "), col = "transparent", col.ticks = "transparent") 
-axis(2, at = c(seq(8.02, 8.14, 0.02)), las = 1, col = "transparent", col.ticks = "transparent")
+axis(1, at = x_grid2, label = c(" ", seq(1990, 2025, 5)), xpd=T, col = "transparent", col.ticks = "transparent") 
+axis(2, at = c(seq(8.02, 8.14, 0.02)), las = 1, col = "transparent", col.ticks = "transparent", xpd=T)
+grid.roundrect(x=0.5, y=0.08, width=0.6, height=0.12, 
+               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+legend('bottom', 
+       legend=c(paste0('Monthly average, 1989-',RptYr-2), paste0('Annual average, 1989-',RptYr-2), 'Long-term Trend', paste0('Monthly average, ',RptYr-1), paste0('Annual average, ',RptYr-1)), 
+       col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
+       lty=1, lwd=1.75, 
+       bg='transparent',#'gray90', 
+       horiz=F, ncol=2,
+       inset = -0.435, xpd=T, 
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
+
 
 # p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
 #               type = "scatter", mode = "lines", line = list(color = pal[1]),

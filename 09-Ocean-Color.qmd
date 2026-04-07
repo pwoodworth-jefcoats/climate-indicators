@@ -51,10 +51,10 @@ Chl_0307 <- read_delim(file = paste(Dir, '/chl_ts_0307.dat', sep = ""), skip = 8
 Chl_0812 <- read_delim(file = paste(Dir, '/chl_ts_0812.dat', sep = ""), skip = 8, col_names = FALSE)
 Chl_1317 <- read_delim(file = paste(Dir, '/chl_ts_1317.dat', sep = ""), skip = 8, col_names = FALSE)
 Chl_1822 <- read_delim(file = paste(Dir, '/chl_ts_1822.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_2324 <- read_delim(file = paste(Dir, '/chl_ts_2325.dat', sep = ""), skip = 8, col_names = FALSE)
+Chl_2325 <- read_delim(file = paste(Dir, '/chl_ts_2325.dat', sep = ""), skip = 8, col_names = FALSE)
 
 # Concatonate
-Chl_full <- rbind(Chl_9802, Chl_0307, Chl_0812, Chl_1317, Chl_1822, Chl_2324)
+Chl_full <- rbind(Chl_9802, Chl_0307, Chl_0812, Chl_1317, Chl_1822, Chl_2325)
 ```
 
 ```{r}

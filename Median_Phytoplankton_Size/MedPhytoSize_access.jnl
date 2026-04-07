@@ -1,7 +1,7 @@
 ! The purpose of this script is to look at estimated median phytoplankton size for the SAFE report
 
 ! Load data
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025
 
 ! Years of interest
 ! 1 = Jan 1998
@@ -12,6 +12,8 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp
 ! 312 = Dec 2023
 ! 313 = Jan 2024
 ! 324 = Dec 2024
+! 325 = Jan 2025
+! 336 = Dec 2025
 
 ! Area of interest
 ! 15 - 45N, 180 - 120W
@@ -25,14 +27,14 @@ let medphyto_ts_0307 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=61:120]
 let medphyto_ts_0812 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=121:180]
 let medphyto_ts_1317 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=181:240]
 let medphyto_ts_1822 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=241:300]
-let medphyto_ts_2324 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=301:324]
+let medphyto_ts_2325 = MD50[x = 180:120W@ave, y = 15:45N@ave, l=301:336]
 
 list/CLOBBER/FILE=medphyto_ts_9802.dat/FORMAT=comma medphyto_ts_9802
 list/CLOBBER/FILE=medphyto_ts_0307.dat/FORMAT=comma medphyto_ts_0307
 list/CLOBBER/FILE=medphyto_ts_0812.dat/FORMAT=comma medphyto_ts_0812
 list/CLOBBER/FILE=medphyto_ts_1317.dat/FORMAT=comma medphyto_ts_1317
 list/CLOBBER/FILE=medphyto_ts_1822.dat/FORMAT=comma medphyto_ts_1822
-list/CLOBBER/FILE=medphyto_ts_2324.dat/FORMAT=comma medphyto_ts_2324
+list/CLOBBER/FILE=medphyto_ts_2325.dat/FORMAT=comma medphyto_ts_2325
 
 cancel data/all
 cancel var/all
@@ -52,13 +54,13 @@ list/CLOBBER/FILE=medphyto_climo.nc/FORMAT=cdf medphyto_climo
 cancel data/all
 cancel var/all
 
-! Current year for anomaly calculation, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! Current year for anomaly calculation, 2025, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
 ! and to harmonize across remotely sensed variables
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2024-clim
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2025-clim
 let medphyto_regrid = MD50[GX=x025deg, GY=y025deg]
 ! shade/palette=cmocean_algae MD50[x=120E:100W, y=0:55N, l=1]
-let medphyto_2024 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
-list/FILE=medphyto_yr2024.nc/FORMAT=cdf medphyto_2024
+let medphyto_2025 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=medphyto_yr2025.nc/FORMAT=cdf medphyto_2025
 
 ! Dashboard maps files
 ! Coarser resolution (0.5) needed to keep the file size reasonable
@@ -75,10 +77,10 @@ list/CLOBBER/FILE=medphyto_climo_dashboard.nc/FORMAT=cdf medphyto_climo
 cancel data/all
 cancel var/all
 
-! Current year for anomaly calculation, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! Current year for anomaly calculation, 2025, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
 ! and to harmonize across remotely sensed variables
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2024-clim
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2025-clim
 let medphyto_regrid = MD50[GX=x05deg, GY=y05deg]
 ! shade/palette=cmocean_algae MD50[x=120E:100W, y=0:55N, l=1]
-let medphyto_2024 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
-list/FILE=medphyto_yr2024_dashboard.nc/FORMAT=cdf medphyto_2024
+let medphyto_2025 = medphyto_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=medphyto_yr2025_dashboard.nc/FORMAT=cdf medphyto_2025

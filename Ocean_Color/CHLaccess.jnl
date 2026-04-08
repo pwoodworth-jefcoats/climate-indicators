@@ -17,6 +17,8 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
 ! 316 = Dec 2023
 ! 317 = Jan 2024
 ! 328 = Dec 2024
+! 329 = Jan 2025
+! 340 = Dec 2025
 
 ! Area of interest
 ! 15 - 45N, 180 - 120W
@@ -31,14 +33,14 @@ let chl_ts_0307 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=65:124]
 let chl_ts_0812 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=125:184]
 let chl_ts_1317 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=185:244]
 let chl_ts_1822 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=245:304]
-let chl_ts_2324 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=305:328]
+let chl_ts_2325 = CHLOR_A[x = 180:120W@ave, y = 15:45N@ave, l=305:340]
 
 list/CLOBBER/FILE=chl_ts_9802.dat/FORMAT=comma chl_ts_9802
 list/CLOBBER/FILE=chl_ts_0307.dat/FORMAT=comma chl_ts_0307
 list/CLOBBER/FILE=chl_ts_0812.dat/FORMAT=comma chl_ts_0812
 list/CLOBBER/FILE=chl_ts_1317.dat/FORMAT=comma chl_ts_1317
 list/CLOBBER/FILE=chl_ts_1822.dat/FORMAT=comma chl_ts_1822
-list/CLOBBER/FILE=chl_ts_2324.dat/FORMAT=comma chl_ts_2324
+list/CLOBBER/FILE=chl_ts_2325.dat/FORMAT=comma chl_ts_2325
 
 cancel data/all
 cancel var/all
@@ -58,13 +60,13 @@ list/CLOBBER/FILE=chl_climo.nc/FORMAT=cdf chl_climo
 cancel data/all
 cancel var/all
 
-! Current year for anomaly calculation, 2024, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
+! Current year for anomaly calculation, 2025, for anomaly calculation regridded to 0.25 degree resolution to try to decrease file size
 ! and to harmonize across remotely sensed variables
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2025-clim_v6-0
 let chl_regrid = CHLOR_A[GX=x025deg, GY=y025deg]
 ! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
-let chl_2024 = chl_regrid[x=120E:100W, y=0:55N, l=1]
-list/FILE=chl_yr2024.nc/FORMAT=cdf chl_2024
+let chl_2025 = chl_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=chl_yr2025.nc/FORMAT=cdf chl_2025
 
 ! Dashboard maps files
 ! Coarser resolution (0.5) needed to keep the file size reasonable
@@ -81,8 +83,8 @@ list/CLOBBER/FILE=chl_climo_dashboard.nc/FORMAT=cdf chl_climo
 cancel data/all
 cancel var/all
 
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2025-clim_v6-0
 let chl_regrid = CHLOR_A[GX=x05deg, GY=y05deg]
 ! shade/palette=cmocean_algae ln(CHLOR_A[x=120E:100W, y=0:55N, l=1])
-let chl_2024 = chl_regrid[x=120E:100W, y=0:55N, l=1]
-list/FILE=chl_yr2024_dashboard.nc/FORMAT=cdf chl_2024
+let chl_2025 = chl_regrid[x=120E:100W, y=0:55N, l=1]
+list/FILE=chl_yr2025_dashboard.nc/FORMAT=cdf chl_2025

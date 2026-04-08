@@ -48,13 +48,13 @@ prep_map_data <- function(indicator, raster_ann, raster_clim, min_x, max_x, min_
 }
 
 #read in raster data
-tatd_2024 <- raster(here("Temperature_at_Depth","T_at_200300_yr2024.nc"))
+tatd_2024 <- raster(here("Temperature_at_Depth","T_at_200300_yr2025.nc"))
 tatd_clim <- raster(here("Temperature_at_Depth", "T_at_200300_climo_1980thru2009.nc"))
-sst_2024 <- raster(here("Sea_Surface_Temperature", "sst_yr2024_dashboard.nc"))
+sst_2024 <- raster(here("Sea_Surface_Temperature", "sst_yr2025_dashboard.nc"))
 sst_clim <- raster(here("Sea_Surface_Temperature", "sst_climo_dashboard.nc"))
-chl_2024 <- raster(here("Ocean_Color", "chl_yr2024_dashboard.nc")) 
+chl_2024 <- raster(here("Ocean_Color", "chl_yr2025_dashboard.nc")) 
 chl_clim <- raster(here("Ocean_Color", "chl_climo_dashboard.nc")) 
-md50_2024 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2024_dashboard.nc"))
+md50_2024 <- raster(here("Median_Phytoplankton_Size", "medphyto_yr2025_dashboard.nc"))
 md50_clim <- raster(here("Median_Phytoplankton_Size", "medphyto_climo_dashboard.nc"))
 
 # get lat coordinates from raw data
@@ -104,8 +104,8 @@ plot(md50_out[[2]])
 
 #combine data and write to file
 raster_df_all <- bind_rows(tatd_out[[3]], sst_out[[3]], chl_out[[3]], md50_out[[3]])
-write.csv(raster_df_all, here("Indicator_Dashboard", "Data", "Dashboard_Map_Data_2024.csv"))
-# write.csv(tatd_out[[3]], here("Temperature_at_Depth", "TempAtDepth_map_data_2024.csv"))
-# write.csv(sst_out[[3]], here("Sea_Surface_Temperature", "SST_map_data_2024.csv"))
-# write.csv(chl_out[[3]], here("Ocean_Color", "Chl_map_data_2024.csv"))
-# write.csv(md50_out[[3]], here("Median_Phytoplankton_Size", "Median_Phyto_map_data_2024.csv"))
+write.csv(raster_df_all, here("Indicator_Dashboard", "Data", "Dashboard_Map_Data_2025.csv"))
+# write.csv(tatd_out[[3]], here("Temperature_at_Depth", "TempAtDepth_map_data_2025.csv"))
+# write.csv(sst_out[[3]], here("Sea_Surface_Temperature", "SST_map_data_2025.csv"))
+# write.csv(chl_out[[3]], here("Ocean_Color", "Chl_map_data_2025.csv"))
+# write.csv(md50_out[[3]], here("Median_Phytoplankton_Size", "Median_Phyto_map_data_2025.csv"))

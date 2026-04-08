@@ -8,39 +8,40 @@ show data
 
 ! We want to first average the data, then regrid it. The regridding is only for looks, not for analysis, so we do that last. 
 ! Define quarterly axis
-DEFINE AXIS/T="15-FEB-1998":"15-FEB-2024":1/UNIT=year tannual
+DEFINE AXIS/T="15-FEB-1998":"15-FEB-2025":1/UNIT=year tannual
 DEFINE GRID/T=tannual gannual
 LET timestamp = T[G=gannual] * 0 ! always 0
 ! Define your variable with subset region and first year of data
 LET chl_q1 = CHLOR_A[x=180:240, y=5:45, t=1-jan-1998:1-mar-1998@ave] + timestamp
 
 ! Save first year of data to a file
-SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave_2024.nc chl_q1[L=1]
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave_2025.nc chl_q1[L=1]
 
 ! Loop through and append the 1st quarter average each year to the file you made above. 
-REPEAT/i=1:26 (LET chl_q1 = CHLOR_A[x=180:240, y=5:45, t=1-jan-`1998+i`:1-mar-`1998+i`@AVE] + timestamp ; shade chl_q1[l=`1+i`]; SAVE/APPEND/FILE=SAFE_CHL_Q1ave_2024.nc chl_q1[L=`1+i`])
+! CHANGE OUTPUT FILE NAME AND THE REPEAT INDEX (i=1:?) EVERY YEAR
+REPEAT/i=1:27 (LET chl_q1 = CHLOR_A[x=180:240, y=5:45, t=1-jan-`1998+i`:1-mar-`1998+i`@AVE] + timestamp ; shade chl_q1[l=`1+i`]; SAVE/APPEND/FILE=SAFE_CHL_Q1ave_2025.nc chl_q1[L=`1+i`])
 
 ! Read in the previously made data and regrid it to 0.25 degree resolution for plotting purpouses
 cancel data/all
 cancel var/all
-use SAFE_CHL_Q1ave_2024.nc
+use SAFE_CHL_Q1ave_2025.nc
 ! Define regrinding to 0.25 coarser grid
 DEFINE AXIS/X=180:240:0.25/UNITS=degrees x025deg
 DEFINE AXIS/Y=5:45:0.25/UNITS=degrees y025deg
 LET chl_q1_025 = chl_q1[gx=x025deg, gy=y025deg]
-SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave025_2024.nc chl_q1_025
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave025_2025.nc chl_q1_025
 
 ! And one with 0.5 degree resolution for coutourline plotting
 DEFINE AXIS/X=180:240:0.5/UNITS=degrees x050deg
 DEFINE AXIS/Y=5:45:0.5/UNITS=degrees y050deg
 LET chl_q1_050 = chl_q1[gx=x050deg, gy=y050deg]
-SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave050_2024.nc chl_q1_050
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave050_2025.nc chl_q1_050
 
 ! And one with 1 degree resolution for front trend calculations
 DEFINE AXIS/X=180:240:1/UNITS=degrees x1deg
 DEFINE AXIS/Y=5:45:1/UNITS=degrees y1deg
 LET chl_q1_1 = chl_q1[gx=x1deg, gy=y1deg]
-SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave1_2024.nc chl_q1_1
+SAVE/CLOBBER/FILE=SAFE_CHL_Q1ave1_2025.nc chl_q1_1
 
 
 
@@ -53,7 +54,7 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0
 
 use climatological_axes
 ! limit the region and time
-let chl = chlor_a[l=5:136]   ! This dataset starts in september so starting counting at 5 which is january
+let chl = chlor_a[l=5:148]   ! This dataset starts in september so starting counting at 5 which is january
 let chl_clim = chl[GT=seasonal_reg@mod]
 cancel data climatological_axes
 
@@ -75,10 +76,10 @@ use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly
 show data
 
 !-----
-! Quarter 1 mean 1985-2024
+! Quarter 1 mean 1985-2025
 !-----
 ! Define a time axis for the output file. If you don't do this, the file won't let you append to it. 
-DEFINE AXIS/T="15-FEB-1985":"15-FEB-2024":1/UNIT=year tannual
+DEFINE AXIS/T="15-FEB-1985":"15-FEB-2025":1/UNIT=year tannual
 DEFINE GRID/T=tannual gannual
 LET timestamp = T[G=gannual] * 0 ! always 0
 
@@ -86,21 +87,22 @@ LET timestamp = T[G=gannual] * 0 ! always 0
 LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-1985:31-mar-1985@ave] + timestamp
 
 ! Save first year of data to a file
-SAVE/CLOBBER/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=1]
+SAVE/CLOBBER/FILE=SAFE_SST_Q1ave_2025.nc sst_q1[L=1]
 
 ! Loop through and append the 1st quarte average each year to the file you made above. 
-REPEAT/i=1:39 (LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-`1985+i`:31-mar-`1985+i`@AVE] + timestamp ; SAVE/APPEND/FILE=SAFE_SST_Q1ave_2024.nc sst_q1[L=`1+i`])
+! CHANGE OUTPUT FILE NAME AND THE REPEAT INDEX (i=1:?) EVERY YEAR
+REPEAT/i=1:40 (LET sst_q1 = SEA_SURFACE_TEMPERATURE[x=180:240, y=5:45, t=31-jan-`1985+i`:31-mar-`1985+i`@AVE] + timestamp ; SAVE/APPEND/FILE=SAFE_SST_Q1ave_2025.nc sst_q1[L=`1+i`])
 
 ! Clear all data
 cancel data/all
 cancel var/all
 
 ! Define regrinding to 1 degree resolution for front trend calculations
-use SAFE_SST_Q1ave_2024.nc
+use SAFE_SST_Q1ave_2025.nc
 DEFINE AXIS/X=180:240:1/UNITS=degrees x1deg
 DEFINE AXIS/Y=5:45:1/UNITS=degrees y1deg
 LET sst_q1_1 = sst_q1[gx=x1deg, gy=y1deg]
-SAVE/CLOBBER/FILE=SAFE_SST_Q1ave1_2024.nc sst_q1_1
+SAVE/CLOBBER/FILE=SAFE_SST_Q1ave1_2025.nc sst_q1_1
 
 !-----
 ! Quarter 1 climatology 1985-2009
@@ -115,13 +117,13 @@ cancel data climatological_axes
 save/clobber/file=SAFE_SST_Q1_clim_1985_2009.nc sst_clim[x=180:240, y=5:45, l=1]
 
 ! create a sample field
-let my_field = chl_q1_1[l=1]
+!let my_field = chl_q1_1[l=1]
 ! extract a specific contour location
-let contour_mask=my_field eq 0.2
+!let contour_mask=my_field eq 0.2
 ! get coordinates where contours exist
-let contour_x = contour_mask * x
-let contour_y = contour_mask * y
+!let contour_x = contour_mask * x
+!let contour_y = contour_mask * y
 ! create lists of points along the contour
-let contour_points_x = xsequence(contour_x)
-let contour_points_y = xsequence(contour_y
+!let contour_points_x = xsequence(contour_x)
+!let contour_points_y = xsequence(contour_y
 

@@ -21,6 +21,7 @@ library(stringr)
 library(nmfspalette)
 # library(plotly)
 # library(reticulate)
+library(grid)
 # 
 # reticulate::use_miniconda('r-reticulate')
 ```
@@ -45,6 +46,7 @@ if (!dir.exists(Dir)) {
 # Monthly SST
 # Generated in ~5-yr batches due to memory limitations
 # There's gotta be a way to append a year that's way better than this.  Implement this next year.
+## Johanna made an attempt below in 2025
 # read in all the time series file names
 SST_files <- list.files(path=Dir, pattern='sst_ts_', full.names = T)
 # Read in all the files
@@ -180,9 +182,9 @@ waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
+# # Formatting
+# plot_title_font <- list(size = 14)
+# plot_height <- 350 #in pixels
 
 # Calculate annual means 
 ann_vals <- indicator_data |>
@@ -205,7 +207,6 @@ given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
 # Made a sequence instead so we don't have to manually update it every five years
 x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='5 year'),
             max(indicator_data$Date_Time))
-
 # x axis limit
 ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
@@ -242,7 +243,7 @@ anom_y_lim <- c(-1.5, 1.5)
 # 
 # p
 
-pdf(paste(Dir, '/SST_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
+pdf(paste(Dir, '/SST_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
 plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = ts_y_lim, 
@@ -254,7 +255,7 @@ plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2,
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
                      abline(h = c(seq(17, 25, 1)), col = "#F1F3F3")),
-     font.lab = 2)
+     font.lab = 2, cex.lab=1.2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = ts_y_lim, 
@@ -289,14 +290,16 @@ plot(given_yr_ann$Date_Time, given_yr_ann$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(seq(1985, 2025, 5), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(17, 25, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.51, y=0.075, width=0.6, height=0.12, 
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
-       lty=1, lwd=1.5, 
-       bg='gray90', 
+       lty=1, lwd=1.75, 
+       bg='transparent', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 
@@ -343,7 +346,7 @@ ann_vals <- indicator_data |>
   group_by(Year) |>
   summarise(Anom = mean(Anom, na.rm = TRUE)) 
 
-pdf(paste(Dir, '/SST_anom_ts_', RptYr, '.pdf', sep = ""), width=8, height=6)
+pdf(paste(Dir, '/SST_anom_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
 plot(indicator_data$Date_Time, indicator_data$Anom, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = anom_y_lim, 
@@ -354,8 +357,9 @@ plot(indicator_data$Date_Time, indicator_data$Anom, type = "l", lwd = 2,
      xlab = "Year", ylab = "Sea Surface Temperature Anomaly (°C)",
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-                     abline(h = c(seq(-1.5, 1.5, 0.5)), col = "#F1F3F3")),
-     font.lab = 2)
+                     abline(h = c(seq(-1.5, 1.5, 0.5)), col = "#F1F3F3"),
+                     abline(h = 0, col='black')),
+     font.lab = 2, cex.lab=1.2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = anom_y_lim, 
@@ -390,14 +394,16 @@ plot(given_yr_ann$Date_Time, given_yr_ann$Anom, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(seq(1985, 2020, 5), 2024, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-1.5, 1.5, 0.5)), las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.51, y=0.075, width=0.6, height=0.12, 
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
-       lty=1, lwd=1.5, 
-       bg='gray90', 
+       lty=1, lwd=1.75, 
+       bg='transparent', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 # p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,

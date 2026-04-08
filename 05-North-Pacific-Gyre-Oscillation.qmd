@@ -161,7 +161,7 @@ plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), c
 axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
 grid.roundrect(x=0.51, y=0.04, width=0.55, height=0.06, 
-               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
        col=c(pal[1], pal[2]), 

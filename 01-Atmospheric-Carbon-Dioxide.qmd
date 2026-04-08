@@ -243,7 +243,7 @@ axis(1, at = x_grid, label = c(" ", seq(1960, 2025, 10), 2025), col = "transpare
 mtext(adj = 0, side=1, line=0.9, text=1960, xpd=T) # This is to add in the 1960 that is too close to the edge for the plot to print for some reason
 axis(2, at = c(seq(300, 420, 20), 435), las = 1, col = "transparent", col.ticks = "transparent")
 grid.roundrect(x=0.51, y=0.08, width=0.6, height=0.1, 
-               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1958-',RptYr-1), paste0('Annual average, 1958-',RptYr-1), paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[2], pal[4]), lty=1, 

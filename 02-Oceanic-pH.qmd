@@ -261,8 +261,8 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 axis(1, at = x_grid2, label = c(" ", seq(1990, 2025, 5)), xpd=T, col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(8.02, 8.14, 0.02)), las = 1, col = "transparent", col.ticks = "transparent", xpd=T)
-grid.roundrect(x=0.5, y=0.08, width=0.6, height=0.12, 
-               r=unit(0.1, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+grid.roundrect(x=0.51, y=0.075, width=0.6, height=0.12, 
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
        legend=c(paste0('Monthly average, 1989-',RptYr-2), paste0('Annual average, 1989-',RptYr-2), 'Long-term Trend', paste0('Monthly average, ',RptYr-1), paste0('Annual average, ',RptYr-1)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 

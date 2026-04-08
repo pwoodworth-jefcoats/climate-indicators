@@ -22,6 +22,7 @@ library(nmfspalette)
 library(plotly)
 # library(reticulate)
 # library(scales)
+library(grid)
 # 
 # reticulate::use_miniconda('r-reticulate')
 ```
@@ -46,35 +47,35 @@ if (!dir.exists(Dir)) {
 # Monthly ocean color
 # Generated in ~5-yr batches due to memory limitations
 # There's gotta be a way to append a year that's way better than this.  Implement this next year.
-Chl_9802 <- read_delim(file = paste(Dir, '/chl_ts_9802.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_0307 <- read_delim(file = paste(Dir, '/chl_ts_0307.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_0812 <- read_delim(file = paste(Dir, '/chl_ts_0812.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_1317 <- read_delim(file = paste(Dir, '/chl_ts_1317.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_1822 <- read_delim(file = paste(Dir, '/chl_ts_1822.dat', sep = ""), skip = 8, col_names = FALSE)
-Chl_2325 <- read_delim(file = paste(Dir, '/chl_ts_2325.dat', sep = ""), skip = 8, col_names = FALSE)
-
-# Concatonate
-Chl_full <- rbind(Chl_9802, Chl_0307, Chl_0812, Chl_1317, Chl_1822, Chl_2325)
+## Johanna made an attempt below in 2025
+# read in all the time series file names
+Chl_files <- list.files(path=Dir, pattern='chl_ts_', full.names = T)
+# Read in all the files
+Chl_full <- lapply(Chl_files, read.csv, skip=8, header=F) %>% 
+  bind_rows() %>% 
+  rename(Date_Time=V1, Chl_mgm3=V2) %>% 
+  mutate(Date_Time=dmy_hm(Date_Time)) %>% 
+  arrange(Date_Time) # note that this method doesn't read the files in chronological order, so we sort them here to make sure everything lines up properly down the line
 ```
 
 ```{r}
 #| include: false
 # Remove seasonal means to calculate anomalies
-Chl_climo <- matrix(NA, nrow = length(Chl_full$X2), ncol = 1)
+Chl_climo <- matrix(NA, nrow = nrow(Chl_full), ncol = 1)
 for (m in seq(1,12,1)) {
-  mo_of_int <- which(month(dmy_hm(Chl_full$X1)) == m)
-  Chl_climo[mo_of_int,1] <- mean(Chl_full$X2[mo_of_int])
+  mo_of_int <- which(month(Chl_full$Date_Time) == m)
+  Chl_climo[mo_of_int,1] <- mean(Chl_full$Chl_mgm3[mo_of_int])
 }
 
-Chl_anom_ts <- Chl_full$X2 - Chl_climo
+Chl_anom_ts <- Chl_full$Chl_mgm3 - Chl_climo
 ```
 
 ```{r}
 #| include: false
 ### Linear fit 
 # Note that this assumes that observations are equally spaced in time, which they're  not
-n_obs <- seq(1, length(Chl_full$X2), 1)
-Chl_lm <- lm(Chl_full$X2 ~ n_obs)
+n_obs <- seq(1, length(Chl_full$Chl_mgm3), 1)
+Chl_lm <- lm(Chl_full$Chl_mgm3 ~ n_obs)
 Chl_anom_lm <- lm(Chl_anom_ts ~ n_obs)
 
 # Change over time
@@ -86,16 +87,9 @@ delta_Chl_anom_lm <- Chl_anom_lm$fitted.values[length(n_obs)] - Chl_anom_lm$fitt
 ```{r}
 #| include: false
 ### Annual values
-yrs <- year(dmy_hm(Chl_full$X1))
-Chl_full <- bind_cols(Chl_full, yrs)
-Chl_full <- rename(Chl_full, Date_Time = X1)
-Chl_full <- rename(Chl_full, Chl_mgm3 = X2)
-Chl_full <- rename(Chl_full, Year = ...3)
-
-# Add in anomaly to make things easier down the road
-Chl_anom_ts <- as_tibble(Chl_anom_ts)
-Chl_full <- bind_cols(Chl_full, Chl_anom_ts)
-Chl_full <- rename(Chl_full, Anom = V1)
+Chl_full <- Chl_full %>% 
+    mutate(Year = year(Date_Time), 
+           Anom = Chl_anom_ts) # Add in anomaly to make things easier down the road
 
 ann_Chl <- Chl_full %>%
   group_by(Year) %>%
@@ -159,32 +153,16 @@ write_csv(ann_anom, file = paste(here(), '/PelagicClimate_', RptYr, '/CHLanomaly
 # Note that dashboard output has its own folder
 
 # Add columns for month, variable ID, and units
-Month <- month(dmy_hm(Chl_full$Date_Time))
-ID <- rep('Chl', dim(Chl_full)[1])
-Units <- rep('mg chl per m3', dim(Chl_full)[1])
-# Value_lm <- rep(NA, dim(Chl_full)[1]) # No significant trend in chl
+Chl_dashboard <- Chl_full %>% 
+  mutate(Month=month(Date_Time), 
+         ID='Chl', 
+         Value_lm=Chl_lm$fitted.values, 
+         Anom_lm=Chl_anom_lm$fitted.values, 
+         Units='mg chl per m3', 
+         Value=Chl_mgm3) %>% 
+  dplyr::select(Date_Time, Year, Month, Value, Anom, ID, Value_lm, Anom_lm, Units)
 
-Chl_dashboard <- bind_cols(Chl_full$Date_Time, 
-                           Chl_full$Year, 
-                           Month,
-                           Chl_full$Chl_mgm3,
-                           Chl_full$Anom,
-                           ID,
-                           Chl_lm$fitted.values,
-                           Chl_anom_lm$fitted.values,
-                           Units)
-# Need to figure out how to render this unnecessary
-Chl_dashboard <- rename(Chl_dashboard, Date_Time = ...1)
-Chl_dashboard <- rename(Chl_dashboard, Year = ...2)
-Chl_dashboard <- rename(Chl_dashboard, Month = ...3)
-Chl_dashboard <- rename(Chl_dashboard, Value = ...4)
-Chl_dashboard <- rename(Chl_dashboard, Anom = ...5)
-Chl_dashboard <- rename(Chl_dashboard, ID = ...6)
-Chl_dashboard <- rename(Chl_dashboard, Value_lm = ...7)
-Chl_dashboard <- rename(Chl_dashboard, Anom_lm = ...8)
-Chl_dashboard <- rename(Chl_dashboard, Units = ...9)
-
-write_csv(Chl_dashboard, file = here("Indicator_Dashboard", "Data", paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")))
+write.csv(Chl_dashboard, file = here("Indicator_Dashboard", "Data", paste('Chl_Dashboard_Data_', RptYr, '.csv', sep = "")), row.names = F)
 ```
 
 ```{r}
@@ -203,9 +181,9 @@ waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
+# # Formatting
+# plot_title_font <- list(size = 14)
+# plot_height <- 350 #in pixels
 
 # Calculate annual means 
 ann_vals <- indicator_data |>
@@ -216,35 +194,28 @@ ann_vals <- indicator_data |>
 given_yr <- indicator_data |>
   filter(Year == RptYr)
 
-given_yr_ann <- bind_cols(rep(ann_vals$Value[dim(ann_vals)[1]]),
-                          given_yr$Date_Time,
-                          ann_anom$`mg/m^3`[which(ann_anom$Year == RptYr)])
-given_yr_ann <- rename(given_yr_ann, Value = ...1)
-given_yr_ann <- rename(given_yr_ann, Date_Time = ...2)
-given_yr_ann <- rename(given_yr_ann, Anom = ...3)
+given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
+                          Date_Time = given_yr$Date_Time,
+                          Anom = ann_anom$`mg/m^3`[which(ann_anom$Year == RptYr)])
 
 # Commented out the plotly code because it's not working this year.  So,
 # going with base R, because that's what I'm most familiar with
 # Fair warning, this coding is tedious.
 
 # x axis ticks and grid
-x_grid <- c(min(dmy_hm(indicator_data$Date_Time)), 
-                dmy(01012000),
-                dmy(01012005),
-                dmy(01012010),
-                dmy(01012015),
-                dmy(01012020),
-                dmy(01012025),
-                max(dmy_hm(indicator_data$Date_Time)))
+x_grid <- c(min(indicator_data$Date_Time),
+            seq.POSIXt(dmy_hm(010120000000), max(indicator_data$Date_Time), by='5 year'),
+            max(indicator_data$Date_Time))
 # x-axis limits
-ts_x_lim <- c(min(dmy_hm(indicator_data$Date_Time)), max(dmy_hm(indicator_data$Date_Time)))
+ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
+
 # y-axis limits
 ts_y_lim <-c(0.07, 0.19)
 anom_y_lim <- c(-0.035, 0.035)
 
 pdf(paste(Dir, '/Chl_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2, 
+plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -254,7 +225,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value, type = "l", lwd = 2
      # put a grid behind the plot
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
                      abline(h = c(0.07, seq(0.08, 0.8, 0.02), 0.19), col = "#F1F3F3")),
-     font.lab = 2)
+     font.lab = 2, cex.lab=1.2)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = ts_y_lim, 
@@ -264,7 +235,7 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Value, type 
      col = pal[3],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd = 2,
+plot(indicator_data$Date_Time, indicator_data$Value_lm, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -272,7 +243,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Value_lm, type = "l", lwd 
      col = pal[5],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2, 
+plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -280,7 +251,7 @@ plot(dmy_hm(given_yr$Date_Time), given_yr$Value, type = "l", lwd = 2,
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
+plot(given_yr_ann$Date_Time, given_yr_ann$Value, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = ts_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -289,14 +260,16 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Value, type = "l", lwd = 2,
      xlab = " ", ylab = " ")
 axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2025, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(0.07, seq(0.08, 0.8, 0.02), 0.19), las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.51, y=0.075, width=0.6, height=0.12, 
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
-       legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
+       legend=c(paste0('Monthly average, 1998-',RptYr-1), paste0('Annual average, 1998-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
-       lty=1, lwd=1.5, 
-       bg='gray90', 
+       lty=1, lwd=1.75, 
+       bg='transparent', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 # p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value,
@@ -344,7 +317,7 @@ ann_vals <- indicator_data |>
 
 pdf(paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
 par(mar=c(8.6, 5.1, 2.1, 2.1))
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2, 
+plot(indicator_data$Date_Time, indicator_data$Anom, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -355,7 +328,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom, type = "l", lwd = 2,
      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
                      abline(h = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), col = "#F1F3F3"),
                      abline(h = 0, col='black')),
-     font.lab = 2)
+     font.lab = 2, cex.lab=1.2)
 title(ylab=expression(bold("Chlorophyll-a Concentration Anomaly (mg " * m^-3 *")")), line=3.75)
 par(new = TRUE)
 plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type = "l", lwd = 2,
@@ -366,7 +339,7 @@ plot(ymd_hm(paste(ann_vals$Year, '0601 00:00', sep = "")), ann_vals$Anom, type =
      col = pal[3],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom_lm, type = "l", lwd = 2,
+plot(indicator_data$Date_Time, indicator_data$Anom_lm, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -374,7 +347,7 @@ plot(dmy_hm(indicator_data$Date_Time), indicator_data$Anom_lm, type = "l", lwd =
      col = pal[5],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr$Date_Time), given_yr$Anom, type = "l", lwd = 2, 
+plot(given_yr$Date_Time, given_yr$Anom, type = "l", lwd = 2, 
      xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -382,7 +355,7 @@ plot(dmy_hm(given_yr$Date_Time), given_yr$Anom, type = "l", lwd = 2,
      col = pal[2],
      xlab = " ", ylab = " ")
 par(new = TRUE)
-plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
+plot(given_yr_ann$Date_Time, given_yr_ann$Anom, type = "l", lwd = 2,
      xlim = ts_x_lim, ylim = anom_y_lim, 
      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
      xaxs = "i", yaxs = "i", # remove the padding R adds
@@ -392,14 +365,16 @@ plot(dmy_hm(given_yr_ann$Date_Time), given_yr_ann$Anom, type = "l", lwd = 2,
 axis(1, at = x_grid, label = c(1998, seq(2000, 2020, 5), 2025, " "), col = "transparent", col.ticks = "transparent") 
 axis(2, at = c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01)), labels = as.character(c(seq(-0.035, 0.005, 0.01), 0, seq(0.005, 0.035, 0.01))), 
      las = 1, col = "transparent", col.ticks = "transparent")
+grid.roundrect(x=0.51, y=0.075, width=0.6, height=0.12, 
+               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
 legend('bottom', 
-       legend=c(paste0('Monthly average, 1985-',RptYr-1), paste0('Annual average, 1985-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
+       legend=c(paste0('Monthly average, 1998-',RptYr-1), paste0('Annual average, 1998-',RptYr-1), 'Long-term Trend', paste0('Monthly average, ',RptYr), paste0('Annual average, ',RptYr)), 
        col=c(pal[1], pal[3], pal[5], pal[2], pal[4]), 
-       lty=1, lwd=1.5, 
-       bg='gray90', 
+       lty=1, lwd=1.75, 
+       bg='transparent', 
        horiz=F, ncol=2,
        inset = -0.435, xpd=T, 
-       box.lwd = 0, box.col = 'gray90')
+       box.lwd = 0, box.col = 'transparent')
 dev.off()
 
 # p2 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Anom, height = plot_height,

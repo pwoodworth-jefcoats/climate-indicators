@@ -202,16 +202,16 @@ for (y in yrRange) {
     
     par(mar=c(0.25,3,0,1))
     plot(cCPUE[[q]]$WholeWeight$mids, cCPUE[[q]]$WholeWeight$CPUE, type='l', lwd=2, col='gray50', xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
-         xlim=c(0,100), ylim=c(0,1.1))
+         xlim=c(0,100), ylim=c(0,1.2))
     par(new=T)
     plot(qWeight$WholeWeight$mids, qCPUE, type='l', lwd=3, col=pal[q+2], xlab=NA, ylab=NA, axes=F, xaxs='i', yaxs='i',
-         xlim=c(0,100), ylim=c(0,1.1))
-    axis(2, las=1, at=c(0,0.5,1,1.1), labels=F)
+         xlim=c(0,100), ylim=c(0,1.2))
+    axis(2, las=1, at=c(0,0.5,1,1.2), labels=F)
     abline(v=WeightAge, lty=2, col='gray50')
     legend('topright', legend=c(paste(qName[q], 'Quarter', y, sep=' '), paste('Climatology', min(efrtYr$Year), '-', 2009, sep=' ')), col=c(pal[5], 'gray50'), lwd=2, bg='white', box.col='white')
     box()
     if (y == min(yrRange) & q == 1) {
-      axis(2, las=1, at=c(0,0.5,1,1.1))
+      axis(2, las=1, at=c(0,0.5,1,1.2))
       axis(side=3, at = WeightAge, labels = c(1:7))
       mtext(side=3, line=2, text='Age (year)', cex=0.8)
     }
@@ -220,7 +220,7 @@ for (y in yrRange) {
 # Add axis labels
 axis(1)
 mtext(side=1, line=2.25, 'Whole Fish Weight (kg)', cex=0.8)
-axis(2, las=1, at=c(0,0.5,1,1.1))
+axis(2, las=1, at=c(0,0.5,1,1.2))
 par(mar=c(1,0,1,0))
 plot(x=0.5,y=8,type='n', ylim=c(0,16), xlim=c(0,1), axes=F, xlab=NA, ylab=NA)
 text(x=1,y=8, 'CPUE (no. fish/1000 hooks)', srt=90, cex=1.2, xpd=NA)

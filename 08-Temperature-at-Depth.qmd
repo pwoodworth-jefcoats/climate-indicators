@@ -435,7 +435,7 @@ fill_scale <- scale_fill_gradientn(name = "TatD", colors = pal, limits = c(0, 31
 # Create map
 p <- ggplot() +
  geom_raster(data = maps_RptYr, mapping = aes(x = x_disp, y = y, fill = layer)) + #data as raster
- borders('world2', fill='#A5AAAF', colour='gray40', linewidth=0.2) + #add land to the map
+ annotation_borders('world2', fill='#A5AAAF', colour='gray40', linewidth=0.2) + #add land to the map
  # geom_rect(aes(xmin = 0, xmax = 60, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5)  + #ll fishing grounds box
  # annotate("text", x = 30, y = 47, label = "Longline fishing grounds", size = 3.2, color = ll_rect_color) +
  fill_scale + #indicator-dependent color and scale from above
@@ -464,9 +464,11 @@ p <- p +
                                title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
          linetype=guide_legend(position = 'bottom', title.position='top', title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
 
-pdf(paste(Dir, '/TempAtDepth_map_', RptYr, '.pdf', sep = ""))
-print(p)
-dev.off()
+ggsave(filename = paste0(Dir, '/TempAtDepth_map_', RptYr, '.pdf'), plot=p, width = 9, height = 5)
+
+# pdf(paste(Dir, '/TempAtDepth_map_', RptYr, '.pdf', sep = ""), width=9, height=6)
+# print(p)
+# dev.off()
 
 # Add anomaly
 # p <- p +

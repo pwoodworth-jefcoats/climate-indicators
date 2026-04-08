@@ -513,9 +513,11 @@ p <- p +
                                title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
          linetype=guide_legend(position = 'bottom', title.position='top', title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
 
-pdf(paste(Dir, '/SST_map_', RptYr, '.pdf', sep = ""), width = 9, height=6)
-print(p)
-dev.off()
+ggsave(filename = paste0(Dir, '/SST_map_', RptYr, '.pdf'), plot=p, width = 9, height = 5)
+
+# pdf(paste(Dir, '/SST_map_', RptYr, '.pdf', sep = ""), width = 9, height=5)
+# print(p)
+# dev.off()
 
 #  ### This is Emily's old code. Not sure if better to keep separate or to combine. I only combined to get the bottom legend. 
 #  geom_contour(data = maps_anom, mapping = aes(x = x, y = y, z = layer), 

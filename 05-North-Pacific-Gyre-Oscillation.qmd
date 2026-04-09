@@ -21,6 +21,8 @@ library(stringr)
 library(nmfspalette)
 # library(plotly)
 # library(reticulate)
+#devtools::install_github("teunbrand/elementalist")
+library(elementalist)
 # 
 # reticulate::use_miniconda('r-reticulate')
 ```
@@ -108,9 +110,9 @@ waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
+# # Formatting
+# plot_title_font <- list(size = 14)
+# plot_height <- 350 #in pixels
 
 indicator_data <- indicator_data |>
   mutate(Units = "North Pacific Gyre Oscillation (NPGO)")
@@ -119,58 +121,96 @@ indicator_data <- indicator_data |>
 given_yr <- indicator_data |>
   filter(Year == RptYr)
 
-# The plotly code isn't working this year.  So,
-# going with base R, because that's what I'm most familiar with
-# Fair warning, this coding is tedious.
-
 # x axis ticks and grid
-x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'),
-            max(indicator_data$Date_Time))
-# x axis limit
-ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
+x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'))
 
-pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
-par(mar=c(6.6, 5.1, 2.1, 2.1))
-plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
-     xlim = ts_x_lim, ylim = c(-4, 4), 
-     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-     xaxs = "i", yaxs = "i", # remove the padding R adds
-     bty = "n", # remove box
-     col = pal[1],
-     xlab = "Year", ylab = "North Pacific Gyre Oscillation (NPGO)",
-     # put a grid behind the plot
-     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-                     abline(h = c(seq(-4, 4, 1)), col = "#F1F3F3")),
-     font.lab = 2)
-par(new = TRUE)
-plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
-     xlim = ts_x_lim, ylim = c(-4,4), 
-     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-     xaxs = "i", yaxs = "i", # remove the padding R adds
-     bty = "n", # remove box
-     col = pal[2],
-     xlab = " ", ylab = " ")
-par(new = TRUE)
-plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
-     type = "l", lwd = 1,
-     xlim = ts_x_lim, ylim = c(-4, 4),
-     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-     xaxs = "i", yaxs = "i", # remove the padding R adds
-     bty = "n", # remove box
-     xlab = " ", ylab = " ")
-axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
-axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
-grid.roundrect(x=0.51, y=0.04, width=0.55, height=0.06, 
-               r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
-legend('bottom', 
-       legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
-       col=c(pal[1], pal[2]), 
-       lty=1, lwd=1.75, 
-       bg='transparent', 
-       horiz=T, 
-       inset = -0.3, xpd=T, 
-       box.lwd = 0, box.col = 'transparent')
-dev.off()
+# y-axis limits
+ts_y_lim <-c(-4,4)
+
+# Plot using ggplot this year (2025)
+## Plot using ggplot with legend
+# Easier to control the aesthetics and size
+
+# Defining the theme up front so we don't have to repeat it
+theme_minimal() +
+  theme(panel.border = element_rect(color='#F1F3F3'),
+        panel.grid.major = element_line(color='#F1F3F3'),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        axis.title = element_text(size=14, face="bold"), 
+        axis.text = element_text(size=12),
+        legend.position = 'bottom', 
+        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
+        legend.text = element_text(size=12), legend.key.spacing.x = unit(1.5,'cm'))
+
+# Legend
+legendInfo <- as.factor(c(paste0('Mothly index, 1950-', RptYr-1), 
+                          paste0('Mothly index, ', RptYr)))
+
+p <- ggplot() +
+  geom_hline(yintercept = 0, linewidth=0.25) +
+  geom_path(data=indicator_data, aes(Date_Time, Value, color=legendInfo[1])) +
+  geom_path(data=given_yr, aes(Date_Time, Value, color=legendInfo[2])) +
+  scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = F) +
+  scale_y_continuous(expand = F, limits = ts_y_lim, breaks=(seq(min(ts_y_lim),max(ts_y_lim),by=1))) +
+  scale_color_manual(name=NULL, values=pal[c(1,2)]) +
+  ylab(indicator_data$Units[1]) +
+  xlab('Year') +
+  guides(color = guide_legend(ncol = 2)) +
+  theme_minimal()
+
+ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
+
+# # The plotly code isn't working this year.  So,
+# # going with base R, because that's what I'm most familiar with
+# # Fair warning, this coding is tedious.
+# 
+# # x axis limit
+# ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
+# 
+# pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
+# par(mar=c(6.6, 5.1, 2.1, 2.1))
+# plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
+#      xlim = ts_x_lim, ylim = c(-4, 4), 
+#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+#      xaxs = "i", yaxs = "i", # remove the padding R adds
+#      bty = "n", # remove box
+#      col = pal[1],
+#      xlab = "Year", ylab = "North Pacific Gyre Oscillation (NPGO)",
+#      # put a grid behind the plot
+#      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
+#                      abline(h = c(seq(-4, 4, 1)), col = "#F1F3F3")),
+#      font.lab = 2)
+# par(new = TRUE)
+# plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
+#      xlim = ts_x_lim, ylim = c(-4,4), 
+#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+#      xaxs = "i", yaxs = "i", # remove the padding R adds
+#      bty = "n", # remove box
+#      col = pal[2],
+#      xlab = " ", ylab = " ")
+# par(new = TRUE)
+# plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
+#      type = "l", lwd = 1,
+#      xlim = ts_x_lim, ylim = c(-4, 4),
+#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
+#      xaxs = "i", yaxs = "i", # remove the padding R adds
+#      bty = "n", # remove box
+#      xlab = " ", ylab = " ")
+# axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
+# axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
+# grid.roundrect(x=0.51, y=0.04, width=0.55, height=0.06, 
+#                r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
+# legend('bottom', 
+#        legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
+#        col=c(pal[1], pal[2]), 
+#        lty=1, lwd=1.75, 
+#        bg='transparent', 
+#        horiz=T, 
+#        inset = -0.3, xpd=T, 
+#        box.lwd = 0, box.col = 'transparent')
+# dev.off()
 
 ```
 

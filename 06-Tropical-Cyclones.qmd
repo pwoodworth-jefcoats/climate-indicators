@@ -43,20 +43,23 @@ ibtracs_full <- read_csv(file = paste(Dir, '/ibtracs.since1980.list.v04r01_', Rp
 ```{r}
 #| include: false
 ### Handle the dates and times
-DATE_TIME <- mdy_hm(ibtracs_full$ISO_TIME)
-ibtracs_full <- bind_cols(ibtracs_full, DATE_TIME)
-ibtracs_full <- rename(ibtracs_full, DATE_TIME = ...12)
+ibtracs_full <- ibtracs_full %>% 
+  mutate(DATE_TIME = mdy_hm(ISO_TIME))
 
 # We only want 6-hourly observations, as these are used in calculating ACE and other indicators
-hly_idx <- which(hour(ibtracs_full$DATE_TIME) == 0 | 
-                   hour(ibtracs_full$DATE_TIME) == 6 |
-                   hour(ibtracs_full$DATE_TIME) == 12 |
-                   hour(ibtracs_full$DATE_TIME) == 18)
-ibtracs_6hrly_all <- ibtracs_full[hly_idx,]
-
 # We only want tropical cyclones (tropical depressions - cat 5)
-tc_idx <- which(ibtracs_6hrly_all$USA_SSHS >= -1)
-ibtracs_6hrly <- ibtracs_6hrly_all[tc_idx,]
+ibtracs_6hrly <- ibtracs_full %>% 
+  filter(hour(DATE_TIME) %in% seq(0,18,by=6) & USA_SSHS >= -1)
+
+# hly_idx <- which(hour(ibtracs_full$DATE_TIME) == 0 | 
+#                    hour(ibtracs_full$DATE_TIME) == 6 |
+#                    hour(ibtracs_full$DATE_TIME) == 12 |
+#                    hour(ibtracs_full$DATE_TIME) == 18)
+# ibtracs_6hrly_all <- ibtracs_full[hly_idx,]
+# 
+# # We only want tropical cyclones (tropical depressions - cat 5)
+# tc_idx <- which(ibtracs_6hrly_all$USA_SSHS >= -1)
+# ibtracs_6hrly <- ibtracs_6hrly_all[tc_idx,]
 ```
 
 ```{r}
@@ -67,8 +70,8 @@ STORM_BIN <- case_match(ibtracs_6hrly$USA_SSHS,
                         c(0) ~ 2,  # Tropical storm
                         c(1, 2) ~ 3,  # Cat 1 & 2 storm2
                         c(3, 4, 5) ~ 4)  # Cat 3+ storms = major
-ibtracs_6hrly <- bind_cols(ibtracs_6hrly, STORM_BIN)
-ibtracs_6hrly <- rename(ibtracs_6hrly, STORM_BIN = ...13)
+ibtracs_6hrly <- bind_cols(ibtracs_6hrly, STORM_BIN = STORM_BIN)
+#ibtracs_6hrly <- rename(ibtracs_6hrly, STORM_BIN = ...13)
 ```
 
 ```{r}
@@ -273,6 +276,13 @@ SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)
 
 ```{r}
 #| include: false
+### Download R natural earth shapefile for land and transform to plot properly when PAcific focused
+### from: https://github.com/r-spatial/sf/issues/1983#issuecomment-1221895409
+```
+
+
+```{r}
+#| include: false
 ### Create plot for report
 # Palette for storm map - Follows NOAA standards
 TD_col <- '#929292'
@@ -291,7 +301,15 @@ map_pal <- scale_color_manual(values = c('-1' = TD_col,
                                          '2' = Cat2_col, 
                                          '3' = Cat3_col, 
                                          '4' = Cat4_col, 
-                                         '5' = Cat5_col))
+                                         '5' = Cat5_col), 
+                              labels = c('Tropical Depression', 
+                                         'Tropical Storm', 
+                                         'Category 1', 
+                                         'Category 2', 
+                                         'Category 3', 
+                                         'Category 4', 
+                                         'Category 5'), 
+                              name=NULL)
 
 # Basin Map
 # Identify storms present during report year
@@ -311,15 +329,21 @@ WP_num = unique(WP_pres$NUMBER);
 SP_num = unique(SP_pres$NUMBER);
 
 # Access map base data
-land_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_land.RData'))
-coast_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_coast.RData'))
+#land_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_land.RData'))
+#coast_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_coast.RData'))
+land_proj_tc <- st_as_sf(maps::map('world2', xlim=c(90,280), ylim=c(-48,48), plot = FALSE, fill = TRUE))
 
-ext <- st_bbox(land_proj_tc)
+#ext <- st_bbox(land_proj_tc)
+ext <- c(90, -48, 280, 48)
 
-p <- ggplot() + 
-        geom_sf(data = land_proj_tc, fill = land_col, color = land_col, linewidth = 0.5) +
-        geom_sf(data = coast_proj_tc, color = coast_col, linewidth = 0.5) +
-        coord_sf(xlim = c(ext$xmin, ext$xmax), ylim = c(ext$ymin, ext$ymax), expand = F)
+p <- ggplot() +
+        geom_sf(data = land_proj_tc, fill = land_col, color = coast_col, linewidth = 0.2) +
+        #geom_sf(data = coast_proj_tc, color = coast_col, linewidth = 0.5) +
+        coord_sf(xlim = c(ext[1], ext[3]), ylim = c(ext[2], ext[4]), expand = F)
+# p <- ggplot() +
+#         annotation_borders(database = 'world2', fill = land_col, colour = coast_col, linewidth = 0.2) + 
+#         coord_quickmap(xlim = c(90,280), ylim = c(-50, 50), expand = F)
+        
 for (sE in seq(1, length(EP_num), 1)) {
   storm_idx <- which(EP_pres$NUMBER == EP_num[sE])
   storm <- EP_pres[storm_idx,]
@@ -330,18 +354,20 @@ for (sE in seq(1, length(EP_num), 1)) {
   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
   track <- bind_cols(x, xend, y, yend, cols)
   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  for (r in seq(1, nrow(track), 1)) {
-    if (track$x[r] < 0) {
-      track$x[r] <- track$x[r] + 180
-    } else if (track$x[r] > 0) {
-      track$x[r] <- track$x[r] - 180
-    }
-    if (track$xend[r] < 0) {
-      track$xend[r] <- track$xend[r] + 180
-    } else if (track$x[r] > 0) {
-      track$xend[r] <- track$xend[r] - 180
-    }
-  }
+  # for (r in seq(1, nrow(track), 1)) {
+  #   if (track$x[r] < 0) {
+  #     track$x[r] <- track$x[r] + 360 #180
+  #   } else if (track$x[r] > 0) {
+  #     track$x[r] <- track$x[r] - 0 #180
+  #   }
+  #   if (track$xend[r] < 0) {
+  #     track$xend[r] <- track$xend[r] + 360 #180
+  #   } else if (track$x[r] > 0) {
+  #     track$xend[r] <- track$xend[r] - 0 #180
+  #   }
+  # }
+  track <- track %>% 
+    mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
       map_pal
 }
@@ -356,18 +382,20 @@ for (sC in seq(1, length(CP_num), 1)) {
   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
   track <- bind_cols(x, xend, y, yend, cols)
   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  for (r in seq(1, nrow(track), 1)) {
-    if (track$x[r] < 0) {
-      track$x[r] <- track$x[r] + 180
-    } else if (track$x[r] > 0) {
-      track$x[r] <- track$x[r] - 180
-    }
-    if (track$xend[r] < 0) {
-      track$xend[r] <- track$xend[r] + 180
-    } else if (track$x[r] > 0) {
-      track$xend[r] <- track$xend[r] - 180
-    }
-  }
+  # for (r in seq(1, nrow(track), 1)) {
+  #   if (track$x[r] < 0) {
+  #     track$x[r] <- track$x[r] + 360 #180
+  #   } else if (track$x[r] > 0) {
+  #     track$x[r] <- track$x[r] - 0 #180
+  #   }
+  #   if (track$xend[r] < 0) {
+  #     track$xend[r] <- track$xend[r] + 360 #180
+  #   } else if (track$x[r] > 0) {
+  #     track$xend[r] <- track$xend[r] - 0 #180
+  #   }
+  # }
+  track <- track %>% 
+    mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
       map_pal
 }
@@ -375,8 +403,8 @@ for (sC in seq(1, length(CP_num), 1)) {
 for (sW in seq(1, length(WP_num), 1)) {
   storm_idx <- which(WP_pres$NUMBER == WP_num[sW])
   storm <- WP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] - 180
-  xend <- storm$LON_degrees_east[2:nrow(storm)] - 180
+  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
+  xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
   yend <- storm$LAT_degrees_north[2:nrow(storm)]
   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
@@ -389,8 +417,8 @@ for (sW in seq(1, length(WP_num), 1)) {
 for (sS in seq(1, length(SP_num), 1)) {
   storm_idx <- which(SP_pres$NUMBER == SP_num[sS])
   storm <- SP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] - 180
-  xend <- storm$LON_degrees_east[2:nrow(storm)] - 180
+  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
+  xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
   yend <- storm$LAT_degrees_north[2:nrow(storm)]
   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
@@ -401,12 +429,23 @@ for (sS in seq(1, length(SP_num), 1)) {
 }
 
 p <- p +
-  theme(panel.background = element_rect(fill = ocean_col))
+  theme(panel.background = element_rect(fill = ocean_col),
+        panel.grid.major = element_line(linewidth=0.2),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size=12),
+        legend.position = 'inside',
+        legend.justification.inside = c(1, 0),
+        legend.background = element_rect(fill = 'gray90', color='transparent'),
+        legend.text = element_text(size=12),
+        legend.key = element_blank(),
+        legend.key.spacing.y = unit(-0.13,'cm')) +
+  scale_x_continuous(breaks=c(120, 180, 240)) +
+  scale_y_continuous(breaks=seq(-40,40,by=20)) +
+  xlab('') + ylab('')
 
 p
-pdf(paste(Dir, '/TC_map_', RptYr, '.pdf', sep = ""))
-print(p)
-dev.off()
+ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=6, height=5, units='in')
+
 ```
 
 ```{r}

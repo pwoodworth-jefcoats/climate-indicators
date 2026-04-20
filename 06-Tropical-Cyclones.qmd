@@ -457,70 +457,106 @@ MAJ_col <- rgb(8, 48, 107, maxColorValue = 255)
 ct_pal <- rbind(NS_col, HTC_col, MAJ_col)
 
 # Storm counts
-pdf(paste(Dir, '/TC_counts_', RptYr, '.pdf', sep = ""))
+pdf(paste(Dir, '/TC_counts_', RptYr, '.pdf', sep = ""), width = 8, height = 6)
+par(oma=c(0,2.5,0,3), 
+    mar=c(3,2,3,3))
 par(mfrow = c(4,1))
+# EP
 barplot(as.matrix(EP_counts[,2:4]) ~ as.matrix(EP_counts$Year), 
         beside = TRUE, col = ct_pal, border = NA,
-        ylim = c(0, 40), xlab = " ", las = 1, main = 'Eastern Pacific (EP)')
+        ylim = c(0, 40), xlab = " ", las = 1, main = '', xaxs='i', xlim=c(-1,186), cex.axis=1.5, cex.names=1.5, cex.main=1.5)
+mtext(text = 'Eastern Pacific (EP)', side = 3, line = 0, font=2)
+par(new = TRUE)
+plot(EP_counts$Year, EP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+     ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", bty='n', xlim=c(1980-0.9, 2025+0.9))
+lines(EP_counts$Year, rep(EP_avg[5]/1e4, length(EP_counts$Year)), lwd = 1, col = '#D0D0D0')
+axis((4), at = seq(0, 700, 100), labels = c(0,'','','','','','',70), tck = -0.1, las = 1, cex.axis=1.5)
+# CP
 barplot(as.matrix(CP_counts[,2:4]) ~ as.matrix(CP_counts$Year), 
         beside = TRUE, col = ct_pal, border = NA,
-        ylim = c(0, 40), xlab = " ", las = 1, main = 'Central Pacific (CP)')
+        ylim = c(0, 40), xlab = " ", las = 1, main = '', xaxs='i', xlim=c(-1,186), cex.axis=1.5, cex.names=1.5, cex.main=1.5)
+mtext(text = 'Central Pacific (CP)', side = 3, line = 0, font=2)
+par(new = TRUE)
+plot(CP_counts$Year, CP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+     ylim = c(0, 700), xlab = '', ylab = '', las = 1,
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", bty='n', xlim=c(1980-0.9, 2025+0.9))
+lines(CP_counts$Year, rep(CP_avg[5]/1e4, length(CP_counts$Year)), lwd = 1, col = '#D0D0D0')
+axis((4), at = seq(0, 700, 100), labels = c(0,'','','','','','',700), tck = -0.1, las = 1, cex.axis=1.5)
+# WP
 barplot(as.matrix(WP_counts[,2:4]) ~ as.matrix(WP_counts$Year), 
         beside = TRUE, col = ct_pal, border = NA,
-        ylim = c(0, 40), xlab = " ", las = 1, main = 'Western Pacific (WP)')
+        ylim = c(0, 40), xlab = " ", las = 1, main = '', xaxs='i', xlim=c(-1,186), cex.axis=1.5, cex.names=1.5, cex.main=1.5)
+mtext(text = 'Western Pacific (WP)', side = 3, line = 0, font=2)
+par(new = TRUE)
+plot(WP_counts$Year, WP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+     ylim = c(0, 700), xlab = '', ylab = '', las = 1,
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", bty='n', xlim=c(1980-0.9, 2025+0.9))
+lines(WP_counts$Year, rep(WP_avg[5]/1e4, length(WP_counts$Year)), lwd = 1, col = '#D0D0D0')
+axis((4), at = seq(0, 700, 100), labels = c(0,'','','','','','',700), tck = -0.1, las = 1, cex.axis=1.5)
+# SP
 barplot(as.matrix(SP_counts[,2:4]) ~ as.matrix(SP_counts$Year), 
         beside = TRUE, col = ct_pal, border = NA,
-        ylim = c(0, 40), xlab = " ", las = 1, main = 'South Pacific (SP)')
+        ylim = c(0, 40), xlab = " ", las = 1, main = '', xaxs='i', xlim=c(-1,186), cex.axis=1.5, cex.names=1.5, cex.main=1.5)
+mtext(text = 'South Pacific (SP)', side = 3, line = 0, font=2)
+par(new = TRUE)
+plot(SP_counts$Year, SP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+     ylim = c(0, 700), xlab = '', ylab = '', las = 1,
+     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i", bty='n', xlim=c(1980-0.9, 2025+0.9))
+lines(SP_counts$Year, rep(SP_avg[5]/1e4, length(SP_counts$Year)), lwd = 1, col = '#D0D0D0')
+axis((4), at = seq(0, 700, 100), labels = c(0,'','','','','','',700), tck = -0.1, las = 1, cex.axis=1.5)
+mtext('Storm Count', side=2, line=1, outer = T, cex=1.1, font=2)
+mtext('Accumulated Cyclone Energy \n(ACE) Index (10^4 kts^2)', side=4, line=2, outer = T, cex=1.1, font=2)
 dev.off()
 
-# ACE (in the future, make this a function)
-pdf(paste(Dir, '/ACE_', RptYr, '.pdf', sep = ""))
-par(mfrow = c(4,1))
-plot(EP_counts$Year, EP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Eastern Pacific (EP)', 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(EP_counts$Year, rep(EP_avg[5]/1e4, length(EP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
-axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
-axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
-plot(CP_counts$Year, CP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Central Pacific (CP)', 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(CP_counts$Year, rep(CP_avg[5]/1e4, length(CP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
-axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
-axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
-plot(WP_counts$Year, WP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Western Pacific (WP)', 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(WP_counts$Year, rep(WP_avg[5]/1e4, length(WP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
-axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
-axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
-plot(SP_counts$Year, SP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'South Pacific (SP)', 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(SP_counts$Year, rep(SP_avg[5]/1e4, length(SP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
-     ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
-axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
-axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
-axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
-dev.off()
+# # ACE (in the future, make this a function)
+# pdf(paste(Dir, '/ACE_', RptYr, '.pdf', sep = ""))
+# par(mfrow = c(4,1))
+# plot(EP_counts$Year, EP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Eastern Pacific (EP)', 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(EP_counts$Year, rep(EP_avg[5]/1e4, length(EP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
+# axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
+# axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
+# axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
+# plot(CP_counts$Year, CP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Central Pacific (CP)', 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(CP_counts$Year, rep(CP_avg[5]/1e4, length(CP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
+# axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
+# axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
+# axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
+# plot(WP_counts$Year, WP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'Western Pacific (WP)', 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(WP_counts$Year, rep(WP_avg[5]/1e4, length(WP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
+# axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
+# axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
+# axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
+# plot(SP_counts$Year, SP_counts$ACE/1e4, type = "l", lwd = 1, col = '#646464',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, main = 'South Pacific (SP)', 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(SP_counts$Year, rep(SP_avg[5]/1e4, length(SP_counts$Year)), type = "l", lwd = 1, col = '#D0D0D0',
+#      ylim = c(0, 700), xlab = '', ylab = '', las = 1, 
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = year(make_date(c(seq(1980, 2020, 5), RptYr))))
+# axis((2), at = c(seq(0, 700, 100)), tck = 0.025, las = 1)
+# axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
+# axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
+# dev.off()
 ```
 
 Rationale: The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.  

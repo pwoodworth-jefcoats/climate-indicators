@@ -444,7 +444,7 @@ p <- p +
   xlab('') + ylab('')
 
 p
-ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=6, height=5, units='in')
+ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=8, height=4, units='in')
 
 ```
 

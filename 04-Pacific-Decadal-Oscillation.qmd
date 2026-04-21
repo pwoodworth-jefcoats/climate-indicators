@@ -207,23 +207,21 @@ dev.off()
 # kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
-Rationale: The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. Research has shown that during positive phases of the PDO, the Hawaiʻi-based deep-set longline fishery has a greater likelihood of black-footed albatross sightings and interactions (Wren et al. 2019).  
+**Rationale:** The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. Research has shown that during positive phases of the PDO, the Hawaiʻi-based deep-set longline fishery has a greater likelihood of black-footed albatross sightings and interactions (Wren et al. 2019).  
 \
-Status: The PDO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.  
+**Status:** The PDO was `r ifelse(mean(indicator_data$Value[which(indicator_data$Year == RptYr)]) < 0, 'negative', 'positive')` in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This represents the strongest negative value in the time series, with the next two lowest values occurring in 2024 and 1894.  
 \
-Description: The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from NOAA (2025b).  
+**Description:** The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from NOAA (2025b).  
 \
-Timeframe: Monthly.  
+**Timeframe:** Monthly.  
 \
-Region/Location: Pacific Basin north of 20°N.  
+**Region/Location:** Pacific Basin north of 20°N.  
 \
-Measurement Platform: *In-situ* station, satellite, model.  
+**Measurement Platform:** *In-situ* station, satellite, model.  
 \
-Data available at: <https://psl.noaa.gov/pdo/>.  
+**Data available at:** <https://psl.noaa.gov/pdo/>.  
 \
-Sourced from NOAA (2025b), Mantua (1997), and Newman (2016).  
-\
-Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** NOAA (2025b), Mantua (1997), and Newman (2016). Graphics produced in part using Stawitz and Li (2025).  
 \
 ## Additional Information
 

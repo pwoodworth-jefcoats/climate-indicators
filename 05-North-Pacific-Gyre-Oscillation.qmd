@@ -132,7 +132,7 @@ ts_y_lim <-c(-4,4)
 # Easier to control the aesthetics and size
 
 # Defining the theme up front so we don't have to repeat it
-theme_minimal() +
+plotTheme <- theme_minimal() +
   theme(panel.border = element_rect(color='#F1F3F3'),
         panel.grid.major = element_line(color='#F1F3F3'),
         panel.grid.minor = element_blank(),
@@ -158,7 +158,7 @@ p <- ggplot() +
   ylab(indicator_data$Units[1]) +
   xlab('Year') +
   guides(color = guide_legend(ncol = 2)) +
-  theme_minimal()
+  plotTheme
 
 ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
 
@@ -214,19 +214,19 @@ ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5
 
 ```
 
-Rationale: The North Pacific Gyre Oscillation (NPGO) is related to, but distinct from, the Pacific Decadal Oscillation.  It captures basin-scale processes, making it well suited to capture change across the Hawaiʻi-based longline fishing grounds.    
+**Rationale:** The North Pacific Gyre Oscillation (NPGO) is related to, but distinct from, the Pacific Decadal Oscillation.  It captures basin-scale processes, making it well suited to capture change across the Hawaiʻi-based longline fishing grounds.    
 \
-Status: The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.  
+**Status:** The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.  
 \
-Description: The NPGO is driven by regional and basin-scale changes in wind patterns.  Changed to the wind field driver changes in ocean circulation that affect nutrients and, in turn, phytoplankton.  Because phytoplankton are the foundational food source for marine ecosystems, the NPGO offers insight into potential ecosystem change.  Description paraphrased from Di Lorenzo et al. (2008).  
+**Description:** The NPGO is driven by regional and basin-scale changes in wind patterns.  Changed to the wind field driver changes in ocean circulation that affect nutrients and, in turn, phytoplankton.  Because phytoplankton are the foundational food source for marine ecosystems, the NPGO offers insight into potential ecosystem change.  Description paraphrased from Di Lorenzo et al. (2008).  
 \
-Timeframe: Monthly.  
+**Timeframe:** Monthly.  
 \
-Region/Location: 180°–110°W; 25°N–62°N.  
+**Region/Location:** 180°–110°W; 25°N–62°N.  
 \
-Measurement Platform: satellite, model.  
+**Measurement Platform:** Satellite, model.  
 \
-Data available at: <https://www.o3d.org/npgo/data/NPGO.txt>.  
+**Data available at:** <https://www.o3d.org/npgo/data/NPGO.txt>.  
 \
 Sourced from Di Lorenzo et al. (2008).  
 \

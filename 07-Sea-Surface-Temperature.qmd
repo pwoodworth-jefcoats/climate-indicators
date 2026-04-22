@@ -215,7 +215,7 @@ ts_y_lim <-c(17, 25)
 anom_y_lim <- c(-1.5, 1.5)
 
 # Defining the theme up front so we don't have to repeat it
-theme_minimal() +
+plotTheme <- theme_minimal() +
   theme(panel.border = element_rect(color='#F1F3F3'),
         panel.grid.major = element_line(color='#F1F3F3'),
         panel.grid.minor = element_blank(),
@@ -468,21 +468,21 @@ ggsave(paste0(Dir, '/SST_anom_ts_', RptYr, '_ggolot.pdf'), plot=p_ann, width=6, 
 # save_image(p2, paste(Dir, '/SST_anom_ts_', RptYr, '.pdf', sep = ""))
 ```
 
-Rationale: Sea surface temperature is one of the most directly observable existing measures for tracking increasing ocean temperatures. SST varies in response to natural climate cycles such as the El Niño – Southern Oscillation (ENSO) and is rising as a result of anthropogenic climate change. Both short-term variability and long-term trends in SST impact the marine ecosystem. Understanding the mechanisms through which organisms are impacted and the time scales of these impacts is an area of active research.  
+**Rationale:** Sea surface temperature is one of the most directly observable existing measures for tracking increasing ocean temperatures. SST varies in response to natural climate cycles such as the El Niño – Southern Oscillation (ENSO) and is rising as a result of anthropogenic climate change. Both short-term variability and long-term trends in SST impact the marine ecosystem. Understanding the mechanisms through which organisms are impacted and the time scales of these impacts is an area of active research.  
 \
-Status: Annual mean SST was `r signif(ann_mean_RptYr,3)` ºC in `r RptYr`. Over the period of record, SST across the longline fishing grounds has increased by `r signif(delta_SST_lm, 1)` ºC and the monthly SST anomaly increased by `r signif(delta_SST_anom_lm, 1)` ºC, both at a rate of roughly 0.025 ºC yr^-^^1^. Monthly SST values in `r RptYr` ranged from `r signif(monthly_min_RptYr, 3)`–`r signif(monthly_max_RptYr, 3)` ºC, within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 3)`–`r signif(monthly_max_PrevYrs, 3)` ºC). Overall, SST was above the long-term average across the Hawaiʻi longline region in `r RptYr`.   
+**Status:** Annual mean SST was `r signif(ann_mean_RptYr,3)` ºC in `r RptYr`. Over the period of record, SST across the longline fishing grounds has increased by `r signif(delta_SST_lm, 1)` ºC and the monthly SST anomaly increased by `r signif(delta_SST_anom_lm, 1)` ºC, both at a rate of roughly 0.025 ºC yr^-^^1^. Monthly SST values in `r RptYr` ranged from `r signif(monthly_min_RptYr, 3)`–`r signif(monthly_max_RptYr, 3)` ºC, within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 3)`–`r signif(monthly_max_PrevYrs, 3)` ºC). Overall, SST was at or above the long-term average across the Hawaiʻi longline region in `r RptYr`.   
 \
-Description: Satellite remotely sensed monthly sea surface temperature (SST) is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). A time series of monthly mean SST averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. CoralTemp data are used to calculate this indicator.  
+**Description:** Satellite remotely sensed monthly sea surface temperature (SST) is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). A time series of monthly mean SST averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. CoralTemp data are used to calculate this indicator.  
 \
-Timeframe: Monthly.  
+**Timeframe:** Monthly.  
 \
-Region/Location: Hawaiʻi longline region: 15° – 45°N, 180° – 120°W.  
+**Region/Location:** Hawaiʻi longline region: 15° – 45°N, 180° – 120°W.  
 \
-Measurement Platform: Satellite.  
+**Measurement Platform:** Satellite.  
 \
-Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim>.   
+**Data available at:** <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim>.   
 \
-Sourced from: NOAA OceanWatch (2025a). Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** NOAA OceanWatch (2025a). Graphics produced in part using Stawitz and Li (2025).  
 \  
 
 ## Additional Information

@@ -70,8 +70,9 @@ setMinMax(tclimRas)
 p <- ggplot() + geom_spatraster_contour(data=sstRas1, breaks=18)
 pp <- ggplot_build(p)$data[[1]]
 pp$lyr <- as.numeric(as.character(pp$lyr))
-# Make the STF index
+# Make the STF index west of 130°W following Shi et al. 2025
 STFindex <- pp %>% 
+  filter(x < 230) %>% 
   group_by(lyr) %>% 
   summarise(mean_lat=mean(y, na.rm=T)) %>% 
   mutate(front = 'STF')
@@ -118,7 +119,8 @@ xlab("") + ylab("") +
 ```
 
 ```{r}
-#| echo: false
+#| eval: false
+#| include: false
 
 # Figure caption text
 # Average position of the subtropical front (STF) in 2023 (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–2024; solid grey lines), and ocean temperatures for the first quarter of 2024 (shaded). 
@@ -179,8 +181,9 @@ pieceMax <- pp %>%
   ungroup()
 # join the contour data with the longest piece data to remove all data but for the longest contour
 contourDat <- left_join(pieceMax, pp)
-# Make the tzcf index (the mean lat for each year)
+# Make the tzcf index (the mean lat for each year) west of 130°W following Shi et al. 2025
 TZCFindex <- contourDat %>% 
+  filter(x < 230) %>% 
   group_by(lyr) %>% 
   summarise(mean_lat=mean(y, na.rm=T)) %>% 
   mutate(front = 'TZCF')
@@ -238,7 +241,8 @@ for (i in seq_along(yr)) {
 
 
 ```{r}
-#| echo: false
+#| eval: false
+#| include: false
 
 # Figure caption text
 # Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
@@ -273,6 +277,19 @@ seagrass <- nmfs_palette("seagrass")(3)
 #waves  "#90DFE3" "#0E9BA3" "#005E5E"
 #seagra "#B1DC6B" "#609F20" "#365E17"
 
+# Defining the theme up front so we don't have to repeat it
+plotTheme <- theme_minimal() +
+  theme(panel.border = element_rect(color='#F1F3F3'),
+        panel.grid.major = element_line(color='#F1F3F3'),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        axis.title = element_text(size=14, face="bold"), 
+        axis.text = element_text(size=12),
+        legend.position = 'bottom', 
+        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
+        legend.text = element_text(size=10), legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(0.5,'cm'))
+
 # Make plot
 ptrend <- ggplot() +
   geom_line(data = STFindex, aes(x = lyr, y = mean_lat, color='L1'), linewidth=1) +
@@ -287,30 +304,26 @@ ptrend <- ggplot() +
     'L3' = oceans[2],
     'L4' = waves[1],
     'L5' = coral[2], 
-    'L6' = crustacean[2] ),
+    'L6' = crustacean[2], name=NULL),
     breaks = c("L1", "L2", "L3", "L4", "L5", "L6"), labels=c(paste0('STF Jan-Mar avg, 1985-',RptYr-1), paste0('TZCF Jan-Mar avg, 1998-',RptYr-1), 'STF long-term trend', 'TZCF long-term trend', paste('STF Jan-Mar avg,',RptYr), paste('TZCF Jan-Mar avg,',RptYr))
   ) +
-  theme(
-    axis.line = element_line(color='#F1F3F3', ),
-    panel.grid.major = element_line(colour = '#F1F3F3'),
-    panel.background = element_rect(fill = "transparent"),
-    legend.position = "bottom",
-    legend.title = element_blank(), 
-    legend.background = element_rect(fill='gray90')) +
   scale_x_continuous(name = "Year",
-                     breaks = c(seq(1985,2024,5),RptYr-1),  # major breaks 
+                     breaks = c(seq(1985,2024,5),RptYr-1),  # major breaks
                      expand = c(0,0)) + # remove padding
-  scale_y_continuous(name = "Mean latitude (°N)",
+  scale_y_continuous(name = "Mean Latitude (°N)",
+                     limits = c(min(STFindex$mean_lat)-0.5, max(TZCFindex$mean_lat)+0.5),
                      expand = c(0,0)) + # remove padding
-  guides(color=guide_legend(nrow=2, byrow=F))
+  guides(color=guide_legend(title=NULL)) +
+  plotTheme
 
-ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', yr[i], '.png'), plot = ptrend, width=6, height=4, dpi=300, units='in')
+ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'), plot = ptrend, width=7, height=5, dpi=300, units='in')
 
 ```
 
 
 ```{r}
-#| echo: false
+#| eval: false
+#| include: false
 
 # Figure caption text
 # Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
@@ -319,19 +332,19 @@ knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
 
 ```
 
-Rationale: The STF is targeted by the swordfish fishery. Additionally, both the STF and TZCF are used as migration and foraging corridors by both commercially valuable and protected species. Northward displacement of the frontal zone can increase the distance fishing vessels must travel to set their gear. This can, in turn, increase operational expenses. The positions of the fronts vary in response to natural climate variations. Long-term northward displacement of the frontal zone may also result from anthropogenic climate change.\
+**Rationale:** The STF is targeted by the swordfish fishery. Additionally, both the STF and TZCF are used as migration and foraging corridors by both commercially valuable and protected species. Northward displacement of the frontal zone can increase the distance fishing vessels must travel to set their gear. This can, in turn, increase operational expenses. The positions of the fronts vary in response to natural climate variations. Long-term northward displacement of the frontal zone may also result from anthropogenic climate change.\
 \
-Status: During the first quarter of `r RptYr`, the STF was north of average across much of the fishing grounds. Though, unlike 2022, it was not near its historical northern limits. The TZCF was average across much of the fishing grounds, except between about 170°W and 155°W, where it was slightly north of average.\
+**Status:** During the first quarter of `r RptYr`, the STF was north of average across the entirety of the fishing grounds. Though, unlike 2022, it was not near its historical northern limits except east of 140°W. The TZCF was north of average across the entirety of the fishing grounds, and west of 155°W it neared its historical northern limits.\
 \
-Description: The subtropical front (STF) is marked by the 18 °C sea surface temperature (SST) isotherm and the transition zone chlorophyll front (TZCF) by the 0.2 mg/m^3^ chl-a isopleth (Bograd et al. 2004; Polovina et al. 2001). They roughly mark the northern boundary of the North Pacific subtropical gyre as well as the northern extent of the Hawaiʻi-based longline fishery. Both fronts migrate meridionally on a seasonal basis and their positions are impacted by the phase of the El Niño – Southern Oscillation (ENSO). Due to significant seasonal variation, the climatology and anomaly (`r RptYr`) are presented for the first quarter of the year only. The STF is determined from CoralTemp data (see SST indicator) and the TZCF is determined from ESA CCI data (see Section 0).\
+**Description:** The subtropical front (STF) is marked by the 18 °C sea surface temperature (SST) isotherm and the transition zone chlorophyll front (TZCF) by the 0.2 mg/m^3^ chl-a isopleth (Bograd et al. 2004; Polovina et al. 2001). They roughly mark the northern boundary of the North Pacific subtropical gyre as well as the northern extent of the Hawaiʻi-based longline fishery. Both fronts migrate meridionally on a seasonal basis and their positions are impacted by the phase of the El Niño – Southern Oscillation (ENSO). Due to significant seasonal variation, the climatology and anomaly (`r RptYr`) are presented for the first quarter of the year only. The STF is determined from CoralTemp data (see SST indicator) and the TZCF is determined from ESA CCI data (see Section 0).\
 \
-Timeframe: Annual, seasonal\
+**Timeframe:** Annual, seasonal\
 \
-Region: Hawaiʻi longline region: 5° – 45°N, 180° – 120°W\
+**Region:** Hawaiʻi longline region: 5° – 45°N, 180° – 120°W\
 \
-Measurement Platform: Satellite\
+**Measurement Platform:** Satellite\
 \
-Data available at: https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly and https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v5-0.\
+**Data available at:** https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly and https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0.html.\
 \
-Sourced from: Bograd et al. (2004), Polovina et al. (2001), and NOAA OceanWatch (2024a; 2024b).\
+**Sourced from:** Bograd et al. (2004), Polovina et al. (2001), and NOAA OceanWatch (2024a; 2024b).\
 \

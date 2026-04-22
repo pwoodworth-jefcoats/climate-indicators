@@ -490,7 +490,7 @@ A plot of the residuals from the linear model for the observations and anomalies
 To prepare the spatial data for mapping, you'll need to run `map_data_for_dashboard.R`, which can be found in the [PreProcessing](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard/PreProcessing) folder of the [Indicator_Dashboard](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Indicator_Dashboard) folder in this repository.
 
 ```{r}
-# #| include: FALSE
+#| include: FALSE
 # # After running the chunks above and prepping the map data, you can uncomment and run this chunk.
 # 
 # # Load basemap data

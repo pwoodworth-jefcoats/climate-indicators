@@ -316,7 +316,7 @@ ptrend <- ggplot() +
   guides(color=guide_legend(title=NULL)) +
   plotTheme
 
-ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'), plot = ptrend, width=7, height=5, dpi=300, units='in')
+ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.pdf'), plot = ptrend, width=7, height=5, dpi=300, units='in')
 
 ```
 

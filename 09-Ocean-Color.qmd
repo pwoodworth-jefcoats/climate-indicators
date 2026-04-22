@@ -466,21 +466,21 @@ ggsave(paste0(Dir, '/Chl_anom_ts_', RptYr, '_ggolot.pdf'), plot=p_ann, width=7, 
 # save_image(p2, paste(Dir, '/Chl_anom_ts_', RptYr, '.pdf', sep = ""))
 ```
 
-Rationale: Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.  
+**Rationale:** Phytoplankton are the foundational food source for the fishery. Changes in phytoplankton abundance have been linked to both natural climate variability and anthropogenic climate change. These changes have the potential to impact fish abundance, size, and catch.  
 \
-Status: The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  Both monthly average chlorophyll concentration and chlorophyll anomalies have declined by about `r abs(signif(delta_Chl_anom_lm, 1))` mg chl m^-^^3^ over the period of record.  Chlorophyll concentrations were fairly average across the Hawaiʻi-based longline fishing grounds in `r RptYr`.  
+**Status:** The mean monthly chlorophyll concentration was `r signif(ann_mean_RptYr, 2)` mg chl m^-^^3^ in `r RptYr`. Monthly mean chlorophyll concentrations ranged from `r signif(monthly_min_RptYr, 2)`–`r signif(monthly_max_RptYr, 2)` mg chl m^-^^3^, which was within the range of values observed during the previous years of the time series (`r signif(monthly_min_PrevYrs, 2)`–`r signif(monthly_max_PrevYrs, 2)` mg chl m^-^^3^).  Both monthly average chlorophyll concentration and chlorophyll anomalies have declined by about `r abs(signif(delta_Chl_anom_lm, 1))` mg chl m^-^^3^ over the period of record.  Chlorophyll concentrations were fairly average across the Hawaiʻi-based longline fishing grounds in `r RptYr`.  
 \
-Description: Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).  
+**Description:** Satellite remotely sensed ocean color is used to determine chlorophyll concentrations in the pelagic surface ocean. A time series of mean monthly chlorophyll-a concentrations averaged over the Hawaiʻi longline region is presented. Additionally, spatial climatologies and anomalies are shown. European Space Agency (ESA) Climate Change Initiative (CCI) data are used for this indicator (Sathyendranath et al. 2018).  
 \
-Timeframe: Monthly  
+**Timeframe:** Monthly  
 \
-Region/Location: Hawaiʻi-based longline region: 5° – 45°N, 180° – 120°W  
+**Region/Location:** Hawaiʻi-based longline region: 5° – 45°N, 180° – 120°W  
 \
-Measurement Platform: Satellite  
+**Measurement Platform:** Satellite  
 \
-Data available at: <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0>.  
+**Data available at:** <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2025-clim_v6-0.html>.  
 \
-Sourced from: NOAA OceanWatch (2025b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** NOAA OceanWatch (2025b) and Sathyendranath et al. (2018). Graphics produced in part using Stawitz and Li (2025).  
 \
 ## Additional Information
 Ocean color data are geographically subset and spatially averaged using the pyFerret script `CHLaccess.jnl` which can be found in the Ocean_Color folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  

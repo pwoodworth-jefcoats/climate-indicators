@@ -427,19 +427,19 @@ ggsave(paste0(Dir, '/TempAtDepth_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, h
 # save_image(p2, paste(Dir, '/TempAtDepth_anom_ts_', RptYr, '.pdf', sep = ""))
 ```
 
-Rationale: The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.  
+**Rationale:** The temperature at 200–300 m reflects the temperature in the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye have preferred thermal habitat, generally staying within temperatures ranging from 8–14 °C while they are at depth (Howell et al. 2010). Changes in ocean temperature at depth will impact tuna, and in turn, potentially impact their catchability. Understanding the drivers of sub-surface temperature trends and their ecosystem impacts is an area of active research.  
 \
-Status: In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r abs(signif(delta_TatD_lm, 1))` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth around the main Hawaiian Islands roughly 0.5–1.5 °C below average, and temperatures north and west of the Hawaiian Islands 0.5-1 °C above average.   
+**Status:** In `r RptYr`, 200–300 m temperatures ranged from `r signif(monthly_min_RptYr, 4)`–`r signif(monthly_max_RptYr, 4)` °C with an average value of `r signif(ann_mean_RptYr,4)` °C. These temperatures are within the range of temperatures experienced over the past several decades (`r signif(monthly_min_PrevYrs, 4)`–`r signif(monthly_max_PrevYrs, 4)` °C) and are within the bounds of bigeye tuna’s preferred deep daytime thermal habitat (8–14 °C). Over the period of record (1980–`r RptYr`), 200–300 m temperatures have declined by `r abs(signif(delta_TatD_lm, 1))` °C. The spatial pattern of temperature anomalies was mixed with temperatures at depth just north of the main Hawaiian Islands roughly 0.5–1.5 °C below average, and temperatures north and west of the Hawaiian Islands 0.5-2 °C above average.   
 \
-Description: Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats.   
+**Description:** Ocean temperature at 200–300 m depth is averaged across the Hawaiʻi-based longline fishing grounds (15° – 45°N, 180° – 120°W). Global Ocean Data Assimilation System (GODAS) data are used. GODAS incorporates global ocean data from moorings, expendable bathythermographs (XBTs), and Argo floats.   
 \
-Timeframe: Annual, monthly.  
+**Timeframe:** Annual, monthly.  
 \
-Region/Location: Hawaii longline region: 15° – 45°N, 180° – 120°W.  
+**Region/Location:** Hawaii longline region: 15° – 45°N, 180° – 120°W.  
 \
-Measurement Platform: _In-situ_ sensors, model.  
+**Measurement Platform:** _In-situ_ sensors, model.  
 \
-Sourced from: NOAA (2025d) and APDRC (2025).  Graphics produced in part using Stawitz and Li (2025).
+**Sourced from:** NOAA (2025d) and APDRC (2025).  Graphics produced in part using Stawitz and Li (2025).
 
 ## Additional Information
 Temperature-at-depth data are geographically subset and spatially averaged using the pyFerret script `TatDepth_access.jnl` which can be found in the [Temperature_at_Depth](https://github.com/pwoodworth-jefcoats/climate-indicators/tree/main/Temperature_at_Depth) folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  

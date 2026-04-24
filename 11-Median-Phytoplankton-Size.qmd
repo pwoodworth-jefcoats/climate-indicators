@@ -224,8 +224,7 @@ plotTheme <- theme_minimal() +
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         plot.background = element_blank(),
-        axis.title.x = element_text(size=14, face="bold"), 
-        axis.title.y = element_text(size=13, face="bold"), 
+        axis.title = element_text(size=14, face="bold"), 
         axis.text = element_text(size=12),
         legend.position = 'bottom', 
         legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
@@ -271,12 +270,12 @@ p_ann <- ggplot() +
   scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = F) +
   scale_y_continuous(expand = F, limits = anom_y_lim, breaks=c(-0.15,-0.1,-0.05,0,0.05,0.1,0.15), labels = c(-0.15,"-0.10",-0.05,"0",0.05,"0.10",0.15)) +
   scale_color_manual(name=NULL, values=pal[c(1,3,5,2,4)]) +
-  ylab(atop("Median Phytoplankton Size Anomaly (µm ESD)")) +
+  ylab("Median Phytoplankton Size \nAnomaly (µm ESD)") +
   xlab('Year') +
   guides(color = guide_legend(ncol = 2)) +
   plotTheme
 
-ggsave(paste0(Dir, '/Median_Phyto_Size_anom_ts_', RptYr, '_ggolot.pdf'), plot=p_ann, width=6, height=5, units='in')
+ggsave(paste0(Dir, '/Median_Phyto_Size_anom_ts_', RptYr, '_ggolot.pdf'), plot=p_ann, width=7, height=5, units='in')
 
 
 # pdf(paste(Dir, '/Median_Phyto_Size_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)

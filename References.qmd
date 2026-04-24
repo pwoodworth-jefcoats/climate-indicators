@@ -20,10 +20,10 @@ C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric
 carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*,
 vol. 28, 538-551\
 \
-NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and
+NOAA (2026a): Dr. Xin Lan, NOAA/GML (gml.noaa.gov/ccgg/trends/) and
 Dr. Ralph Keeling, Scripps Institution of Oceanography
 (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide
-<https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2025.\
+<https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 2 April 2026.\
 \
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989),
 [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the
@@ -47,24 +47,24 @@ Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii
 Ocean Time-series (HOT) program: Background, rationale and field
 implementation. Deep-Sea Research II, 43(2-3): 129-156.\
 \
-HOT 2025: Hawaii Ocean Time-series Data Organization & Graphical System
+HOT 2026: Hawaii Ocean Time-series Data Organization & Graphical System
 (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>,
-Accessed: 1 April 2025.\
+Accessed: 3 April 2026.\
 \
 Zeebe and Wolf-Gladrow (2001): Zeebe RE, Wolf-Gladrow DA, 2021. CO2 in
 Seawater Systems: Equilibrium, Kinetics, Isotopes. Elsevier. Code
 available at:
 <https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/CO2_System_in_Seawater/csys.html>,
-Accessed: 1 April 2025.\
+Accessed: 15 April 2026.\
 \
 **El Niño - Southern Oscillation**\
-NOAA CPC (2025):
-<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 1
-April 2025.\
+NOAA CPC (2026):
+<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 3
+April 2026.\
 \
 **Pacific Decadal Oscillation**\
-NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal
-Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.\
+NOAA (2026b): NOAA Physical Science Laboratory. Pacific Decadal
+Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 3 April 2026.\
 \
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R.
 C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with
@@ -99,38 +99,38 @@ doi:10.1175/2009BAMS2755.1\
 Knapp et al. (2018): Knapp, K. R., H. J. Diamond, J. P. Kossin, M. C.
 Kruk, C. J. Schreck, 2018: International Best Track Archive for Climate
 Stewardship (IBTrACS) Project, Version 4. NOAA National Centers for
-Environmental Information. doi:10.25921/82ty-9e16 \[Accessed: 7 April
-2025\].\
+Environmental Information. doi:10.25921/82ty-9e16 \[Accessed: 17 April
+2026\].\
 \
-NOAA (2025c): NOAA's International Best Track Archive for Climate
+NOAA (2026c): NOAA's International Best Track Archive for Climate
 Stewardship (IBTrACS) data,
 <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/>
-Accessed: 7 April 2025, Dataset identifier:
+Accessed: 17 April 2026, Dataset identifier:
 <https://doi.org/10.25921/82ty-9e16>\
 \
-**Sea Surface Temperature** NOAA OceanWatch (2025a):
+**Sea Surface Temperature** NOAA OceanWatch (2026a):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>
-Accessed: 10 April 2025.\
+Accessed: 3 April 2026.\
 \
 **Temperature at 200-300 m Depth**\
-APDRC (2025):
+APDRC (2026):
 <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp>
-Accessed 10 April 2025.\
+Accessed 6 April 2026.\
 \
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010.
 Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior
 in the central North Pacific Ocean. Progress in Oceanography, 86, pp.
 81-93. doi: 10.1016/j.pocean.2010.04.013.\
 \
-NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth
+NOAA (2026d): NOAA Office of Oceanic and Atmospheric Research’s Earth
 System Research Laboratories’ Physical Sciences Laboratory,
-<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April
-2025.\
+<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 6 April
+2026.\
 \
 **Ocean Color**\
-NOAA OceanWatch (2025b):
+NOAA OceanWatch (2026b):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
-Accessed: 11 April 2025.\
+Accessed: 6 April 2026.\
 \
 Sathyendranath et al. (2018): Sathyendranath S, Grant M, Brewin R.J.W,
 Brockmann C, Brotas V, Chuprin A, Doerffer R, Dowell M, Farman A, Groom
@@ -148,21 +148,20 @@ for Environmental Data Analysis 04 July 2018.
 doi:10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5.
 <http://dx.doi.org/10.5285/9c334fbe6d424a708cf3c4cf0c6a53f5>\
 \
-**North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll
-Front (TZCF)**\
+**North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)**\
 Bograd et al. (2004): Bograd, S.J., Foley, D.G., Schwing, F.B., Wilson,
 C., Laurs, R.M., Polovina, J.J., Howell, E.A., and R.E. Brainard, 2004.
 On the seasonal and interannual migrations of the transition zone
 chlorophyll front. Geophysical Research Letters, 31, L17204. doi:
 10.1029/2004GL020637.\
 \
-NOAA OceanWatch (2025a):
+NOAA OceanWatch (2026a):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>
-Accessed: 18 April 2025.\
+Accessed: 6 April 2026.\
 \
-NOAA OceanWatch (2025b):
+NOAA OceanWatch (2026b):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
-Accessed: 18 April 2025.\
+Accessed: 6 April 2026.\
 \
 Polovina et al. (2001): Polovina, J.J., Howell, E.A., Kobayashi, D.R.,
 and M.E. Seki, 2001. The transition zone chlorophyll front, a dynamic
@@ -176,18 +175,18 @@ community size structure form empirical relationships with remotely
 sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi:
 10.1093/plankt/fbq088\
 \
-NOAA OceanWatch (2025c):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 11
-April 2025.\
+NOAA OceanWatch (2026c):
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025> Accessed: 6
+April 2026.\
 \
 **Fish Community Size Structure**\
-Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline
-Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15
-April 2025.\
+Pacific Islands Fisheries Science Center (PIFSC), 2026a: Hawaii Longline
+Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 7
+April 2026.\
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction
+Pacific Islands Fisheries Science Center (PIFSC), 2026b: UFA Auction
 Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>.
-Accessed 15 April 2025.\
+Accessed 7 April 2026.\
 \
 Farley et al. (2018): Farley J, Eveson P, Krusic-Golub K, Sanchez C,
 Roupsard F, McKechnie S, Nicol S, Leroy B, Smith N, Chang SK. 2018.
@@ -209,13 +208,13 @@ Analysis of Direct Aging and Tag–Recapture Data: An Illustration with
 Bigeye Tuna (Thunnus Obesus) of the Eastern Pacific Ocean with
 Implications for Management.” Fisheries Research 163 (March): 119–26.\
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline
-Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15
-April 2025.\
+Pacific Islands Fisheries Science Center (PIFSC), 2026a: Hawaii Longline
+Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 7
+April 2026.\
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction
+Pacific Islands Fisheries Science Center (PIFSC), 2026b: UFA Auction
 Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>.
-Accessed 15 April 2025.\
+Accessed 7 April 2026.\
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N,
 Bigelow K. 2006. A summary of the data available for the estimation of
@@ -224,13 +223,13 @@ bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 –
 18 August 2006, WCPFC-SC2-2006/ME IP-3.\
 \
 **Bigeye Recruitment Index**\
-Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline
-Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15
-April 2025.\
+Pacific Islands Fisheries Science Center (PIFSC), 2026a: Hawaii Longline
+Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 7
+April 2026.\
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction
+Pacific Islands Fisheries Science Center (PIFSC), 2026b: UFA Auction
 Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>.
-Accessed 15 April 2025.\
+Accessed 7 April 2026.\
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N,
 Bigelow K. 2006. A summary of the data available for the estimation of
@@ -239,13 +238,13 @@ bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 –
 18 August 2006, WCPFC-SC2-2006/ME IP-3.\
 \
 **Bigeye Tuna Catch Rate Forecast**\
-Pacific Islands Fisheries Science Center (PIFSC), 2025a: Hawaii Longline
-Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 15
-April 2025.\
+Pacific Islands Fisheries Science Center (PIFSC), 2026a: Hawaii Longline
+Logbook, <https://www.fisheries.noaa.gov/inport/item/2721>. Accessed 7
+April 2026.\
 \
-Pacific Islands Fisheries Science Center (PIFSC), 2025b: UFA Auction
+Pacific Islands Fisheries Science Center (PIFSC), 2026b: UFA Auction
 Sampling Data, <https://www.fisheries.noaa.gov/inport/item/6349>.
-Accessed 15 April 2025.\
+Accessed 7 April 2026.\
 \
 Langley et al. (2006): Langley A, Okamoto H, Williams P, Miyabe N,
 Bigelow K. 2006. A summary of the data available for the estimation of
@@ -253,16 +252,16 @@ conversion factors (processed to whole fish weights) for yellowfin and
 bigeye tuna. 2nd Regular Session of the WCPFC, Manila, Philippines, 7 –
 18 August 2006, WCPFC-SC2-2006/ME IP-3.\
 \
-NOAA OceanWatch (2025c):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 15
-April 2025.\
+NOAA OceanWatch (2026c):
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025> Accessed: 6
+April 2026.\
 \
 Woodworth-Jefcoats and Wren (2020): Woodworth-Jefcoats P, Wren J. 2020.
 Toward an environmental predictor of tuna recruitment. Fish Oceanogr,
 29(5):436-441. <https://doi.org/10.1111/fog.12487>.\
 \
 **Software**\
-R is used in creating all indicators. R Core Team (2024). R: A language
+R is used in creating all indicators. R Core Team (2026). R: A language
 and environment for statistical computing. R Foundation for Statistical
 Computing, Vienna, Austria. URL <https://www.R-project.org/>.\
 \

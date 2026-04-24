@@ -261,14 +261,19 @@ knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
 Index <- rbind(TZCFindex, STFindex) %>% 
   dplyr::rename(year = lyr)
 
+# Make linear models and extract slope, intercept, and p-values
+# STF
 lmSTF <- lm(mean_lat ~ lyr, data = STFindex)
 f <- summary(lmSTF)$fstatistic
 pSTF <- pf(f[1], f[2], f[3], lower.tail = FALSE)
+interceptSTF <- coef(lmSTF)[1]
 slopeSTF <- coef(lmSTF)[2]
+# TZCF
 lmTZCF <- lm(mean_lat ~ lyr, data = TZCFindex)
 f <- summary(lmTZCF)$fstatistic
 pTZCF <- pf(f[1], f[2], f[3], lower.tail = FALSE)
 slopeTZCF <- coef(lmTZCF)[2]
+interceptTZCF <- coef(lmTZCF)[1]
 
 # Create color palette for easy reference 
 oceans <- nmfs_palette("oceans")(4) # 1 = report_year, 3 = previous years
@@ -295,9 +300,8 @@ plotTheme <- theme_minimal() +
 ptrend <- ggplot() +
   geom_line(data = STFindex, aes(x = lyr, y = mean_lat, color='L1'), linewidth=1) +
   geom_line(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L2'), linewidth=1) +
-  geom_abline(data=STF_lm, )
-  #geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F) +
-  #geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F) +
+  geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F) +
+  geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F) +
   geom_line(data = STFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L5"), linewidth=1) +
   geom_line(data = TZCFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L6"), linewidth=1) +
   scale_color_manual(values = c(

@@ -237,16 +237,16 @@ knitr::include_graphics(paste0(Dir, '/SAFE_SizeFreqHist_', RptYr, '.png'), )
 ```
 
 \
-Rationale: Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\
+**Rationale:** Tracking the progression of growing size classes through time can provide a strong indication of recruitment pulses. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climatic influences such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\
 \
-Status: No above-average peaks in two-year-old bigeye CPUE were observed in `r RptYr-2`-`r RptYr`, suggesting that there will not be a peak in the CPUE of four- and five-year-old bigeye in `r RptYr+1` or `r RptYr+2`.\
+**Status:** There is a peak in two-year-old bigeye CPUE starting in the third quarter of `r RptYr` that persists through the fourth quarter, suggesting that there will be a peak in the CPUE of four- and five-year-old bigeye in `r RptYr+1` or `r RptYr+2`.\
 \
-Description: Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in Figure??. Bigeye weights are from sets using $\ge$ 15 hooks per float.\
+**Description:** Quarterly time series of bigeye weight-per-unit-effort (WPUE) in hooks set is presented for the previous two years. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006). Note the quarterly (colored) and climatological (grey) distributions of bigeye tuna weight-per-unit-effort in Figure??. Bigeye weights are from sets using $\ge$ 15 hooks per float.\
 \
-Timeframe: Quarterly.\
+**Timeframe:** Quarterly.\
 \
-Region: Hawaiʻi-based longline fishing grounds.\
+**Region:** Hawaiʻi-based longline fishing grounds.\
 \
-Measurement Platform: *In-situ* measurement.\
+**Measurement Platform:** *In-situ* measurement.\
 \
-Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).
+**Sourced from:** PIFSC (2026a), PIFSC (2026b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).

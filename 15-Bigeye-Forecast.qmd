@@ -42,7 +42,7 @@ med_phyto_fct_0307 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_t
 med_phyto_fct_0812 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_0812.dat', sep = ""), skip = 5, col_names = FALSE)
 med_phyto_fct_1317 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_1317.dat', sep = ""), skip = 5, col_names = FALSE)
 med_phyto_fct_1822 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_1822.dat', sep = ""), skip = 5, col_names = FALSE)
-med_phyto_fct_2324 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_2324.dat', sep = ""), skip = 5, col_names = FALSE)
+med_phyto_fct_2324 <- read_delim(file = paste(Dir,  '/MedPhyto_Bigeye_Forecast_ts_2325.dat', sep = ""), skip = 5, col_names = FALSE)
 
 # Concatonate
 med_phyto_fct_full <- rbind(med_phyto_fct_9802, 
@@ -179,19 +179,19 @@ Bigeye_Forecast$`kg per 1000 hooks (bigeye)` <- format(round(Bigeye_Forecast$`kg
 write_csv(Bigeye_Forecast, file = paste(here(), '/PelagicClimate_', RptYr, '/BigeyeForecast_', RptYr, '.csv', sep = ""))
 ```
 
-Rationale: Rationale: Recent work has shown that average phytoplankton size can be used to predict bigeye tuna catch rates up to four years in advance (Woodworth-Jefcoats and Wren 2020). The hypothesized mechanism behind this relationship is that larger phytoplankton are indicative of higher quality food for the zooplankton upon which larval and juvenile bigeye tuna prey. With higher quality prey available, more bigeye tuna survive into adulthood and recruit to the fishery.   
+**Rationale:** Rationale: Recent work has shown that average phytoplankton size can be used to predict bigeye tuna catch rates up to four years in advance (Woodworth-Jefcoats and Wren 2020). The hypothesized mechanism behind this relationship is that larger phytoplankton are indicative of higher quality food for the zooplankton upon which larval and juvenile bigeye tuna prey. With higher quality prey available, more bigeye tuna survive into adulthood and recruit to the fishery.   
 \
-Status: The catch rate forecasts suggest that catch rates will be fairly steady over the next four years.  
+**Status:** The catch rate forecasts suggest that catch rates will be fairly steady over the next four years.  
 \
-Description: Time series of observed bigeye tuna CPUE and WPUE are presented together with the annual forecast values and their associated 95% confidence interval.  The forecast is based on a linear regression between four-year-lagged median phytoplankton size and both CPUE and WPUE (individual).  
+**Description:** Time series of observed bigeye tuna CPUE and WPUE are presented together with the annual forecast values and their associated 95% confidence interval.  The forecast is based on a linear regression between four-year-lagged median phytoplankton size and both CPUE and WPUE (individual).  
 \
-Timeframe: Annual  
+**Timeframe:** Annual  
 \
-Region: Hawaiʻi-based longline fishing grounds (0° – 40°N, 180° – 150°W and 15° – 36°N, 150° – 125°W).
+**Region:** Hawaiʻi-based longline fishing grounds (0° – 40°N, 180° – 150°W and 15° – 36°N, 150° – 125°W).
 \
-Measurement Platform: Model-derived from satellite remotely sensed and in situ data.  
+**Measurement Platform:** Model-derived from satellite remotely sensed and in situ data.  
 \
-Sourced from: HDAR, Langley et al. (2006), NOAA OceanWatch (2025c), and Woodworth-Jefcoats and Wren (2020). Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** HDAR, Langley et al. (2006), NOAA OceanWatch (2025c), and Woodworth-Jefcoats and Wren (2020). Graphics produced in part using Stawitz and Li (2025).  
 \
 ## Additional Information  
 Median phytoplankton size data are geographically subset and spatially averaged using the pyFerret script `BigeyeForecast_access.jnl` which can be found in the Bigeye_Forecast folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  Time series of bigeye tuna CPUE and WPUE and created using `SAFE_LogDeal_DataDownload.Rmd` in the Fisheries_Indicators folder.  Note that actually running this script requires access to a controlled database.

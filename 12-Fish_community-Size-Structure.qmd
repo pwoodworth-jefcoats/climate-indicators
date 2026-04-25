@@ -174,7 +174,7 @@ ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, ov
   rdg <- ggplot(dealerDat, aes(x=WholeWeight, y=Year, group=Year)) + 
     stat_density_ridges(scale = overlap, 
                         rel_min_height = cutoff, 
-                        quantile_lines = T, quantiles = 0.5, 
+                        quantile_lines = T, quantiles = 2, 
                         fill=col, alpha=alpha, bandwidth=bwidth
                         ) +
     geom_vline(xintercept = L50, color=L50col, linetype='dashed') + 
@@ -194,7 +194,7 @@ k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray40', xmax=
 
 ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
 ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
-ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgesSWO_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
+ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgeSWO_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
 ```
 
 ```{r}
@@ -250,47 +250,66 @@ dev.off()
 
 \
 
-```{r echo=FALSE}
+```{r}
+#| eval: false
+#| include: false
 # Figure caption info
 # fig-DensDist, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), fig.align='center', out.width='100%'
 
-knitr::include_graphics(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'))
+#knitr::include_graphics(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'))
 
 ```
 
 \
 \
 
-```{r echo=FALSE}
-# Figure catopn info
+```{r}
+#| eval: false
+#| include: false
+# Figure caption info
 # fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', 
 
-knitr::include_graphics(paste0(Dir, '/SAFEdealerViolinAllFish_', RptYr, '.png'))
+#knitr::include_graphics(paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'))
 
 ```
 
 \
 \
 
-```{r echo=FALSE}
-# Figure cation info
+```{r}
+#| eval: false
+#| include: false
+# Figure caption info
+# fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', 
+
+#knitr::include_graphics(paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'))
+
+```
+
+\
+\
+
+```{r}
+#| eval: false
+#| include: false
+# Figure caption info
 # fig-ViolBETSWD, fig.cap='The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', fig.align='center', 
 
-knitr::include_graphics(paste0(Dir,'/SAFEdealerViolinBETSWD_', RptYr, '.png'))
+#knitr::include_graphics(paste0(Dir,'/SAFEdealerRidgeSWO_', RptYr, '.png'))
 
 ```
 
 \
-Rationale: Fish size can be impacted by a number of factors, including climate. Currently, the degree to which the fishery’s target species are impacted by climate, and the scale at which these impacts may occur, is largely unknown. Ongoing collection of size structure data is necessary for detecting trends in community size structure and attributing causes of these trends. Understanding trends in fish size structure and how oceanographic conditions influence these trends is an area of active research.\
+**Rationale:** Fish size can be impacted by a number of factors, including climate. Currently, the degree to which the fishery’s target species are impacted by climate, and the scale at which these impacts may occur, is largely unknown. Ongoing collection of size structure data is necessary for detecting trends in community size structure and attributing causes of these trends. Understanding trends in fish size structure and how oceanographic conditions influence these trends is an area of active research.\
 \
-Status: For the longline fishery as a whole, fish were slightly larger than average in `r RptYr`, with a lower proportion of fish smaller than about 15 kg. Bigeye tuna were a bit larger than average in `r RptYr` and swordfish were slightly smaller than the previous year on average, with a greater proportion of small swordfish.\
+**Status:** For the longline fishery as a whole, fish were larger than average in `r RptYr`, with a lower proportion of fish smaller than about 15 kg. Bigeye tuna were smaller than average in `r RptYr` with a median weight of `r signif(median(dealerBE$WholeWeight[which(dealerBE$Year == RptYr)], na.rm=T),4)` kg, the lowest during the period of record. Swordfish were much smaller than the previous years with a median weight of `r signif(median(dealerSW$WholeWeight[which(dealerSW$Year == RptYr)], na.rm=T),4)` kg, the lowest during the period of record. The large proportion of small fish and the low median weight in `r RptYr` of both bigeye tuna and swordfish hint at a recruitment pulse into the fishery, but it is worthy to note that swordfish caught are well under the L50 weight of 55.5 kg for female swordfish.\
 \
-Description: The weight of individual fish moving through the Honolulu auction is available from 2000 through the present. Using these weights, community size structure is presented. A standardized pooled climatological distribution (2000–2009) is presented, as is the `r RptYr` distribution. Similar distributions for target species (bigeye tuna and swordfish) are also presented. Annual time series of pooled target species weights are presented as violin plots. Bigeye weights are from deep sets (≥ 15 hooks per float) only. Swordfish weights are from shallow sets (≥ 15 hooks per float) only. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
+**Description:** The weight of individual fish moving through the Honolulu auction is available from 2000 through the present. Using these weights, community size structure is presented. A standardized pooled climatological distribution (2000–2009) is presented, as is the `r RptYr` distribution. Similar distributions for target species (bigeye tuna and swordfish) are also presented. Annual time series of pooled target species weights are presented as ridge plots. Bigeye weights are from deep sets (≥ 15 hooks per float) only. Swordfish weights are from shallow sets (≥ 15 hooks per float) only. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
 \
-Timeframe: Annual.\
+**Timeframe:** Annual.\
 \
-Region: Hawaiʻi-based longline fishing grounds.\
+**Region:** Hawaiʻi-based longline fishing grounds.\
 \
-Measurement Platform: *In-situ* measurement.\
+**Measurement Platform:** *In-situ* measurement.\
 \
-Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, Farley et al. (2018), and Langley et al. (2006).
+**Sourced from:** PIFSC (2026a), PIFSC (2026b) and the Hawaiʻi Division of Aquatic Resources, Farley et al. (2018), and Langley et al. (2006).

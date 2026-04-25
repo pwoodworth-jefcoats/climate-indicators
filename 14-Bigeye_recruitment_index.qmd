@@ -151,21 +151,21 @@ write.csv(dealerYear, paste0(Dir, '/SAFE_BET_CPUE_WPUE_dealer_', RptYr, '.csv'),
 # Figure caption text
 # fig-recPulse, fig.cap=paste0('Quarterly deep-set bigeye tuna weight per unit effort for ', RptYr-3, '-', RptYr-1, ' (color) and the climatological average (2000-2009)'), out.width='70%', fig.align='center', 
 
-knitr::include_graphics(paste0(Dir, '/SAFE_RecIndexRaw_', RptYr, '.png'))
+#knitr::include_graphics(paste0(Dir, '/SAFE_RecIndexRaw_', RptYr, '.png'))
 
 ```
 
 \
-Rationale: Catch rates of small bigeye tuna (≤ 15 kg) peak two years prior to peaks in catch rates (CPUE) and biomass (weight-per-unit-effort), indicating a recruitment pulse and allowing for predictions regarding increases in total catch rates of the fishery. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climate impacts such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\
+**Rationale:** Catch rates of small bigeye tuna (≤ 15 kg) peak two years prior to peaks in catch rates (CPUE) and biomass (weight-per-unit-effort), indicating a recruitment pulse and allowing for predictions regarding increases in total catch rates of the fishery. The timing of these pulses is not yet well understood, particularly in terms of how they relate to climate impacts such as interannual variability. Improving this understanding could lead to the ability to project future yields and is an area of active research.\
 \
-Status: In `r `RptYr`, the CPUE of bigeye ≤ 15 kg was `r round(dealerYear$CPUEsmall[which(dealerYear$LANDYR==RptYr)],2)` fish per 1,000 hooks set. This is the lowest value observed over the past `r RptYr-2000` years (previous minimum was `r round(sort(dealerYear$CPUEsmall)[2],2)` fish per 1,000 hooks set) and at this time does not appear indicative of a strong recruitment pulse such as was seen in 2001 or 2013.\
+**Status:** In `r RptYr`, the CPUE of bigeye ≤ 15 kg was `r round(dealerYear$CPUEsmall[which(dealerYear$LANDYR==RptYr)],2)` fish per 1,000 hooks set. This is an increase from `r RptYr-1` and close to the mean CPUE of small bigeye tuna of `r round(mean(dealerYear$CPUEsmall, na.rm=T),2)` fish per 1,000 hooks set. The increase in CPUE for bigeye tuna ≤ 15 kg shows the beginning signs of a recruitment pulse.\
 \
-Description: Time series of small (≤ 15 kg) and total bigeye tuna catch-per-unit-effort (hooks set) and weight-per-unit-effort (hooks set) for all bigeye tuna is presented. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
+**Description:** Time series of small (≤ 15 kg) and total bigeye tuna catch-per-unit-effort (hooks set) and weight-per-unit-effort (hooks set) for all bigeye tuna is presented. Fish weights are those of bigeye tuna received at the Honolulu auction. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
 \
-Timeframe: Annual.\
+**Timeframe:** Annual.\
 \
-Region: Hawaiʻi-based longline fishing grounds.\
+**Region:** Hawaiʻi-based longline fishing grounds.\
 \
-Measurement Platform: Model-derived from in situ data.\
+**Measurement Platform:** Model-derived from in situ data.\
 \
-Sourced from: PIFSC (2024a), PIFSC (2024b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).
+**Sourced from:** PIFSC (2026a), PIFSC (2026b) and the Hawaiʻi Division of Aquatic Resources, and Langley et al. (2006).

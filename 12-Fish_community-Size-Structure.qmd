@@ -19,6 +19,8 @@ library(dplyr)
 library(grid)
 library(png)
 library(here)
+library(purrr)
+library(ggridges)
 
 ```
 
@@ -101,6 +103,7 @@ dot_summary <- function(x) {
 ```
 
 ```{r}
+#| eval: false
 #| include: false
 
 #--------------------------------------------------------
@@ -148,14 +151,11 @@ ggsave(plot=grid.arrange(b, c, nrow=2), paste0(Dir, '/SAFEdealerViolinBETSWD_', 
 
 
 ```{r}
-#| eval: false
 #| include: false
 
 #######################
 # Try ridge plots instead of violin plots
 #######################
-library(purrr)
-library(ggridges)
 
 # Basic code for ridge plot instead of violin
 ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, overlap=2, alpha=0.8, bwidth=2) {
@@ -188,9 +188,9 @@ ridgefunc <- function(dealerDat, col, L50, L50col, xmax, xmin=0, cutoff=0.01, ov
   return(rdg)
 }
 
-i <- ridgefunc(dealer, col='#63a298', L50=-10, L50col=NA, xmax=90, xmin=-5, cutoff=0.02, alpha=0.5)
-j <- ridgefunc(dealerBE, '#5b84a1', BET_L50_kg, L50col='gray30', xmax=105, bwidth=2, alpha=0.5)
-k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray30', xmax=310, xmin=-10, overlap=2, bwidth=10) # try binwidth=10 as well
+i <- ridgefunc(dealer, col='#83b5ad', L50=-10, L50col=NA, xmax=90, xmin=-5, cutoff=0.02, alpha=1)
+j <- ridgefunc(dealerBE, '#85a3b9', BET_L50_kg, L50col='gray40', xmax=105, bwidth=2, alpha=1)
+k <- ridgefunc(dealerSW, '#ffba37', c(SW_L50_kg_f, SW_L50_kg_m), 'gray40', xmax=310, xmin=-10, alpha=1, overlap=2, bwidth=10) # try binwidth=10 as well
 
 ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')
 ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'), width = 6, height = 8, dpi=300, units='in')

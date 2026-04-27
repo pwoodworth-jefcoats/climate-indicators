@@ -1,7 +1,7 @@
 ! The purpose of this script is to calculate the annual bigeye tuna forecast.
 
 ! Load data
-use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp
+use https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025
 use Forecast_area.nc
 
 ! Years of interest, md50, d=1
@@ -9,6 +9,7 @@ use Forecast_area.nc
 ! 300 = Dec 2022
 ! 312 = Dec 2023
 ! 324 = Dec 2024
+! 336 = Dec 2025
 
 
 ! Define a common grid, omitting area not used to calculate the forecast
@@ -18,19 +19,19 @@ let md50_regrid = IF AREA[d=2] GT 0 then MD50[d=1, x=180:125W, y=0:40N, G=md50_g
 
 ! Average over the full year and full spatial domain for each year
 ! For reference: https://ferret.pmel.noaa.gov/Ferret/faq/averaging-to-regrid-a-time-series
-DEFINE AXIS/EDGES/T0=1-jan-1900/UNITS=days tann = DAYS1900(X[i=1998:2025:1],1,1)
+DEFINE AXIS/EDGES/T0=1-jan-1900/UNITS=days tann = DAYS1900(X[i=1998:2026:1],1,1)
 
 LET ann_md50 = md50_regrid[i=@ave, j=@ave, gt=tann@ave]
 
 ! Save piecemeal since memory is a challenge
 ! The data that inform this product are reprocessed each year, so all years should be regenerated each year
-! Reading a single value into R is cumbersome, so next year break up the last file into two.
+! Reading a single value into R is cumbersome, so in future years make sure the last file has at least two years.
 LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_9802.dat/FORMAT=comma ann_md50[l=1:5]
 LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_0307.dat/FORMAT=comma ann_md50[l=6:10]
 LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_0812.dat/FORMAT=comma ann_md50[l=11:15]
 LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_1317.dat/FORMAT=comma ann_md50[l=16:20]
 LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_1822.dat/FORMAT=comma ann_md50[l=21:25]
-LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_2324.dat/FORMAT=comma ann_md50[l=26:27]
+LIST/CLOBBER/FILE=MedPhyto_Bigeye_Forecast_ts_2325.dat/FORMAT=comma ann_md50[l=26:28]
 
 ! Saving a test file to make sure we're averaging over the right area
-LIST/File=md50_regrid.nc/FORMAT=cdf md50_regrid[l=313:324@ave]
+LIST/CLOBBER/File=md50_regrid.nc/FORMAT=cdf md50_regrid[l=325:336@ave]

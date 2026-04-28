@@ -17,6 +17,8 @@ library(here)
 library(stringr)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
+library(elementalist)
+library(patchwork)
 ```
 
 ```{r}
@@ -121,47 +123,97 @@ Bigeye_Forecast <- rename(Bigeye_Forecast, WPUEforecast = ...3)
 waves <- nmfs_palette("waves")(4) # 3 = CPUE
 urchin <- nmfs_palette("urchin")(5) # 4 = WPUE
 
-pdf(paste(Dir, '/Bigeye_Forecast_CPUE_', RptYr, '.pdf', sep = ""),
-    width = 5.5, height = 3.5)
-plot(Bigeye_Forecast$Years, Bigeye_Forecast$CPUEforecast, type = "l", lty = 3, col = waves[3],
-     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "Year", ylab = "Bigeye Tuna CPUE (# fish/1000 hooks)",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Fishery_data$LANDYR[bigeye_years], CPUE_model_data$CPUE, type = "l", lwd = 2, col = waves[3],
-     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Bigeye_Forecast$Years, CPUE_forecast[,2], type = "l", lwd = 0.5, col = waves[3],
-     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Bigeye_Forecast$Years, CPUE_forecast[,3], type = "l", lwd = 0.5, col = waves[3],
-     xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = seq(2002, RptYr + 4, 1))
-axis((2), at = seq(2, 5, 0.5))
-dev.off()
+# Give all the datasets years
+CPUE_forecast_df <- as.data.frame(CPUE_forecast)
+CPUE_forecast_df$Year <- Bigeye_Forecast$Years
+CPUE_model_data$Year <- Fishery_data$LANDYR[bigeye_years]
+WPUE_model_data$Year <- Fishery_data$LANDYR[bigeye_years]
+WPUE_forecast_df <- as.data.frame(WPUE_forecast)
+WPUE_forecast_df$Year <- Bigeye_Forecast$Years
 
-pdf(paste(Dir, '/Bigeye_Forecast_WPUE_', RptYr, '.pdf', sep = ""),
-    width = 5.5, height = 3.5)
-plot(Bigeye_Forecast$Years, Bigeye_Forecast$WPUEforecast, type = "l", lty = 3, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "Year", ylab = "Bigeye Tuna WPUE (kg fish/1000 hooks)",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Fishery_data$LANDYR[bigeye_years], WPUE_model_data$WPUE, type = "l", lwd = 2, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Bigeye_Forecast$Years, WPUE_forecast[,2], type = "l", lwd = 0.5, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-par(new = TRUE)
-plot(Bigeye_Forecast$Years, WPUE_forecast[,3], type = "l", lwd = 0.5, col = urchin[4],
-     xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = seq(2002, RptYr + 4, 1))
-axis((2), at = c(seq(70, 170, 20), 175))
-dev.off()
+plotTheme <- theme_bw() +
+  theme(panel.border = element_rect(color='black'),
+        panel.grid = element_blank(),
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        axis.title = element_text(size=14, face="bold"), 
+        axis.text = element_text(size=12),
+        legend.position = 'bottom', 
+        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
+        legend.text = element_text(size=12, margin = margin(l = 10, r=10, unit = "pt")),
+        legend.key.spacing.y = unit(-0.1,'cm'), 
+        legend.key.spacing.x = unit(1.5,'cm'), 
+        legend.spacing.x = unit(-0.4, 'cm'),
+        plot.margin = margin(r=0.5, t=0.5, unit='cm'))
+
+# plot
+pCPUE <- ggplot() + 
+  geom_ribbon(data=CPUE_forecast_df, aes(x=Year, ymin = lwr, ymax = upr), fill=waves[3], alpha=0.1) +
+  geom_path(data=Bigeye_Forecast, aes(Years, CPUEforecast), color=waves[3], linetype = 'dotted') +
+  geom_path(data=CPUE_model_data, aes(Year, CPUE), color=waves[3], linewidth = 1) +
+  xlab('') + ylab('Bigeye Tuna CPUE \n(# fish/1000 hooks)') +
+  scale_x_continuous(expand=F, breaks = 2002:(RptYr+4),
+                     labels = function(x) { ifelse(x %in% c(2002, RptYr+4) | x %% 5 == 0, x, "")}) +
+  scale_y_continuous(expand=F, breaks = seq(2,5, 0.5), limits = c(1.95,5)) +
+  plotTheme
+
+pWPUE <- ggplot() + 
+    geom_ribbon(data=WPUE_forecast_df, aes(x=Year, ymin = lwr, ymax = upr, fill='95% Confidence Interval'), alpha=0.1) +
+    geom_path(data=Bigeye_Forecast, aes(Years, WPUEforecast, color='Forecast'), linetype = 'dotted') +
+    geom_path(data=WPUE_model_data, aes(Year, WPUE, color='Observations'), linewidth = 1) +
+    xlab('Year') + ylab("Bigeye Tuna WPUE \n(kg fish/1000 hooks)") +
+    scale_x_continuous(expand=F, breaks = 2002:(RptYr+4), 
+                       labels = function(x) { ifelse(x %in% c(2002, RptYr+4) | x %% 5 == 0, x, "")}) +
+    scale_y_continuous(expand=F, breaks = c(seq(70, 170, 20), 175), limits = c(70, 175)) +
+    scale_color_manual(values=c(urchin[4], urchin[4]), name='') + 
+    scale_fill_manual(values=c(urchin[4], urchin[4]), name='') +
+    plotTheme + 
+    guides(color = guide_legend(override.aes = list(colour = c("black"))), 
+           fill = guide_legend(override.aes = list(fill = c("black"), alpha=0.3)))
+
+ggsave(paste0(Dir, '/Bigeye_Forecast_CPUE_WPUE_', RptYr, '.pdf'), plot=(pCPUE / pWPUE), width=7, height=7, units='in')
+# 
+# pdf(paste(Dir, '/Bigeye_Forecast_CPUE_', RptYr, '.pdf', sep = ""),
+#     width = 5.5, height = 3.5)
+# plot(Bigeye_Forecast$Years, Bigeye_Forecast$CPUEforecast, type = "l", lty = 3, col = waves[3],
+#      xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "Year", ylab = "Bigeye Tuna CPUE (# fish/1000 hooks)",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Fishery_data$LANDYR[bigeye_years], CPUE_model_data$CPUE, type = "l", lwd = 2, col = waves[3],
+#      xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Bigeye_Forecast$Years, CPUE_forecast[,2], type = "l", lwd = 0.5, col = waves[3],
+#      xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Bigeye_Forecast$Years, CPUE_forecast[,3], type = "l", lwd = 0.5, col = waves[3],
+#      xlim = c(2002, RptYr + 4), ylim = c(2, 5), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = seq(2002, RptYr + 4, 1))
+# axis((2), at = seq(2, 5, 0.5))
+# dev.off()
+# 
+# pdf(paste(Dir, '/Bigeye_Forecast_WPUE_', RptYr, '.pdf', sep = ""),
+#     width = 5.5, height = 3.5)
+# plot(Bigeye_Forecast$Years, Bigeye_Forecast$WPUEforecast, type = "l", lty = 3, col = urchin[4],
+#      xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "Year", ylab = "Bigeye Tuna WPUE (kg fish/1000 hooks)",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Fishery_data$LANDYR[bigeye_years], WPUE_model_data$WPUE, type = "l", lwd = 2, col = urchin[4],
+#      xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Bigeye_Forecast$Years, WPUE_forecast[,2], type = "l", lwd = 0.5, col = urchin[4],
+#      xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# par(new = TRUE)
+# plot(Bigeye_Forecast$Years, WPUE_forecast[,3], type = "l", lwd = 0.5, col = urchin[4],
+#      xlim = c(2002, RptYr + 4), ylim = c(70, 175), xlab = "", ylab = "",
+#      xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
+# axis((1), at = seq(2002, RptYr + 4, 1))
+# axis((2), at = c(seq(70, 170, 20), 175))
+# dev.off()
 ```
 
 ```{r}
@@ -179,11 +231,11 @@ Bigeye_Forecast$`kg per 1000 hooks (bigeye)` <- format(round(Bigeye_Forecast$`kg
 write_csv(Bigeye_Forecast, file = paste(here(), '/PelagicClimate_', RptYr, '/BigeyeForecast_', RptYr, '.csv', sep = ""))
 ```
 
-**Rationale:** Rationale: Recent work has shown that average phytoplankton size can be used to predict bigeye tuna catch rates up to four years in advance (Woodworth-Jefcoats and Wren 2020). The hypothesized mechanism behind this relationship is that larger phytoplankton are indicative of higher quality food for the zooplankton upon which larval and juvenile bigeye tuna prey. With higher quality prey available, more bigeye tuna survive into adulthood and recruit to the fishery.   
+**Rationale:** Recent work has shown that average phytoplankton size can be used to predict bigeye tuna catch rates up to four years in advance (Woodworth-Jefcoats and Wren 2020). The hypothesized mechanism behind this relationship is that larger phytoplankton are indicative of higher quality food for the zooplankton upon which larval and juvenile bigeye tuna prey. With higher quality prey available, more bigeye tuna survive into adulthood and recruit to the fishery.   
 \
 **Status:** The catch rate forecasts suggest that catch rates will be fairly steady over the next four years.  
 \
-**Description:** Time series of observed bigeye tuna CPUE and WPUE are presented together with the annual forecast values and their associated 95% confidence interval.  The forecast is based on a linear regression between four-year-lagged median phytoplankton size and both CPUE and WPUE (individual).  
+**Description:** Time series of observed bigeye tuna catch per unit effort (CPUE) and weight per unit effort (WPUE) are presented together with the annual forecast values and their associated 95% confidence interval. The forecast is based on a linear regression between four-year-lagged median phytoplankton size and both CPUE and WPUE (individual).  
 \
 **Timeframe:** Annual  
 \
@@ -194,6 +246,6 @@ write_csv(Bigeye_Forecast, file = paste(here(), '/PelagicClimate_', RptYr, '/Big
 **Sourced from:** HDAR, Langley et al. (2006), NOAA OceanWatch (2025c), and Woodworth-Jefcoats and Wren (2020). Graphics produced in part using Stawitz and Li (2025).  
 \
 ## Additional Information  
-Median phytoplankton size data are geographically subset and spatially averaged using the pyFerret script `BigeyeForecast_access.jnl` which can be found in the Bigeye_Forecast folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  Time series of bigeye tuna CPUE and WPUE and created using `SAFE_LogDeal_DataDownload.Rmd` in the Fisheries_Indicators folder.  Note that actually running this script requires access to a controlled database.
+Median phytoplankton size data are geographically subset and spatially averaged using the pyFerret script `BigeyeForecast_access.jnl` which can be found in the Bigeye_Forecast folder.  You could do this step in R, but I use [PyFerret](https://ferret.pmel.noaa.gov/Ferret/) because it's freely available software developed by NOAA specifically for working with large gridded datasets.  Time series of bigeye tuna CPUE and WPUE was created using `14-Bigeye_Recruitment_Index.Rmd` which requires `SAFE_LogDeal_DataDownload.Rmd` for the data download, both in the Fisheries_Indicators folder.  Note that actually running this script requires access to a controlled database.
 \
 A plot of the residuals from the linear models showed that they were evenly distributed, although the WPUE residualswere more negative (~-20 min) than positive (~30 max). Both models' residuals exhibited periodicity found in the data.

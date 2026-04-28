@@ -235,7 +235,7 @@ p <- ggplot() +
   scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = F) +
   scale_y_continuous(expand = F, limits = ts_y_lim, breaks=(seq(min(ts_y_lim),max(ts_y_lim),by=0.1))) +
   scale_color_manual(name=NULL, values=pal[c(1,3,5,2,4)]) +
-  ylab('Sea Surface Temperature (°C)') +
+  ylab('200-300 m Temperature (°C)') +
   xlab('Year') +
   guides(color = guide_legend(ncol = 2)) +
   plotTheme

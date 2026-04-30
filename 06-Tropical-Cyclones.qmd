@@ -18,6 +18,8 @@ library(stringr)
 # remotes::install_github("nmfs-fish-tools/nmfspalette")
 library(nmfspalette)
 library(sf)
+library(broom)
+library(english)
 ```
 
 ```{r}
@@ -57,7 +59,7 @@ ibtracs_6hrly <- ibtracs_full %>%
 #                    hour(ibtracs_full$DATE_TIME) == 18)
 # ibtracs_6hrly_all <- ibtracs_full[hly_idx,]
 # 
-# # We only want tropical cyclones (tropical depressions - cat 5)
+# We only want tropical cyclones (tropical depressions - cat 5)
 # tc_idx <- which(ibtracs_6hrly_all$USA_SSHS >= -1)
 # ibtracs_6hrly <- ibtracs_6hrly_all[tc_idx,]
 ```
@@ -76,19 +78,27 @@ ibtracs_6hrly <- bind_cols(ibtracs_6hrly, STORM_BIN = STORM_BIN)
 
 ```{r}
 #| include: false
-### Subset by basin and subbasin
+# Subset by basin and subbasin
 EP_idx = which(ibtracs_6hrly$BASIN == 'EP' & ibtracs_6hrly$SUBBASIN != 'CP')
 CP_idx = which(ibtracs_6hrly$BASIN == 'EP' & ibtracs_6hrly$SUBBASIN == 'CP')
 WP_idx = which(ibtracs_6hrly$BASIN == 'WP')
 SP_idx = which(ibtracs_6hrly$BASIN == 'SP')
-
-EP_tracs <- ibtracs_6hrly[EP_idx,]
-CP_tracs <- ibtracs_6hrly[CP_idx,]
-WP_tracs <- ibtracs_6hrly[WP_idx,]
-SP_tracs <- ibtracs_6hrly[SP_idx,]
-
-# Clean up
-rm(EP_idx, CP_idx, WP_idx, SP_idx)
+# 
+# EP_tracs <- ibtracs_6hrly[EP_idx,]
+# CP_tracs <- ibtracs_6hrly[CP_idx,]
+# WP_tracs <- ibtracs_6hrly[WP_idx,]
+# SP_tracs <- ibtracs_6hrly[SP_idx,]
+# 
+# Johanna addition to help the next section
+ibtracs_6hrly$BASIN_tracs <- NA
+ibtracs_6hrly$BASIN_tracs[EP_idx] <- 'EP'
+ibtracs_6hrly$BASIN_tracs[CP_idx] <- 'CP'
+ibtracs_6hrly$BASIN_tracs[WP_idx] <- 'WP'
+ibtracs_6hrly$BASIN_tracs[SP_idx] <- 'SP'
+ibtracs_6hrly_basin <- ibtracs_6hrly[!is.na(ibtracs_6hrly$BASIN_tracs),]
+# 
+# # Clean up
+# rm(EP_idx, CP_idx, WP_idx, SP_idx)
 ```
 
 ```{r}
@@ -98,180 +108,223 @@ rm(EP_idx, CP_idx, WP_idx, SP_idx)
 # -Sum the number of each
 # -Determine the accumulated cyclone energy (ACE) for that basin and year
 # There's probably a way to do this with dpylr commands, but I'm getting stuck.  Suggestions welcome.
-count_colnames <- c('Year', 'NumberNamed', 'NumberCyclones', 'NumberMajor', 'ACE')
 
-EP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
-CP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
-WP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
-SP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
+# Johanna's attempt at coding
+All_counts_temp <- ibtracs_6hrly_basin %>% 
+  filter(SEASON_Year <= RptYr) %>% 
+  group_by(BASIN_tracs, SEASON_Year, NUMBER, STORM_BIN) %>% 
+  summarise(Present = if_else(n() > 0, 1, 0)) %>%  # tally up if an individual storm has a category or not
+  group_by(BASIN_tracs, SEASON_Year, STORM_BIN) %>% summarise(n=n()) %>%  # tally up the number of unique storms in each category
+  filter(STORM_BIN != 1) %>%  # remove storm bin 1 because Phoebe doesn't keep track of that one
+  pivot_wider(names_from = STORM_BIN, values_from = n) %>% # make it wide to match Phoebe's table
+  rename(NumberNamed=`2`, NumberCyclones = `3`, NumberMajor = `4`)
+
+All_counts <- ibtracs_6hrly_basin %>% 
+  filter(SEASON_Year <= RptYr) %>% 
+  group_by(BASIN_tracs, SEASON_Year) %>% 
+  summarise(ACE = sum(USA_WIND_kts^2, na.rm=T)) %>% 
+  left_join(All_counts_temp) %>% 
+  rename(Year = SEASON_Year, Basin = BASIN_tracs) %>% 
+  select(c(1,2,4:6,3))
+All_counts[is.na(All_counts)] <- 0
 
 
-for (y in seq(1980, RptYr, 1)) {
-  # Subset year
-  EP_idx <- which(EP_tracs$SEASON_Year == y)
-  EP_hold <- EP_tracs[EP_idx,]
-  
-  # Add it to the table
-  EP_counts$Year[y - 1979] <- y
-  
-  # Identify unique storm events
-  EP_ann_num = unique(EP_hold$NUMBER)
-  if (length(EP_ann_num) > 0) {
-    # Step through each storm
-    for (t in seq(1, length(EP_ann_num), 1)) {
-      ann_storm_idx = which(EP_hold$NUMBER == EP_ann_num[t])
-      ann_storm = EP_hold[ann_storm_idx,]
-      ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
-      ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
-      ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
-      if (length(ann_ns) > 0) {
-        EP_counts$NumberNamed[y - 1979] <- EP_counts$NumberNamed[y - 1979] + 1
-      }
-      if (length(ann_htc) > 0) {
-        EP_counts$NumberCyclones[y - 1979] <- EP_counts$NumberCyclones[y - 1979] + 1
-      }
-      if (length(ann_maj) > 0) {
-        EP_counts$NumberMajor[y - 1979] <- EP_counts$NumberMajor[y - 1979] + 1
-      }
-    }
-  }
-  
-  CP_idx <- which(CP_tracs$SEASON_Year == y)
-  CP_hold <- CP_tracs[CP_idx,]
-  
-  # Add it to the table
-  CP_counts$Year[y - 1979] <- y
-  
-  # Identify unique storm events
-  CP_ann_num = unique(CP_hold$NUMBER)
-  if (length(CP_ann_num) > 0) {
-    # Step through each storm
-    for (t in seq(1, length(CP_ann_num), 1)) {
-      ann_storm_idx = which(CP_hold$NUMBER == CP_ann_num[t])
-      ann_storm = CP_hold[ann_storm_idx,]
-      ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
-      ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
-      ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
-      if (length(ann_ns) > 0) {
-        CP_counts$NumberNamed[y - 1979] <- CP_counts$NumberNamed[y - 1979] + 1
-      }
-      if (length(ann_htc) > 0) {
-        CP_counts$NumberCyclones[y - 1979] <- CP_counts$NumberCyclones[y - 1979] + 1
-      }
-      if (length(ann_maj) > 0) {
-        CP_counts$NumberMajor[y - 1979] <- CP_counts$NumberMajor[y - 1979] + 1
-      }
-    }
-  }
-  
-  WP_idx <- which(WP_tracs$SEASON_Year == y)
-  WP_hold <- WP_tracs[WP_idx,]
-  
-  # Add it to the table
-  WP_counts$Year[y - 1979] <- y
-  
-  # Identify unique storm events
-  WP_ann_num = unique(WP_hold$NUMBER)
-  if (length(WP_ann_num) > 0) {
-    # Step through each storm
-    for (t in seq(1, length(WP_ann_num), 1)) {
-      ann_storm_idx = which(WP_hold$NUMBER == WP_ann_num[t])
-      ann_storm = WP_hold[ann_storm_idx,]
-      ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
-      ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
-      ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
-      if (length(ann_ns) > 0) {
-        WP_counts$NumberNamed[y - 1979] <- WP_counts$NumberNamed[y - 1979] + 1
-      }
-      if (length(ann_htc) > 0) {
-        WP_counts$NumberCyclones[y - 1979] <- WP_counts$NumberCyclones[y - 1979] + 1
-      }
-      if (length(ann_maj) > 0) {
-        WP_counts$NumberMajor[y - 1979] <- WP_counts$NumberMajor[y - 1979] + 1
-      }
-    }
-  }
-  
-  SP_idx <- which(SP_tracs$SEASON_Year == y)
-  SP_hold <- SP_tracs[SP_idx,]
-  
-  # Add it to the table
-  SP_counts$Year[y - 1979] <- y
-  
-  # Identify unique storm events
-  SP_ann_num = unique(SP_hold$NUMBER)
-  if (length(SP_ann_num) > 0) {
-    # Step through each storm
-    for (t in seq(1, length(SP_ann_num), 1)) {
-      ann_storm_idx = which(SP_hold$NUMBER == SP_ann_num[t])
-      ann_storm = SP_hold[ann_storm_idx,]
-      ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
-      ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
-      ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
-      if (length(ann_ns) > 0) {
-        SP_counts$NumberNamed[y - 1979] <- SP_counts$NumberNamed[y - 1979] + 1
-      }
-      if (length(ann_htc) > 0) {
-        SP_counts$NumberCyclones[y - 1979] <- SP_counts$NumberCyclones[y - 1979] + 1
-      }
-      if (length(ann_maj) > 0) {
-        SP_counts$NumberMajor[y - 1979] <- SP_counts$NumberMajor[y - 1979] + 1
-      }
-    }
-  }
-  
- # ACE
- EP_counts$ACE[y - 1979] <- sum(EP_hold$USA_WIND_kts^2, na.rm = TRUE)
- CP_counts$ACE[y - 1979] <- sum(CP_hold$USA_WIND_kts^2, na.rm = TRUE)
- WP_counts$ACE[y - 1979] <- sum(WP_hold$USA_WIND_kts^2, na.rm = TRUE)
- SP_counts$ACE[y - 1979] <- sum(SP_hold$USA_WIND_kts^2, na.rm = TRUE)
- 
- # Clean up
- rm(EP_idx, EP_hold, CP_hold, CP_idx, WP_hold, WP_idx, SP_hold, SP_idx)
-}
+# # Phoebe's code
+# count_colnames <- c('Year', 'NumberNamed', 'NumberCyclones', 'NumberMajor', 'ACE')
+# 
+# EP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
+# CP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
+# WP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
+# SP_counts <- as_tibble(matrix(0, nrow = RptYr - 1980 + 1, ncol = 5), .name_repair = ~ count_colnames)
+# 
+# 
+# for (y in seq(1980, RptYr, 1)) {
+#   # Subset year
+#   EP_idx <- which(EP_tracs$SEASON_Year == y)
+#   EP_hold <- EP_tracs[EP_idx,]
+#   
+#   # Add it to the table
+#   EP_counts$Year[y - 1979] <- y
+#   
+#   # Identify unique storm events
+#   EP_ann_num = unique(EP_hold$NUMBER)
+#   if (length(EP_ann_num) > 0) {
+#     # Step through each storm
+#     for (t in seq(1, length(EP_ann_num), 1)) {
+#       ann_storm_idx = which(EP_hold$NUMBER == EP_ann_num[t])
+#       ann_storm = EP_hold[ann_storm_idx,]
+#       ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
+#       ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
+#       ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
+#       if (length(ann_ns) > 0) {
+#         EP_counts$NumberNamed[y - 1979] <- EP_counts$NumberNamed[y - 1979] + 1
+#       }
+#       if (length(ann_htc) > 0) {
+#         EP_counts$NumberCyclones[y - 1979] <- EP_counts$NumberCyclones[y - 1979] + 1
+#       }
+#       if (length(ann_maj) > 0) {
+#         EP_counts$NumberMajor[y - 1979] <- EP_counts$NumberMajor[y - 1979] + 1
+#       }
+#     }
+#   }
+#   
+#   CP_idx <- which(CP_tracs$SEASON_Year == y)
+#   CP_hold <- CP_tracs[CP_idx,]
+#   
+#   # Add it to the table
+#   CP_counts$Year[y - 1979] <- y
+#   
+#   # Identify unique storm events
+#   CP_ann_num = unique(CP_hold$NUMBER)
+#   if (length(CP_ann_num) > 0) {
+#     # Step through each storm
+#     for (t in seq(1, length(CP_ann_num), 1)) {
+#       ann_storm_idx = which(CP_hold$NUMBER == CP_ann_num[t])
+#       ann_storm = CP_hold[ann_storm_idx,]
+#       ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
+#       ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
+#       ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
+#       if (length(ann_ns) > 0) {
+#         CP_counts$NumberNamed[y - 1979] <- CP_counts$NumberNamed[y - 1979] + 1
+#       }
+#       if (length(ann_htc) > 0) {
+#         CP_counts$NumberCyclones[y - 1979] <- CP_counts$NumberCyclones[y - 1979] + 1
+#       }
+#       if (length(ann_maj) > 0) {
+#         CP_counts$NumberMajor[y - 1979] <- CP_counts$NumberMajor[y - 1979] + 1
+#       }
+#     }
+#   }
+#   
+#   WP_idx <- which(WP_tracs$SEASON_Year == y)
+#   WP_hold <- WP_tracs[WP_idx,]
+#   
+#   # Add it to the table
+#   WP_counts$Year[y - 1979] <- y
+#   
+#   # Identify unique storm events
+#   WP_ann_num = unique(WP_hold$NUMBER)
+#   if (length(WP_ann_num) > 0) {
+#     # Step through each storm
+#     for (t in seq(1, length(WP_ann_num), 1)) {
+#       ann_storm_idx = which(WP_hold$NUMBER == WP_ann_num[t])
+#       ann_storm = WP_hold[ann_storm_idx,]
+#       ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
+#       ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
+#       ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
+#       if (length(ann_ns) > 0) {
+#         WP_counts$NumberNamed[y - 1979] <- WP_counts$NumberNamed[y - 1979] + 1
+#       }
+#       if (length(ann_htc) > 0) {
+#         WP_counts$NumberCyclones[y - 1979] <- WP_counts$NumberCyclones[y - 1979] + 1
+#       }
+#       if (length(ann_maj) > 0) {
+#         WP_counts$NumberMajor[y - 1979] <- WP_counts$NumberMajor[y - 1979] + 1
+#       }
+#     }
+#   }
+#   
+#   SP_idx <- which(SP_tracs$SEASON_Year == y)
+#   SP_hold <- SP_tracs[SP_idx,]
+#   
+#   # Add it to the table
+#   SP_counts$Year[y - 1979] <- y
+#   
+#   # Identify unique storm events
+#   SP_ann_num = unique(SP_hold$NUMBER)
+#   if (length(SP_ann_num) > 0) {
+#     # Step through each storm
+#     for (t in seq(1, length(SP_ann_num), 1)) {
+#       ann_storm_idx = which(SP_hold$NUMBER == SP_ann_num[t])
+#       ann_storm = SP_hold[ann_storm_idx,]
+#       ann_ns = which(ann_storm$STORM_BIN == 2) # Named storms
+#       ann_htc = which(ann_storm$STORM_BIN == 3) # Hurricane/typhoon/cyclone
+#       ann_maj = which(ann_storm$STORM_BIN == 4) # Major storm
+#       if (length(ann_ns) > 0) {
+#         SP_counts$NumberNamed[y - 1979] <- SP_counts$NumberNamed[y - 1979] + 1
+#       }
+#       if (length(ann_htc) > 0) {
+#         SP_counts$NumberCyclones[y - 1979] <- SP_counts$NumberCyclones[y - 1979] + 1
+#       }
+#       if (length(ann_maj) > 0) {
+#         SP_counts$NumberMajor[y - 1979] <- SP_counts$NumberMajor[y - 1979] + 1
+#       }
+#     }
+#   }
+#   
+#  # ACE
+#  EP_counts$ACE[y - 1979] <- sum(EP_hold$USA_WIND_kts^2, na.rm = TRUE)
+#  CP_counts$ACE[y - 1979] <- sum(CP_hold$USA_WIND_kts^2, na.rm = TRUE)
+#  WP_counts$ACE[y - 1979] <- sum(WP_hold$USA_WIND_kts^2, na.rm = TRUE)
+#  SP_counts$ACE[y - 1979] <- sum(SP_hold$USA_WIND_kts^2, na.rm = TRUE)
+#  
+#  # Clean up
+#  rm(EP_idx, EP_hold, CP_hold, CP_idx, WP_hold, WP_idx, SP_hold, SP_idx)
+# }
 ```
 
 ```{r}
 #| include: false
 # We also need to average these over the 1991 - 2020 period
-avg_idx <- which(EP_counts$Year >= 1991 & EP_counts$Year <= 2020)
-
-EP_avg <- colMeans(EP_counts[avg_idx,], na.rm = TRUE)
-CP_avg <- colMeans(CP_counts[avg_idx,], na.rm = TRUE)
-WP_avg <- colMeans(WP_counts[avg_idx,], na.rm = TRUE)
-SP_avg <- colMeans(SP_counts[avg_idx,], na.rm = TRUE)
-
-# Clean up
-rm(avg_idx)
+All_avg <- All_counts %>% 
+  filter(Year >= 1991 & Year <= 2020) %>% 
+  group_by(Basin) %>% 
+  summarise_all(mean, na.rm=T) %>% 
+  select(!Year)
+  
+# avg_idx <- which(EP_counts$Year >= 1991 & EP_counts$Year <= 2020)
+# 
+# EP_avg <- colMeans(EP_counts[avg_idx,], na.rm = TRUE)
+# CP_avg <- colMeans(CP_counts[avg_idx,], na.rm = TRUE)
+# WP_avg <- colMeans(WP_counts[avg_idx,], na.rm = TRUE)
+# SP_avg <- colMeans(SP_counts[avg_idx,], na.rm = TRUE)
+# 
+# # Clean up
+# rm(avg_idx)
 ```
 
 ```{r}
 #| include: false
 # And, now, a bunch of linear models to look for trends in storm counts or ACE
 # only p-values < 0.05 are noted
-EP_ns_lm <- lm(EP_counts$NumberNamed ~ EP_counts$Year)  
-EP_htc_lm <- lm(EP_counts$NumberCyclones ~ EP_counts$Year)  
-EP_maj_lm <- lm(EP_counts$NumberMajor ~ EP_counts$Year)  
-EP_tot_lm <- lm(rowSums(EP_counts[,2:4]) ~ EP_counts$Year)  
-EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  
+# Named storms
+All_lm <- All_counts %>%
+  mutate(Total = rowSums(across(NumberNamed:NumberMajor), na.rm = TRUE)) %>% 
+  pivot_longer(cols = NumberNamed:Total, ) %>%
+  group_by(Basin, name) %>% 
+  nest() %>% 
+  mutate(model = map(data, ~lm(value ~ Year, data = .x)), 
+         results = map(model, tidy)) %>% 
+  unnest(results)
+  
+All_lm %>% 
+  filter(term == 'Year', p.value < 0.05) #%>% 
+  #select(Basin, name) %>% ungroup()
 
-CP_ns_lm <- lm(CP_counts$NumberNamed ~ CP_counts$Year)  
-CP_htc_lm <- lm(CP_counts$NumberCyclones ~ CP_counts$Year)  
-CP_maj_lm <- lm(CP_counts$NumberMajor ~ CP_counts$Year)  
-CP_tot_lm <- lm(rowSums(CP_counts[,2:4]) ~ CP_counts$Year)  
-CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  
 
-WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.03278
-WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.00723
-WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  
-WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.03512
-WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  
-
-SP_ns_lm <- lm(SP_counts$NumberNamed ~ SP_counts$Year)   
-SP_htc_lm <- lm(SP_counts$NumberCyclones ~ SP_counts$Year)  
-SP_maj_lm <- lm(SP_counts$NumberMajor ~ SP_counts$Year)  
-SP_tot_lm <- lm(rowSums(SP_counts[,2:4]) ~ SP_counts$Year)  
-SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  
+# EP_ns_lm <- lm(EP_counts$NumberNamed ~ EP_counts$Year)  
+# EP_htc_lm <- lm(EP_counts$NumberCyclones ~ EP_counts$Year)  
+# EP_maj_lm <- lm(EP_counts$NumberMajor ~ EP_counts$Year)  
+# EP_tot_lm <- lm(rowSums(EP_counts[,2:4]) ~ EP_counts$Year)  
+# EP_ace_lm <- lm(EP_counts$ACE ~ EP_counts$Year)  
+# 
+# CP_ns_lm <- lm(CP_counts$NumberNamed ~ CP_counts$Year)  
+# CP_htc_lm <- lm(CP_counts$NumberCyclones ~ CP_counts$Year)  
+# CP_maj_lm <- lm(CP_counts$NumberMajor ~ CP_counts$Year)  
+# CP_tot_lm <- lm(rowSums(CP_counts[,2:4]) ~ CP_counts$Year)  
+# CP_ace_lm <- lm(CP_counts$ACE ~ CP_counts$Year)  
+# 
+# WP_ns_lm <- lm(WP_counts$NumberNamed ~ WP_counts$Year)  # p-value: 0.03278
+# WP_htc_lm <- lm(WP_counts$NumberCyclones ~ WP_counts$Year)  # p-value: 0.00723
+# WP_maj_lm <- lm(WP_counts$NumberMajor ~ WP_counts$Year)  
+# WP_tot_lm <- lm(rowSums(WP_counts[,2:4]) ~ WP_counts$Year)  # p-value: 0.03512
+# WP_ace_lm <- lm(WP_counts$ACE ~ WP_counts$Year)  
+# 
+# SP_ns_lm <- lm(SP_counts$NumberNamed ~ SP_counts$Year)   
+# SP_htc_lm <- lm(SP_counts$NumberCyclones ~ SP_counts$Year)  
+# SP_maj_lm <- lm(SP_counts$NumberMajor ~ SP_counts$Year)  
+# SP_tot_lm <- lm(rowSums(SP_counts[,2:4]) ~ SP_counts$Year)  
+# SP_ace_lm <- lm(SP_counts$ACE ~ SP_counts$Year)  
 ```
 
 ```{r}
@@ -312,139 +365,164 @@ map_pal <- scale_color_manual(values = c('-1' = TD_col,
                               name=NULL)
 
 # Basin Map
-# Identify storms present during report year
-EP_idx = which(EP_tracs$SEASON_Year == RptYr)
-EP_pres = EP_tracs[EP_idx,]
-CP_idx = which(CP_tracs$SEASON_Year == RptYr)
-CP_pres = CP_tracs[CP_idx,]
-WP_idx = which(WP_tracs$SEASON_Year == RptYr)
-WP_pres = WP_tracs[WP_idx,]
-SP_idx = which(SP_tracs$SEASON_Year == RptYr)
-SP_pres = SP_tracs[SP_idx,]
+# # Identify storms present during report year
+# EP_idx = which(EP_tracs$SEASON_Year == RptYr)
+# EP_pres = EP_tracs[EP_idx,]
+# CP_idx = which(CP_tracs$SEASON_Year == RptYr)
+# CP_pres = CP_tracs[CP_idx,]
+# WP_idx = which(WP_tracs$SEASON_Year == RptYr)
+# WP_pres = WP_tracs[WP_idx,]
+# SP_idx = which(SP_tracs$SEASON_Year == RptYr)
+# SP_pres = SP_tracs[SP_idx,]
+# 
+# # Number of storms in each basin in the year interest
+# EP_num = unique(EP_pres$NUMBER);
+# CP_num = unique(CP_pres$NUMBER);
+# WP_num = unique(WP_pres$NUMBER);
+# SP_num = unique(SP_pres$NUMBER);
 
-# Number of storms in each basin in the year interest
-EP_num = unique(EP_pres$NUMBER);
-CP_num = unique(CP_pres$NUMBER);
-WP_num = unique(WP_pres$NUMBER);
-SP_num = unique(SP_pres$NUMBER);
+#ext <- st_bbox(land_proj_tc)
+
+# p <- ggplot() +
+#         annotation_borders(database = 'world2', fill = land_col, colour = coast_col, linewidth = 0.2) + 
+#         coord_quickmap(xlim = c(90,280), ylim = c(-50, 50), expand = F)
+
+# Isolate the report year
+tracks2025 <- ibtracs_6hrly_basin %>% 
+  filter(SEASON_Year == 2024)
+# fix longs to 0-360
+tracks2025$LON_degrees_east <- ifelse(tracks2025$LON_degrees_east < 0, tracks2025$LON_degrees_east+360, tracks2025$LON_degrees_east)
+# Get rid of duplicate numbers for two basins
+tracks2025$NUMBER[which(tracks2025$NUMBER == 104 & tracks2025$BASIN == 'SP')] <- max(tracks2025$NUMBER)+10
 
 # Access map base data
 #land_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_land.RData'))
 #coast_proj_tc <- readRDS(here('Indicator_Dashboard', 'Data', 'rnatearth_tcs_coast.RData'))
 land_proj_tc <- st_as_sf(maps::map('world2', xlim=c(90,280), ylim=c(-48,48), plot = FALSE, fill = TRUE))
-
-#ext <- st_bbox(land_proj_tc)
 ext <- c(90, -48, 280, 48)
 
 p <- ggplot() +
         geom_sf(data = land_proj_tc, fill = land_col, color = coast_col, linewidth = 0.2) +
-        #geom_sf(data = coast_proj_tc, color = coast_col, linewidth = 0.5) +
-        coord_sf(xlim = c(ext[1], ext[3]), ylim = c(ext[2], ext[4]), expand = F)
-# p <- ggplot() +
-#         annotation_borders(database = 'world2', fill = land_col, colour = coast_col, linewidth = 0.2) + 
-#         coord_quickmap(xlim = c(90,280), ylim = c(-50, 50), expand = F)
+        coord_sf(xlim = c(ext[1], ext[3]), ylim = c(ext[2], ext[4]), expand = F) +
+        geom_path(data=tracks2025, aes(LON_degrees_east, LAT_degrees_north, group = NUMBER, colour = as.character(USA_SSHS))) + 
+        map_pal +
+        theme(panel.background = element_rect(fill = ocean_col),
+              panel.grid.major = element_line(linewidth=0.1, colour = '#d2e0f2'),
+              panel.grid.minor = element_blank(),
+              axis.text = element_text(size=12),
+              legend.position = 'inside',
+              legend.justification.inside = c(1, 0),
+              legend.background = element_rect(fill = 'gray90', color='transparent'),
+              legend.text = element_text(size=12),
+              legend.key = element_blank(),
+              legend.key.spacing.y = unit(-0.13,'cm')) +
+        scale_x_continuous(breaks=c(120, 180, 240)) +
+        scale_y_continuous(breaks=seq(-40,40,by=20)) +
+        xlab(NULL) + ylab(NULL)
+  
+#ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=7.8, height=4, units='in')
         
-for (sE in seq(1, length(EP_num), 1)) {
-  storm_idx <- which(EP_pres$NUMBER == EP_num[sE])
-  storm <- EP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)]
-  xend <- storm$LON_degrees_east[2:nrow(storm)] 
-  y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
-  yend <- storm$LAT_degrees_north[2:nrow(storm)]
-  cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
-  track <- bind_cols(x, xend, y, yend, cols)
-  colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  # for (r in seq(1, nrow(track), 1)) {
-  #   if (track$x[r] < 0) {
-  #     track$x[r] <- track$x[r] + 360 #180
-  #   } else if (track$x[r] > 0) {
-  #     track$x[r] <- track$x[r] - 0 #180
-  #   }
-  #   if (track$xend[r] < 0) {
-  #     track$xend[r] <- track$xend[r] + 360 #180
-  #   } else if (track$x[r] > 0) {
-  #     track$xend[r] <- track$xend[r] - 0 #180
-  #   }
-  # }
-  track <- track %>% 
-    mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
-  p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
-      map_pal
-}
-
-for (sC in seq(1, length(CP_num), 1)) {
-  storm_idx <- which(CP_pres$NUMBER == CP_num[sC])
-  storm <- CP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)]
-  xend <- storm$LON_degrees_east[2:nrow(storm)]
-  y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
-  yend <- storm$LAT_degrees_north[2:nrow(storm)]
-  cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
-  track <- bind_cols(x, xend, y, yend, cols)
-  colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  # for (r in seq(1, nrow(track), 1)) {
-  #   if (track$x[r] < 0) {
-  #     track$x[r] <- track$x[r] + 360 #180
-  #   } else if (track$x[r] > 0) {
-  #     track$x[r] <- track$x[r] - 0 #180
-  #   }
-  #   if (track$xend[r] < 0) {
-  #     track$xend[r] <- track$xend[r] + 360 #180
-  #   } else if (track$x[r] > 0) {
-  #     track$xend[r] <- track$xend[r] - 0 #180
-  #   }
-  # }
-  track <- track %>% 
-    mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
-  p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
-      map_pal
-}
-
-for (sW in seq(1, length(WP_num), 1)) {
-  storm_idx <- which(WP_pres$NUMBER == WP_num[sW])
-  storm <- WP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
-  xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
-  y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
-  yend <- storm$LAT_degrees_north[2:nrow(storm)]
-  cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
-  track <- bind_cols(x, xend, y, yend, cols)
-  colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
-      map_pal
-}
-
-for (sS in seq(1, length(SP_num), 1)) {
-  storm_idx <- which(SP_pres$NUMBER == SP_num[sS])
-  storm <- SP_pres[storm_idx,]
-  x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
-  xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
-  y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
-  yend <- storm$LAT_degrees_north[2:nrow(storm)]
-  cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
-  track <- bind_cols(x, xend, y, yend, cols)
-  colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
-  p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
-      map_pal
-}
-
-p <- p +
-  theme(panel.background = element_rect(fill = ocean_col),
-        panel.grid.major = element_line(linewidth=0.1, colour = '#d2e0f2'),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size=12),
-        legend.position = 'inside',
-        legend.justification.inside = c(1, 0),
-        legend.background = element_rect(fill = 'gray90', color='transparent'),
-        legend.text = element_text(size=12),
-        legend.key = element_blank(),
-        legend.key.spacing.y = unit(-0.13,'cm')) +
-  scale_x_continuous(breaks=c(120, 180, 240)) +
-  scale_y_continuous(breaks=seq(-40,40,by=20)) +
-  xlab(NULL) + ylab(NULL)
-
-p
-ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=7.8, height=4, units='in')
+# for (sE in seq(1, length(EP_num), 1)) {
+#   storm_idx <- which(EP_pres$NUMBER == EP_num[sE])
+#   storm <- EP_pres[storm_idx,]
+#   x <- storm$LON_degrees_east[1:(nrow(storm) - 1)]
+#   xend <- storm$LON_degrees_east[2:nrow(storm)] 
+#   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
+#   yend <- storm$LAT_degrees_north[2:nrow(storm)]
+#   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
+#   track <- bind_cols(x, xend, y, yend, cols)
+#   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
+#   # for (r in seq(1, nrow(track), 1)) {
+#   #   if (track$x[r] < 0) {
+#   #     track$x[r] <- track$x[r] + 360 #180
+#   #   } else if (track$x[r] > 0) {
+#   #     track$x[r] <- track$x[r] - 0 #180
+#   #   }
+#   #   if (track$xend[r] < 0) {
+#   #     track$xend[r] <- track$xend[r] + 360 #180
+#   #   } else if (track$x[r] > 0) {
+#   #     track$xend[r] <- track$xend[r] - 0 #180
+#   #   }
+#   # }
+#   track <- track %>% 
+#     mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
+#   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
+#       map_pal
+# }
+# 
+# for (sC in seq(1, length(CP_num), 1)) {
+#   storm_idx <- which(CP_pres$NUMBER == CP_num[sC])
+#   storm <- CP_pres[storm_idx,]
+#   x <- storm$LON_degrees_east[1:(nrow(storm) - 1)]
+#   xend <- storm$LON_degrees_east[2:nrow(storm)]
+#   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
+#   yend <- storm$LAT_degrees_north[2:nrow(storm)]
+#   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
+#   track <- bind_cols(x, xend, y, yend, cols)
+#   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
+#   # for (r in seq(1, nrow(track), 1)) {
+#   #   if (track$x[r] < 0) {
+#   #     track$x[r] <- track$x[r] + 360 #180
+#   #   } else if (track$x[r] > 0) {
+#   #     track$x[r] <- track$x[r] - 0 #180
+#   #   }
+#   #   if (track$xend[r] < 0) {
+#   #     track$xend[r] <- track$xend[r] + 360 #180
+#   #   } else if (track$x[r] > 0) {
+#   #     track$xend[r] <- track$xend[r] - 0 #180
+#   #   }
+#   # }
+#   track <- track %>% 
+#     mutate(x = if_else(x < 0, x+360, x), xend=if_else(xend < 0, xend+360, xend))
+#   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
+#       map_pal
+# }
+# 
+# for (sW in seq(1, length(WP_num), 1)) {
+#   storm_idx <- which(WP_pres$NUMBER == WP_num[sW])
+#   storm <- WP_pres[storm_idx,]
+#   x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
+#   xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
+#   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
+#   yend <- storm$LAT_degrees_north[2:nrow(storm)]
+#   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
+#   track <- bind_cols(x, xend, y, yend, cols)
+#   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
+#   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
+#       map_pal
+# }
+# 
+# for (sS in seq(1, length(SP_num), 1)) {
+#   storm_idx <- which(SP_pres$NUMBER == SP_num[sS])
+#   storm <- SP_pres[storm_idx,]
+#   x <- storm$LON_degrees_east[1:(nrow(storm) - 1)] #- 180
+#   xend <- storm$LON_degrees_east[2:nrow(storm)] #- 180
+#   y <- storm$LAT_degrees_north[1:(nrow(storm) - 1)]
+#   yend <- storm$LAT_degrees_north[2:nrow(storm)]
+#   cols <- as.factor(storm$USA_SSHS[1:(nrow(storm) - 1)])
+#   track <- bind_cols(x, xend, y, yend, cols)
+#   colnames(track) <- c('x', 'xend', 'y', 'yend', 'cols')
+#   p <- p + geom_segment(data = track, aes(x = x, y = y, xend = xend, yend = yend, color = cols)) + 
+#       map_pal
+# }
+# 
+# p <- p +
+#   theme(panel.background = element_rect(fill = ocean_col),
+#         panel.grid.major = element_line(linewidth=0.1, colour = '#d2e0f2'),
+#         panel.grid.minor = element_blank(),
+#         axis.text = element_text(size=12),
+#         legend.position = 'inside',
+#         legend.justification.inside = c(1, 0),
+#         legend.background = element_rect(fill = 'gray90', color='transparent'),
+#         legend.text = element_text(size=12),
+#         legend.key = element_blank(),
+#         legend.key.spacing.y = unit(-0.13,'cm')) +
+#   scale_x_continuous(breaks=c(120, 180, 240)) +
+#   scale_y_continuous(breaks=seq(-40,40,by=20)) +
+#   xlab(NULL) + ylab(NULL)
+# 
+# p
+# ggsave(filename = paste0(Dir, '/TC_map_', RptYr, '.pdf'), plot = p, width=7.8, height=4, units='in')
 
 ```
 
@@ -455,6 +533,22 @@ NS_col <- rgb(149, 196, 223, maxColorValue = 255)
 HTC_col <- rgb(46, 126, 188, maxColorValue = 255)
 MAJ_col <- rgb(8, 48, 107, maxColorValue = 255)
 ct_pal <- rbind(NS_col, HTC_col, MAJ_col)
+
+# Make individual datasets for each basin
+EP_counts <- All_counts %>% filter(Basin == 'EP') %>% ungroup() %>% select(-Basin)
+CP_counts <- All_counts %>% filter(Basin == 'CP') %>% ungroup() %>% select(-Basin)
+if (length(which(CP_counts$Year == 2021)) != 1) { 
+  CP_counts <- CP_counts %>% 
+    add_row(Year=2021, NumberNamed=0, NumberMajor=0, NumberCyclones=0, ACE=0) %>% 
+    arrange(Year)
+  }
+WP_counts <- All_counts %>% filter(Basin == 'WP') %>% ungroup() %>% select(-Basin)
+SP_counts <- All_counts %>% filter(Basin == 'SP') %>% ungroup() %>% select(-Basin)
+# Same for the averages
+EP_avg <- All_avg %>% filter(Basin == 'EP')  
+CP_avg <- All_avg %>% filter(Basin == 'CP') 
+WP_avg <- All_avg %>% filter(Basin == 'WP') 
+SP_avg <- All_avg %>% filter(Basin == 'SP')
 
 # Storm counts
 pdf(paste(Dir, '/TC_counts_', RptYr, '.pdf', sep = ""), width = 8, height = 8)
@@ -565,39 +659,42 @@ dev.off()
 # axis((3), at = c(seq(1980, 2020, 5), RptYr), tck = 0.025, labels = FALSE)
 # axis((4), at = c(seq(0, 700, 100)), tck = 0.025, labels = FALSE)
 # dev.off()
+
 ```
 
-Rationale: The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.  
+**Rationale:** The effects of tropical cyclones are numerous and well known. At sea, storms disrupt and endanger shipping traffic as well as fishing effort and safety. The Hawaiʻi longline fishery, for example, has had serious problems with vessels dodging storms at sea, delayed departures, and inability to make it safely back to Honolulu because of bad weather. When cyclones encounter land, their intense rains and high winds can cause severe property damage, loss of life, soil erosion, and flooding. Associated storm surge, the large volume of ocean water pushed toward shore by cyclones’ strong winds, can cause severe flooding and destruction.  
 \
-Status:
-*Eastern North Pacific.* Tropical cyclone activity was below average in the Eastern Pacific in `r RptYr`.  There were `r EP_counts$NumberNamed[which(EP_counts$Year == RptYr)]` named storms, `r EP_counts$NumberCyclones[which(EP_counts$Year == RptYr)]` of which were hurricanes.  There were `r EP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` major hurricanes (category 3 or higher), all of which were below the 1991-2020 average.  Accumulated Cyclone Energy (ACE) was about 67% the 1991–2020 average in the Eastern North Pacific.  In addition to season totals, early season tropical cyclone activity and ACE were at a record low in 2024, with this being only the second year in this time series with no activity in June. 
-Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406> and <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>.  
+**Status:**
+*Eastern North Pacific.* Tropical cyclone activity was above average in the Eastern Pacific in `r RptYr`. There were `r EP_counts$NumberNamed[which(EP_counts$Year == RptYr)]` named storms, `r EP_counts$NumberCyclones[which(EP_counts$Year == RptYr)]` of which were hurricanes. There were `r as.character(as.english(EP_counts$NumberMajor[which(EP_counts$Year == RptYr)]))` major hurricanes (category 3 or higher). Accumulated Cyclone Energy (ACE) was near average at about `r round(EP_counts$ACE[which(EP_counts$Year == RptYr)]/EP_avg$ACE*100,-1)`% the 1991–2020 average in the Eastern North Pacific.  <!--In addition to season totals, early season tropical cyclone activity and ACE were at a record low in 2024, with this being only the second year in this time series with no activity in June. -->
+Portions of this summary inserted from <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202506> and <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202507>.  
 \
-*Central North Pacific.*  Early season tropical cyclone activity and ACE were at a record low in 2024 in the Central North Pacific, with this being only the second year in this time series with no activity in June. On August 19th, Hurricane Hone formed in the Central Pacific and peaked as a Category 1 hurricane with winds of 85 mph and a minimum central pressure of 988 mb. Hone brought gusty winds and flooding rains to the Island of Hawaiʻi as it passed south of the island chain.  Overall, Central Pacific tropical cyclone activity was below the 1991–2020 average in `r RptYr`. There were `r CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]` named storms. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was well below the 1991–2020 average. Portions of this summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202407>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202408>.  
+*Central North Pacific.*  <!-- Early season tropical cyclone activity and ACE were at a record low in 2024 in the Central North Pacific. with this being only the second year in this time series with no activity in June. On August 19th, Hurricane Hone formed in the Central Pacific and peaked as a Category 1 hurricane with winds of 85 mph and a minimum central pressure of 988 mb. Hone brought gusty winds and flooding rains to the Island of Hawaiʻi as it passed south of the island chain. Overall,--> Central Pacific tropical cyclone activity was slightly above the 1991–2020 average in `r RptYr`. There were `r as.character(as.english(CP_counts$NumberNamed[which(CP_counts$Year == RptYr)]))` named storms, `r as.character(as.english(CP_counts$NumberCyclones[which(CP_counts$Year == RptYr)]))` hurricanes, and `r as.character(as.english(CP_counts$NumberMajor[which(CP_counts$Year == RptYr)]))` major hurricanes. On average (1991–2020), the central Pacific sees four named storms, two hurricanes, and one major hurricane each year.  The `r RptYr` ACE index was near the 1991–2020 average. Portions of this summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202506>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202507>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202508>.  
 \
-*Western North Pacific.* Early season tropical cyclone activity and ACE were at a record low in 2024. The last four named storms of November were at one point all simultaneously active, becoming the first instance of four simultaneous named storms in the West Pacific during the month of November. Overall, due to the extremely high activity the ACE value in the West Pacific was over 200% of average for the month..  The Western Pacific saw `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` named storms in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` became major typhoons.   These counts were all close to average (1991–2020), although ACE was only about 67% the long-term average.  Since 1980, the number of named storms and typhoons has decreased slightly at a rate of about 1 storm per decade and the number of total storms has decreased at a rate of about 2 storms per decade.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202406>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202411>.  
+*Western North Pacific.* Early season tropical cyclone activity and ACE were below average in `r RptYr`. <!--The last four named storms of November were at one point all simultaneously active, becoming the first instance of four simultaneous named storms in the West Pacific during the month of November. Overall, due to the extremely high activity the ACE value in the West Pacific was over 200% of average for the month.-->  The Western Pacific saw `r WP_counts$NumberNamed[which(WP_counts$Year == RptYr)]` named storms in `r RptYr`.  Of these storms, `r WP_counts$NumberCyclones[which(WP_counts$Year == RptYr)]` were typhoons, and `r WP_counts$NumberMajor[which(EP_counts$Year == RptYr)]` became major typhoons. These counts were all close to average (1991–2020), although ACE was only about `r round(WP_counts$ACE[which(WP_counts$Year == RptYr)]/WP_avg$ACE*100,-1)`% the long-term average.  Since 1980, the number of named storms and typhoons has decreased slightly at a rate of about one storm per decade and the number of total storms has decreased at a rate of about two storms per decade.  Portions of the summary inserted from  <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202506>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202507>, <https://www.ncei.noaa.gov/access/monitoring/monthly-report/tropical-cyclones/202508>.  
 \
-*South Pacific.* South Pacific tropical cyclone activity was roughly average in `r RptYr`.  There were `r SP_counts$NumberNamed[which(SP_counts$Year == RptYr)]` named storms, `r SP_counts$NumberCyclones[which(SP_counts$Year == RptYr)]` of which became cyclones and `r SP_counts$NumberMajor[which(SP_counts$Year == RptYr)]`  major cyclones.  The `r RptYr` ACE was less than the 1991–2020 average.  
+*South Pacific.* South Pacific tropical cyclone activity was slightly below average in `r RptYr`.  There were `r SP_counts$NumberNamed[which(SP_counts$Year == RptYr)]` named storms, `r as.character(as.english(SP_counts$NumberCyclones[which(SP_counts$Year == RptYr)]))` of which became cyclones and `r as.character(as.english(SP_counts$NumberMajor[which(SP_counts$Year == RptYr)]))`  major cyclones.  The `r RptYr` ACE was `r round(SP_counts$ACE[which(SP_counts$Year == RptYr)]/SP_avg$ACE*100)`% of the 1991–2020 average.  
 \
-Description: This indicator uses historical data from the NOAA National Climate Data Center (NCDC) International Best Track Archive for Climate Stewardship to track the number of tropical cyclones in the western, central, eastern, and southern Pacific basins. This indicator also monitors the Accumulated Cyclone Energy (ACE) Index and the Power Dissipation Index which are two ways of monitoring the frequency, strength, and duration of tropical cyclones based on wind speed measurements.  
+**Description:** This indicator uses historical data from the NOAA National Climate Data Center (NCDC) International Best Track Archive for Climate Stewardship to track the number of tropical cyclones in the western, central, eastern, and southern Pacific basins. This indicator also monitors the Accumulated Cyclone Energy (ACE) Index and the Power Dissipation Index which are two ways of monitoring the frequency, strength, and duration of tropical cyclones based on wind speed measurements.
 \
 The annual frequency of storms passing through each basin is tracked and Figure 166 shows the representative breakdown of Saffir-Simpson hurricane categories.  
 \
 Every cyclone has an ACE Index value, which is a number based on the maximum wind speed measured at six-hourly intervals over the entire time that the cyclone is classified as at least a tropical storm (wind speed of at least 34 knots; 39 mph). Therefore, a storm’s ACE Index value accounts for both strength and duration. Figure 166 shows the ACE values for each hurricane/typhoon season and has a horizontal line representing the average annual ACE value.  
 \
-Timeframe: Annual.  
+*Note: Plotted on the map are only storms classified as Tropical Disturbances or stronger*
 \
-Region/Location: 
+**Timeframe:** Annual.  
+\
+**Region/Location:** 
 	Eastern North Pacific: east of 140° W, north of the equator.
 	Central North Pacific: 180° - 140° W, north of the equator.
 	Western North Pacific: west of 180°, north of the equator.
 	South Pacific: south of the equator.  
 \
-Measurement Platform: Satellite.  
+**Measurement Platform:** Satellite.  
 \
-Data available at: <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/>.  
+**Data available at:** <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/>.  
 \
-Sourced from: Knapp et al. (2010), Knapp et al. (2018), and NOAA (2025c).  
+**Sourced from:** Knapp et al. (2010), Knapp et al. (2018), and NOAA (2025c).  
 \
 ## Additional Information
 

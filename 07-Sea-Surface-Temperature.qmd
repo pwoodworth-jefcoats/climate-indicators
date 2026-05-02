@@ -250,6 +250,8 @@ p <- ggplot() +
   plotTheme
 
 ggsave(paste0(Dir, '/SST_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
+ggsave(paste0(Dir, '/SST_ts_', RptYr, '_ggolot.png'), plot=p, width=6, height=5, units='in')
+
 
 ### Anomaly plot
 # Calculate annual means
@@ -273,6 +275,7 @@ p_ann <- ggplot() +
   plotTheme
 
 ggsave(paste0(Dir, '/SST_anom_ts_', RptYr, '_ggolot.pdf'), plot=p_ann, width=6, height=5, units='in')
+ggsave(paste0(Dir, '/SST_anom_ts_', RptYr, '_ggolot.png'), plot=p_ann, width=6, height=5, units='in')
 
 
 # # Plot using base plot. Retired in 2025 
@@ -553,6 +556,8 @@ p_map <- p_map +
                                title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
 
 ggsave(filename = paste0(Dir, '/SST_map_', RptYr, '.pdf'), plot=p_map, width = 7, height = 3.8)
+ggsave(filename = paste0(Dir, '/SST_map_', RptYr, '.png'), plot=p_map, width = 7, height = 3.8)
+
 
 # pdf(paste(Dir, '/SST_map_', RptYr, '.pdf', sep = ""), width = 9, height=5)
 # print(p)

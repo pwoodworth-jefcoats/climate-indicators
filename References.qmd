@@ -279,31 +279,27 @@ Massachusetts: The MathWorks Inc. <https://www.mathworks.com>
 
 |   | CO~2~ | pH | ENSO | PDO | TCs | SST | Temp at Depth | Chl | Fronts | Phyto Size | Fish Size | WPUE | Recruitment | Forecast |
 |-----|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| tidyverse | X | X | X | X | X | X | X | X |  | X | X | X | X | X |
-| lubridate | X | X | X | X | X | X | X | X |  | X | X | X | X | X |
-| here | X | X | X | X | X | X | X | X |  | X |  |  |  | X |
-| nmfspalette | X | X | X | X | X | X | X | X |  | X |  |  |  | X |
-| stringr |  | X | X | X | X | X | X | X |  | X |  |  |  | X |
-| sf |  |  |  |  | X |  |  |  |  |  |  |  |  |  |
-| scales |  |  |  |  |  |  |  | X |  |  | X |  |  |  |
-| raster |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| rasterVis |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| mapdata |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| cmocean |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| RColorBrewer |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| latticeExtra |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| grid |  |  |  |  |  |  |  |  | X |  | X |  |  |  |
-| rerddap |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| terra |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
-| rje |  |  |  |  |  |  |  |  |  |  | X | X | X | X |
-| ROracle |  |  |  |  |  |  |  |  |  |  | X | X | X | X |
-| zoo |  |  |  |  |  |  |  |  |  |  | X | X | X | X |
-| ggplot2 |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
-| gridExtra |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
-| dplyr |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
-| png |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
-| elementalist |  |  |  |  |  |  |  |  |  |  |  |  |  | X | 
-| patchwork |  |  |  |  |  |  |  |  |  |  |  |  |  | X | 
+| tidyverse | X | X | X | X | X | X | X | X | X | X | X | X | X | X | X |
+| lubridate | X | X | X | X | X | X | X | X | X | X | X | X | X | X | X |
+| here | X | X | X | X | X | X | X | X | X | X | X | X | X | X | X |
+| nmfspalette | X | X | X | X | X | X | X | X | X | X | X |  |  |  | X |
+| stringr |  | X | X | X | X | X | X | X | X |  | X |  |  |  | X |
+| sf |  |  |  |  |  | X |  |  |  |  |  |  |  |  |  |
+| scales |  |  |  |  |  |  |  |  | X | X |  | X |  |  |  |
+| grid | X | X |  |  |  |  | X | X | X |  | X | X |  |  |  |
+| terra |  |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
+| rje |  |  |  |  |  |  |  |  |  |  |  |  | X | X |  | 
+| zoo |  |  |  |  |  |  |  |  |  |  |  |  | X | X |  |
+| gridExtra |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
+| png |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
+| elementalist | X | X |  |  | X |  | X | X | X | X | X |  |  |  | X | 
+| patchwork |  |  |  |  |  |  |  |  |  |  |  |  |  |  | X | 
+| broom |  |  |  |  |  | X |  |  |  |  |  |  |  |  |  |
+| english |  |  |  |  |  | X |  |  |  |  |  |  |  |  |  |
+| tidyr |  |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
+| tidyterra |  |  |  |  |  |  |  |  |  | X |  |  |  |  |  |
+| purrr |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
+| ggridges |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  |
 
 : The following R packages are used to calculate the oceanic and climate
 indicators:
@@ -340,35 +336,7 @@ scales: Wickham H, Pedersen T, Seidel D (2023). *scales: Scale Functions
 for Visualization*. R package version 1.3.0,
 <https://CRAN.R-project.org/package=scales>.\
 \
-raster: Hijmans R (2023). *raster: Geographic Data Analysis and
-Modeling*. R package version 3.6-23,
-<https://CRAN.R-project.org/package=raster>.\
-\
-rasterVis: Oscar Perpinan Lamigueiro and Robert Hijmans (2023),
-rasterVis. R package version 0.51.5.\
-\
-mapdata: Becker OScbRA, Brownrigg. ARWRvbR (2022). *mapdata: Extra Map
-Databases*. R package version 2.3.1,
-<https://CRAN.R-project.org/package=mapdata>.\
-\
-cmocean: Thyng K, Greene C, Hetland R, Zimmerle H, DiMarco S (2016).
-“True colors of oceanography: Guidelines for effective and accurate
-colormap selection.” *Oceanography*, *29*(3).
-doi:10.5670/oceanog.2016.66 <https://doi.org/10.5670/oceanog.2016.66>.\
-\
-RColorBrewer: Neuwirth E (2022). *RColorBrewer: ColorBrewer Palettes*. R
-package version 1.1-3,
-<https://CRAN.R-project.org/package=RColorBrewer>.\
-\
-latticeExtra: Sarkar D, Andrews F (2022). *latticeExtra: Extra Graphical
-Utilities Based on Lattice*. R package version 0.6-30,
-<https://CRAN.R-project.org/package=latticeExtra>.\
-\
 grid: <https://cran.r-project.org/package=grid>\
-\
-rerddap: Chamberlain S (2023). *rerddap: General Purpose Client for
-'ERDDAP' Servers*. R package version 1.0.3,
-<https://CRAN.R-project.org/package=rerddap>.\
 \
 terra: Hijmans R (2023). *terra: Spatial Data Analysis*. R package
 version 1.7-39, <https://CRAN.R-project.org/package=terra>.\
@@ -377,33 +345,47 @@ rje: Evans R (2022). *rje: Miscellaneous Useful Functions for
 Statistics*. R package version 1.12.1,
 <https://CRAN.R-project.org/package=rje>.\
 \
-ROracle: Mukhin D, James DA, Luciani J (2021). *ROracle: OCI Based
-Oracle Database Interface for R*. R package version 1.3-1.1,
-<https://CRAN.R-project.org/package=ROracle>.\
-\
 zoo: Zeileis A, Grothendieck G (2005). “zoo: S3 Infrastructure for
 Regular and Irregular Time Series.” *Journal of Statistical Software*,
 *14*(6), 1-27. doi:10.18637/jss.v014.i06
 <https://doi.org/10.18637/jss.v014.i06>.\
 \
-ggplot2: H. Wickham. ggplot2: Elegant Graphics for Data Analysis.
-Springer-Verlag New York, 2016.\
-\
 gridExtra: Auguie B (2017). *gridExtra: Miscellaneous Functions for
 "Grid" Graphics*. R package version 2.3,
 <https://CRAN.R-project.org/package=gridExtra>.\
 \
-dplyr: Wickham H, François R, Henry L, Müller K, Vaughan D (2023).
-*dplyr: A Grammar of Data Manipulation*. R package version 1.1.2,
-<https://CRAN.R-project.org/package=dplyr>.\
-\
 png: Urbanek S (2022). *png: Read and write PNG images*. R package
-version 0.1-8, <https://CRAN.R-project.org/package=png>.
+version 0.1-8, <https://CRAN.R-project.org/package=png>.\
 \
 elementalist: van den Brand T (2026). *elementalist: Extra elements for ggplot2*. R package version 0.0.0.9000,
-commit 12c6983470c6414cad4030f822731d1c3e0e271a, <https://github.com/teunbrand/elementalist>.
+commit 12c6983470c6414cad4030f822731d1c3e0e271a, <https://github.com/teunbrand/elementalist>.\
 \
 patchwork: Pedersen T (2025). *patchwork: The Composer of Plots*. doi:10.32614/CRAN.package.patchwork
 <https://doi.org/10.32614/CRAN.package.patchwork>, R package version 1.3.2,
-<https://CRAN.R-project.org/package=patchwork>.
+<https://CRAN.R-project.org/package=patchwork>.\
 \
+broom: Robinson D, Hayes A, Couch S, Hvitfeldt E (2026). _broom: Convert Statistical Objects into Tidy
+  Tibbles_. doi:10.32614/CRAN.package.broom <https://doi.org/10.32614/CRAN.package.broom>, R package
+  version 1.0.12, <https://CRAN.R-project.org/package=broom>.\
+\
+english: Fox J, Venables B, Damico A, Salverda AP (2021). _english: Translate Integers into English_.
+  doi:10.32614/CRAN.package.english <https://doi.org/10.32614/CRAN.package.english>, R package version
+  1.2-6, <https://CRAN.R-project.org/package=english>.\
+\
+tidyr: Wickham H, Vaughan D, Girlich M (2025). _tidyr: Tidy Messy Data_. doi:10.32614/CRAN.package.tidyr
+  <https://doi.org/10.32614/CRAN.package.tidyr>, R package version 1.3.2,
+  <https://CRAN.R-project.org/package=tidyr>.\
+\
+tidyterra: Hernangómez D (2023). “Using the tidyverse with terra objects: the tidyterra package.” _Journal of Open
+  Source Software_, *8*(91), 5751. ISSN 2475-9066, doi:10.21105/joss.05751
+  <https://doi.org/10.21105/joss.05751>, <https://doi.org/10.21105/joss.05751>.\
+\
+purrr: Wickham H, Henry L (2026). _purrr: Functional Programming Tools_. doi:10.32614/CRAN.package.purrr
+  <https://doi.org/10.32614/CRAN.package.purrr>, R package version 1.2.1,
+  <https://CRAN.R-project.org/package=purrr>.\
+\
+ggridges: Wilke C (2025). _ggridges: Ridgeline Plots in 'ggplot2'_. doi:10.32614/CRAN.package.ggridges
+  <https://doi.org/10.32614/CRAN.package.ggridges>, R package version 0.5.7,
+  <https://CRAN.R-project.org/package=ggridges>.\
+\
+

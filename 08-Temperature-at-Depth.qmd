@@ -241,6 +241,7 @@ p <- ggplot() +
   plotTheme
 
 ggsave(paste0(Dir, '/TempAtDepth_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
+ggsave(paste0(Dir, '/TempAtDepth_ts_', RptYr, '_ggolot.png'), plot=p, width=6, height=5, units='in')
 
 
 # pdf(paste(Dir, '/TempAtDepth_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
@@ -506,6 +507,7 @@ p_map <- p_map +
          linetype=guide_legend(position = 'bottom', title.position='top', title.theme=element_text(hjust=0.5, vjust=1)))  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
 
 ggsave(filename = paste0(Dir, '/TempAtDepth_map_', RptYr, '_test.pdf'), plot=p_map, width = 7, height = 3.8)
+ggsave(filename = paste0(Dir, '/TempAtDepth_map_', RptYr, '_test.png'), plot=p_map, width = 7, height = 3.8)
 
 # pdf(paste(Dir, '/TempAtDepth_map_', RptYr, '.pdf', sep = ""), width=9, height=6)
 # print(p)

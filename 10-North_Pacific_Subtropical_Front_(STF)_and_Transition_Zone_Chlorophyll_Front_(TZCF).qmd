@@ -11,11 +11,10 @@ format:
 ```{r}
 #| include: false
 ### Load libraries
-library(dplyr)
-library(cmocean)
+library(tidyverse)
+#library(cmocean)
 library(here)
 library(nmfspalette)
-library(ggplot2)
 library(scales)
 library(tidyr)
 library(terra)

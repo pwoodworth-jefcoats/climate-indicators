@@ -11,11 +11,10 @@ format:
 ```{r}
 #| include: false
 ### Load libraries
-library(ggplot2)
+library(tidyverse)
 library(lubridate)
 library(scales)
 library(gridExtra)
-library(dplyr)
 library(grid)
 library(png)
 library(here)

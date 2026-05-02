@@ -172,6 +172,7 @@ pWPUE <- ggplot() +
            fill = guide_legend(override.aes = list(fill = c("black"), alpha=0.3)))
 
 ggsave(paste0(Dir, '/Bigeye_Forecast_CPUE_WPUE_', RptYr, '.pdf'), plot=(pCPUE / pWPUE), width=7, height=7, units='in')
+ggsave(paste0(Dir, '/Bigeye_Forecast_CPUE_WPUE_', RptYr, '.png'), plot=(pCPUE / pWPUE), width=7, height=7, units='in')
 # 
 # pdf(paste(Dir, '/Bigeye_Forecast_CPUE_', RptYr, '.pdf', sep = ""),
 #     width = 5.5, height = 3.5)

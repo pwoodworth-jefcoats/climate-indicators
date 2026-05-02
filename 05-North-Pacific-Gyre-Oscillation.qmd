@@ -145,8 +145,8 @@ plotTheme <- theme_minimal() +
         legend.text = element_text(size=12), legend.key.spacing.x = unit(1.5,'cm'))
 
 # Legend
-legendInfo <- as.factor(c(paste0('Mothly index, 1950-', RptYr-1), 
-                          paste0('Mothly index, ', RptYr)))
+legendInfo <- as.factor(c(paste0('Monthly index, 1950-', RptYr-1), 
+                          paste0('Monthly index, ', RptYr)))
 
 p <- ggplot() +
   geom_hline(yintercept = 0, linewidth=0.25) +
@@ -161,6 +161,7 @@ p <- ggplot() +
   plotTheme
 
 ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
+ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.png'), plot=p, width=8, height=5, units='in')
 
 # # The plotly code isn't working this year.  So,
 # # going with base R, because that's what I'm most familiar with

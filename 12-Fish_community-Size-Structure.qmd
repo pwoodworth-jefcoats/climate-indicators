@@ -247,6 +247,46 @@ plotfunc(dealerSWClim, dealerSWYr, '#FFBA37A0')
 dev.off()
 ```
 
+```{r}
+# # Density plot
+# ggplot() +
+#   geom_density(data=dealerClim, aes(x=WholeWeight), adjust=3, fill='gray70', color='gray50') +
+#   geom_density(data=dealerYr, aes(x=WholeWeight), adjust=3, fill='#5B84A1A0', color='#5B84A1A0') +
+#   theme_bw() +
+#   theme(panel.grid = element_blank()) +
+#   scale_y_continuous(expand=expansion(mult = c(0, 0.1))) +
+#   scale_x_continuous(expand = F)
+
+histFunc <- function(datClim, datYr, color, img, ymin, ymax, xlab=NULL) {
+  # Get the number of fish for each
+  nClim <- prettyNum(c(sum(datClim$NUM_SOLD)),big.mark=',')
+  nYr <- prettyNum(c(sum(datYr$NUM_SOLD)),big.mark=',')
+
+  # Proportion of fish (counts/total counts)
+  ggplot() + 
+    geom_histogram(data=datClim, aes(x=WholeWeight, y=after_stat(count)/sum(after_stat(count))), fill='gray70', color='gray50', binwidth = 5) +
+    geom_histogram(data=datYr, aes(x=WholeWeight, y=after_stat(count)/sum(after_stat(count))), fill=color, color=color, binwidth = 5, alpha=0.6) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank()) + 
+    scale_y_continuous(expand=expansion(mult = c(0, 0.1))) + 
+    scale_x_continuous(expand = F) +
+    xlab(xlab) +
+    ylab('Proportion of Fish') + 
+    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[climatology] == .(nClim))), vjust=2, parse=TRUE) + 
+    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[.(RptYr)] == .(nYr))), vjust=4, parse=TRUE) +
+    annotation_raster(img, xmin = 150, xmax = 170, ymin = ymin, ymax = ymax) +
+    geom_point()
+  
+}
+
+pAll <- histFunc(dealerClim, dealerYr, '#63A298A0', beye, ymin=0.5, ymax=0.53) # dummy locations becuase time
+pBE <- histFunc(dealerBEClim, dealerBEYr, '#5B84A1', beye, ymin=0.14, ymax=0.165)
+pSW <- histFunc(dealerSWClim, dealerSWYr, '#FFBA37', sword, ymin=0.11, ymax=0.13, xlab='Weight (kg)')
+
+
+```
+
+
 \
 
 ```{r}

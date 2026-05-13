@@ -218,45 +218,6 @@ dealerSWClim <- dealerSW[which(dealerSW$Year <= 2009),]
 dealerSWYr <- dealerSW[which(dealerSW$Year == RptYr),]
 
 # Using function and plot to make density plots
-plotfunc <- function(x, y, color, img) {
-  nc <- prettyNum(c(sum(x$NUM_SOLD)),big.mark=',')
-  n17 <- prettyNum(c(sum(y$NUM_SOLD)),big.mark=',')
-  dclim <- hist(x$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
-  dyr <- hist(y$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
-  ymx <- max(c(dclim$counts/sum(dclim$counts), dyr$counts/sum(dyr$counts)))*1.05
-  plot(dclim$mids, dclim$counts/sum(dclim$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', las=1, xlab=NA, ylab=NA, main=NA, yaxs='i')
-  polygon(c(-5, dclim$mids,205), c(0,dclim$counts/sum(dclim$counts),0), col='gray70', border='gray50')
-  mtext(side=1, line=2.5, text='Weight (kg)', cex=0.7)
-  mtext(side=2, line=3.5, text='Proportion of Fish', cex=0.7)
-  par(new=T)
-  plot(dyr$mids, dyr$counts/sum(dyr$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', xlab=NA, ylab=NA, main=NA, axes=F, yaxs='i', col=color)
-  polygon(c(-5, dyr$mids, 205), c(0,dyr$counts/sum(dyr$counts),0), col=color, border=color)
-  text(160,ymx*0.92, pos=4, labels=bquote(paste('n'['climatology']*' = ', .(prettyNum(nc,big.mark=','), sep=' '))), cex=0.9)
-  text(160, ymx*0.85, pos=4, labels=bquote(paste('n'[.(RptYr)]*' = ', .(prettyNum(n17,big.mark=','), sep=' '))), cex=0.9)
-  grid.raster(beye, 0.85,0.6, width=.11)
-  grid.raster(sword, 0.85,0.26, width=.14)
-  
-}
-# Make three part Density Kernel plot
-png(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'), width=6, height=7, res=300, units='in')
-par(mfrow=c(3,1))
-par(mar=c(4,5,0.25,0.5))
-plotfunc(dealerClim, dealerYr, '#63A298A0') #alpha=180 of 250 for the violin version in plot above
-plotfunc(dealerBEClim, dealerBEYr, '#5B84A1A0') 
-plotfunc(dealerSWClim, dealerSWYr, '#FFBA37A0')  
-dev.off()
-```
-
-```{r}
-# # Density plot
-# ggplot() +
-#   geom_density(data=dealerClim, aes(x=WholeWeight), adjust=3, fill='gray70', color='gray50') +
-#   geom_density(data=dealerYr, aes(x=WholeWeight), adjust=3, fill='#5B84A1A0', color='#5B84A1A0') +
-#   theme_bw() +
-#   theme(panel.grid = element_blank()) +
-#   scale_y_continuous(expand=expansion(mult = c(0, 0.1))) +
-#   scale_x_continuous(expand = F)
-
 histFunc <- function(datClim, datYr, color, img, ymin, ymax, xlab=NULL) {
   # Get the number of fish for each
   nClim <- prettyNum(c(sum(datClim$NUM_SOLD)),big.mark=',')
@@ -272,8 +233,8 @@ histFunc <- function(datClim, datYr, color, img, ymin, ymax, xlab=NULL) {
     scale_x_continuous(expand = F) +
     xlab(xlab) +
     ylab('Proportion of Fish') + 
-    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[climatology] == .(nClim))), vjust=2, parse=TRUE) + 
-    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[.(RptYr)] == .(nYr))), vjust=4, parse=TRUE) +
+    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[climatology] == .(nClim))), vjust=2, parse=TRUE, size=3) + 
+    annotate(geom='text', x=160, y=Inf, label=as.expression(bquote(n[.(RptYr)] == .(nYr))), vjust=4, parse=TRUE, size=3) +
     annotation_raster(img, xmin = 150, xmax = 170, ymin = ymin, ymax = ymax) +
     geom_point()
   
@@ -282,10 +243,46 @@ histFunc <- function(datClim, datYr, color, img, ymin, ymax, xlab=NULL) {
 pAll <- histFunc(dealerClim, dealerYr, '#63A298A0', beye, ymin=0.5, ymax=0.53) # dummy locations becuase time
 pBE <- histFunc(dealerBEClim, dealerBEYr, '#5B84A1', beye, ymin=0.14, ymax=0.165)
 pSW <- histFunc(dealerSWClim, dealerSWYr, '#FFBA37', sword, ymin=0.11, ymax=0.13, xlab='Weight (kg)')
+plotStack <- pAll / pBE / pSW + plot_layout(heights = c(1,1,1.05))
+
+ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_hist.png'), plotStack, width=6, height=7, units = 'in')
 
 
+# Save individual plots for the presentation 
+ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_All_hist.png'), histFunc(dealerClim, dealerYr, '#63A298A0', beye, ymin=0.5, ymax=0.53, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
+
+ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_BET_hist.png'), histFunc(dealerBEClim, dealerBEYr, '#5B84A1', beye, ymin=0.14, ymax=0.165, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
+
+ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_SWO_hist.png'), pSW, width=6.6, height=2.5, units='in')
+
+# plotfunc <- function(x, y, color, img) {
+#   nc <- prettyNum(c(sum(x$NUM_SOLD)),big.mark=',')
+#   n17 <- prettyNum(c(sum(y$NUM_SOLD)),big.mark=',')
+#   dclim <- hist(x$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
+#   dyr <- hist(y$WholeWeight, breaks=ifelse(nc<1000000,20,40), plot=F)
+#   ymx <- max(c(dclim$counts/sum(dclim$counts), dyr$counts/sum(dyr$counts)))*1.05
+#   plot(dclim$mids, dclim$counts/sum(dclim$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', las=1, xlab=NA, ylab=NA, main=NA, yaxs='i')
+#   polygon(c(-5, dclim$mids,205), c(0,dclim$counts/sum(dclim$counts),0), col='gray70', border='gray50')
+#   mtext(side=1, line=2.5, text='Weight (kg)', cex=0.7)
+#   mtext(side=2, line=3.5, text='Proportion of Fish', cex=0.7)
+#   par(new=T)
+#   plot(dyr$mids, dyr$counts/sum(dyr$counts), xlim=c(0,212), ylim=c(0,ymx), type='l', xlab=NA, ylab=NA, main=NA, axes=F, yaxs='i', col=color)
+#   polygon(c(-5, dyr$mids, 205), c(0,dyr$counts/sum(dyr$counts),0), col=color, border=color)
+#   text(160,ymx*0.92, pos=4, labels=bquote(paste('n'['climatology']*' = ', .(prettyNum(nc,big.mark=','), sep=' '))), cex=0.9)
+#   text(160, ymx*0.85, pos=4, labels=bquote(paste('n'[.(RptYr)]*' = ', .(prettyNum(n17,big.mark=','), sep=' '))), cex=0.9)
+#   grid.raster(beye, 0.85,0.6, width=.11)
+#   grid.raster(sword, 0.85,0.26, width=.14)
+#   
+# }
+# # Make three part Density Kernel plot
+# png(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'), width=6, height=7, res=300, units='in')
+# par(mfrow=c(3,1))
+# par(mar=c(4,5,0.25,0.5))
+# plotfunc(dealerClim, dealerYr, '#63A298A0') #alpha=180 of 250 for the violin version in plot above
+# plotfunc(dealerBEClim, dealerBEYr, '#5B84A1A0') 
+# plotfunc(dealerSWClim, dealerSWYr, '#FFBA37A0')  
+# dev.off()
 ```
-
 
 \
 

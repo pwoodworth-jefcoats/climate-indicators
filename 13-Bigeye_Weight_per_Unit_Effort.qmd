@@ -33,14 +33,11 @@ if (!dir.exists(Dir)) {
 }
 ```
 
-```{=html}
-<!--
-# Here we import data saved locally and filter out only bigeye tuna (coded as species 6 in the dealer dataset) for deep-set trips onlu and that we don't include trips in the current year. 
--->
-```
-
 ```{r}
 #| include: false
+#| 
+# Here we import data saved locally and filter out only bigeye tuna (coded as species 6 in the dealer dataset) for deep-set trips onlu and that we don't include trips in the current year. 
+
 # Import the data from saved files
 # This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
 dealerRaw <- readRDS(paste0(Dir, '/SAFE_dealer_', RptYr, '_processed.rds'))
@@ -59,8 +56,6 @@ dealer <- dealerRaw %>%
 logbook <- logbookRaw %>%
   filter(LANDYR >= 2000,  LANDYR <= RptYr)
 ```
-
-```{=html}
 <!--
 ## Calculate Age
 This is only used to mark the dashed age lines in the figure
@@ -72,8 +67,6 @@ where $L_\infty$ is the asymptotic length, $K$ is the growth coefficient, $t_0$ 
 
 Then we convert the length given from the growth equation above to a weight using data from Phoebe that she derived based on the Hawaii deep-set fishery. 
 -->
-```
-
 ```{r}
 #| include: false
 
@@ -90,15 +83,11 @@ Weight <- 0.0187*La^2.9605  # these numbers are from phoebe
 WeightAge <- round(Weight)/1000
 ```
 
-```{=html}
-<!--
-## Calculate effort
-Calculating both climatological quarterly efforts and annual quarter efforts.
--->
-```
-
 ```{r}
 #| include: false
+
+## Calculate effort
+## Calculating both climatological quarterly efforts and annual quarter efforts.
 
 # Make a trip level dataset
 logbook <- logbook %>% 
@@ -117,15 +106,11 @@ efrtYr <- logbook %>%
   summarise(Effort=sum(HOOKSSET/1000, na.rm=T))
 ```
 
-```{=html}
-<!--
-## Histograms
-Calculating quarterly climatological histograms for use in the figures. Calculate these outside the loop since they are the same for each quarter. 
--->
-```
-
 ```{r}
 #| include: false
+
+## Histograms
+## Calculating quarterly climatological histograms for use in the figures. Calculate these outside the loop since they are the same for each quarter. 
 
 # Calculate quarterly climatology histograms
 cCPUE <- list()
@@ -138,18 +123,11 @@ for (q in 1:4) {
 }
 ```
 
-```{=html}
-<!--
-# Plot
-This script plots two different figures. The first one is the size-CPUE distribution by quarter for the past two years along with the climatology. the second figure is the CPUE timeseries for all and small bigeye along with weight per unit effort. 
-
-## Size-CPUE distribution
-### Define plotting variables
--->
-```
-
 ```{r}
 #| include: false
+
+# Plot
+# This script plots two different figures. The first one is the size-CPUE distribution by quarter for the past two years along with the climatology. The second figure is the CPUE timeseries for all and small bigeye along with weight per unit effort. 
 
 # Define the center bin locations for plotting
 cXpos <- cCPUE[[1]]$WholeWeight$mids
@@ -157,12 +135,6 @@ cXpos <- cCPUE[[1]]$WholeWeight$mids
 qName <- c('First', 'Second', 'Third', 'Fourth')
 # Set color palette
 pal <- rev(cubeHelix(8, start=0, r=-0.1, gamma=1, hue=0.8))
-```
-
-```{=html}
-<!--
-Define the year range you want to plot
--->
 ```
 
 ```{r}
@@ -173,12 +145,6 @@ yrRange <- (RptYr-2):RptYr
 # Isolate the number of panels you want to plot so we get the quarters right
 efrtPlot <- efrtYr %>% 
   filter(Year %in% yrRange)
-```
-
-```{=html}
-<!--
-### Plot the data
--->
 ```
 
 ```{r}

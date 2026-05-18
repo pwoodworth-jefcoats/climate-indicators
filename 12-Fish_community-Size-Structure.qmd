@@ -78,29 +78,6 @@ dealerSW <- dealer[which(dealer$SPECIES_FK == 11 & dealer$SET_TYPE == 'S'),]
 
 ```{r}
 #| include: false
-# 
-# # Functions
-# # ----------------------------
-# # Calculate the mean and sd for the violin plots
-# data_summary <- function(x) {
-#   m <- median(x)
-#   ymin <- as.numeric(quantile(x, 0.25))
-#   ymax <- as.numeric(quantile(x, 0.75))
-#   return(c(y=m,ymin=ymin,ymax=ymax))
-# }
-# 
-# dot_summary <- function(x) {
-#   xyy <- x %>% 
-#     group_by(Year) %>% 
-#     summarize(q20=quantile(WholeWeight, 0.20), q80=quantile(WholeWeight, 0.80)) %>% 
-#     tidyr::gather(Condition, Quartile, q20:q80)
-#   return(xyy)
-# }
-
-```
-
-```{r}
-#| include: false
 
 # Set colors for species
 allColor <- nmfs_palette('regional_alt1')(6)[2]

@@ -24,13 +24,13 @@ fishery is an active area of research.
 
 **Status of the Indicator**  
 The mean monthly chlorophyll concentration was 0.13 mg chl
-m<sup>-3</sup> in 2024. Monthly mean chlorophyll concentrations ranged
-from 0.09–0.17 mg chl m<sup>-3</sup>, which was within the range of
+m<sup>-3</sup> in 2025. Monthly mean chlorophyll concentrations ranged
+from 0.092–0.17 mg chl m<sup>-3</sup>, which was within the range of
 values observed during the previous years of the time series (0.079–0.18
 mg chl m<sup>-3</sup>). Both monthly average chlorophyll concentration
-and chlorophyll anomalies have declined by 0.009 mg chl m<sup>-3</sup>
+and chlorophyll anomalies have declined by 0.01 mg chl m<sup>-3</sup>
 over the period of record. Chlorophyll concentrations were fairly
-average across the Hawaiʻi-based longline fishing grounds in 2024.
+average across the Hawaiʻi-based longline fishing grounds in 2025.
 
 **Indicator Data**  
 Description: Satellite remotely sensed ocean color is used to determine
@@ -48,18 +48,18 @@ Region/Location: Hawaiʻi longline region: 5°–45°N, 180°–120°W
 Measurement Platform: Satellite
 
 Data available at:
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>,
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0>,
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0.html>,
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-1998-2009-clim-v6-0.html>,
 and
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2024-clim_v6-0>.
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-2025-clim_v6-0.html>.
 
-Sourced from: NOAA OceanWatch (2025b) and Sathyendranath et al. (2018).
+Sourced from: NOAA OceanWatch (2026b) and Sathyendranath et al. (2018).
 Graphics produced in part using Stawitz and Li (2025).
 
 **References**  
-NOAA OceanWatch (2025b):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
-Accessed: 11 April 2025.
+NOAA OceanWatch (2026b):
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0.html>
+Accessed: 6 April 2026.
 
 Sathyendranath S, Grant M, Brewin R.J.W, Brockmann C, Brotas V, Chuprin
 A, Doerffer R, Dowell M, Farman A, Groom S, Jackson T, Krasemann H,

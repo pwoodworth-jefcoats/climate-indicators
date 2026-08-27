@@ -19,9 +19,9 @@ CO<sub>2</sub>.
 **Status of the Indicator**  
 Atmospheric CO<sub>2</sub> is increasing exponentially. This means that
 atmospheric CO<sub>2</sub> is increasing more quickly over time. In
-2024, the annual mean concentration of CO<sub>2</sub> was 424.6 ppm.
+2025, the annual mean concentration of CO<sub>2</sub> was 427.35 ppm.
 This is the highest annual value recorded. This year also saw the
-highest monthly value, which was 426.91 ppm. In 1959, the first year
+highest monthly value, which was 430.51 ppm. In 1959, the first year
 full of the time series, the atmospheric concentration of CO<sub>2</sub>
 was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in
 2015.
@@ -56,7 +56,7 @@ Measurement Platform: *In-situ* station.
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.
 
 Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA
-(2025a). Graphics produced in part using Stawitz and Li (2025).
+(2026a). Graphics produced in part using Stawitz and Li (2025).
 
 **References**  
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge,
@@ -64,10 +64,10 @@ C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric
 carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*,
 vol. 28, 538-551
 
-NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and
+NOAA (2026a): Dr. Xin Lan, NOAA/GML (gml.noaa.gov/ccgg/trends/) and
 Dr. Ralph Keeling, Scripps Institution of Oceanography
 (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide
-<https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2025.
+<https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 2 April 2026.
 
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989),
 [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the

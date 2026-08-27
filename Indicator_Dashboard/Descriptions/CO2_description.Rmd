@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Identify the variable we're focused on
 var <- 'CO2'
@@ -72,18 +72,18 @@ increasing concentration of atmospheric carbon dioxide, CO~2~, due to the
 burning of fossil fuels. Therefore, atmospheric CO~2~ serves as a measure of 
 what human activity has already done to affect the climate system through 
 greenhouse gas emissions. It provides quantitative information in a simplified, 
-standardized format that decision makers can easily understand.  The 
+standardized format that decision makers can easily understand. The 
 concentration of atmospheric CO~2~, and, in turn, its warming influence, is 
 increasing more quickly over time. 
 
 Increasing CO~2~ concentrations cause the atmosphere to warm. Much of this heat 
-is then absorbed by the ocean, raising ocean temperatures.  The ocean also 
+is then absorbed by the ocean, raising ocean temperatures. The ocean also 
 becomes more acidic as it absorbs CO~2~. 
 
 __Status of the Indicator__  
 Atmospheric CO~2~ is increasing exponentially. This means that atmospheric CO~2~ 
 is increasing more quickly over time. In `r RptYr`, the annual mean concentration 
-of CO~2~ was `r signif(ann_mean_RptYr,5)` ppm.  This is the highest annual value 
+of CO~2~ was `r signif(ann_mean_RptYr,5)` ppm. This is the highest annual value 
 recorded. This year also saw the highest monthly value, which was `r monthly_max_RptYr` 
 ppm. In 1959, the first year full of the time series, the atmospheric concentration 
 of CO~2~ was 316 ppm. The annual mean passed 350 ppm in 1988, and 400 ppm in 2015.  
@@ -104,7 +104,7 @@ hemisphere because of its larger land mass. Note that due to the eruption of the
 Mauna Loa Volcano, measurements from Mauna Loa Observatory were suspended as of 
 29 November 2022. Observations from December 2022 to 4 July 2023 are from a site 
 at the Maunakea Observatories, approximately 21 miles north of the Mauna Loa 
-Observatory.  Mauna Loa observations resumed in July 2023.  
+Observatory. Mauna Loa observations resumed in July 2023.  
 
 Timeframe: Annual, monthly.  
 
@@ -114,12 +114,12 @@ Measurement Platform: *In-situ* station.
 
 Data available at: <https://gml.noaa.gov/ccgg/trends/data.html>.   
 
-Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2025a).  Graphics produced in part using Stawitz and Li (2025).
+Sourced from: Keeling et al. (1976), Thoning et al. (1989), and NOAA (2026a). Graphics produced in part using Stawitz and Li (2025).
 
 __References__  
 Keeling et al. (1976): C.D. Keeling, R.B. Bacastow, A.E. Bainbridge, C.A. Ekdahl, P.R. Guenther, and L.S. Waterman, (1976), Atmospheric carbon dioxide variations at Mauna Loa Observatory, Hawaii, *Tellus*, vol. 28, 538-551  
 
-NOAA (2025a): Dr. Pieter Tans, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide <https://gml.noaa.gov/ccgg/trends/data.html>, Accessed: 26 March 2025.   
+NOAA (2026a): Dr. Xin Lan, NOAA/GML (gml.noaa.gov/ccgg/trends/) and Dr. Ralph Keeling, Scripps Institution of Oceanography (scrippsco2.ucsd.edu/), Trends in Atmospheric Carbon Dioxide https://gml.noaa.gov/ccgg/trends/data.html, Accessed: 2 April 2026.  
 
 Thoning et al. (1989): K.W. Thoning, P.P. Tans, and W.D. Komhyr, (1989), [Atmospheric carbon dioxide at Mauna Loa Observatory 2. Analysis of the NOAA GMCC data, 1974-1985](https://gml.noaa.gov/publications/showpub.php?pubid=2828), J. Geophys. Research, vol. 94, 8549-8565  
 

@@ -1,11 +1,11 @@
 ## El Niño – Southern Oscillation
 
-**About the Indicator**  
-The El Niño – Southern Oscillation (ENSO) is one of the most prominent
-modes of natural climate variability in the North Pacific. ENSO cycles,
-which typically last 6–18 months, are known to impact Pacific fisheries,
-including tuna fisheries, because they cause interannual changes in sea
-surface temperature and phytoplankton abundance.
+**About the Indicator** The El Niño – Southern Oscillation (ENSO) is one
+of the most prominent modes of natural climate variability in the North
+Pacific. ENSO cycles, which typically last 6–18 months, are known to
+impact Pacific fisheries, including tuna fisheries, because they cause
+interannual changes in sea surface temperature and phytoplankton
+abundance.
 
 The Oceanic Niño Index (ONI) is a measure of ENSO phase that focuses on
 ocean temperature, which has a direct effect on these fisheries.
@@ -14,23 +14,22 @@ Understanding the effects of natural climate variability like ENSO on
 the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
-**Status of the Indicator**  
-The Oceanic Niño Index (ONI) indicated a transition from El Niño to
-neutral conditions in 2024. In 2024, the ONI ranged from -0.53 to 1.78.
-This is within the range of values observed previously in the time
-series.
+**Status of the Indicator** The Oceanic Niño Index (ONI) remained in
+largely neutral conditions in 2025. In 2025, the ONI ranged from -0.55
+to 0.02. This is within the range of values observed previously in the
+time series.
 
-**Indicator Data**  
-Description: The three-month running mean (referred to as a season) of
-satellite remotely-sensed sea surface temperature (SST) anomalies in the
-Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI)
-is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm
-and cool phases, termed El Niño and La Niña respectively, are based in
-part on an ONI threshold of ± 0.5 °C being met for a minimum of five
-consecutive overlapping seasons. Additional atmospheric indices are
-needed to confirm an El Niño or La Niña event, as the ENSO is a coupled
-ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured
-using the Southern Oscillation Index.
+**Indicator Data** Description: The three-month running mean (referred
+to as a season) of satellite remotely-sensed sea surface temperature
+(SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The
+Oceanic Niño Index (ONI) is a measure of the El Niño – Southern
+Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La
+Niña respectively, are based in part on an ONI threshold of ± 0.5 °C
+being met for a minimum of five consecutive overlapping seasons.
+Additional atmospheric indices are needed to confirm an El Niño or La
+Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The
+atmospheric half of ENSO is measured using the Southern Oscillation
+Index.
 
 Timeframe: Three-month running average.
 
@@ -41,13 +40,12 @@ Measurement Platform: *In-situ* station, satellite, model.
 Data available at:
 <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>.
 
-Sourced from NOAA CPC (2025). Graphics produced in part using Stawitz
+Sourced from NOAA CPC (2026). Graphics produced in part using Stawitz
 and Li (2025).
 
-**References**  
-NOAA CPC (2025):
-<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 1
-April 2025.
+**References** NOAA CPC (2026):
+<https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>, Accessed: 3
+April 2026.
 
 Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
 R package version 3.0.0.000.

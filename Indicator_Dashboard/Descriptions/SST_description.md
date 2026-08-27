@@ -33,13 +33,13 @@ are impacted and the time scales of these impacts is an area of active
 research.
 
 **Status of the Indicator**  
-Annual mean SST was 21.2 ºC in 2024. Over the period of record, SST
+Annual mean SST was 21.3 ºC in 2025. Over the period of record, SST
 across the longline fishing grounds has increased by 1 ºC and the
-monthly SST anomaly increased by 0.9 ºC, both at a rate of roughly 0.03
-ºC yr<sup>-1</sup>. Monthly SST values in 2024 ranged from 18.5–24.4 ºC,
+monthly SST anomaly increased by 1 ºC, both at a rate of roughly 0.025
+ºC yr<sup>-1</sup>. Monthly SST values in 2025 ranged from 18.8–24.6 ºC,
 within the range of temperatures experienced over the past several
-decades (17.6–24.7 ºC). Overall, SST was above the long-term average
-across most of the Hawaiʻi longline region in 2024.
+decades (17.6–24.7 ºC). Overall, SST was at or above the long-term
+average across most of the Hawaiʻi longline region in 2025.
 
 **Indicator Data**  
 Description: Satellite remotely sensed monthly sea surface temperature
@@ -59,15 +59,15 @@ Data available at:
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>,
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim>,
 and
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim>.
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2025-clim>.
 
-Sourced from: NOAA OceanWatch (2025a). Graphics produced in part using
+Sourced from: NOAA OceanWatch (2026a). Graphics produced in part using
 Stawitz and Li (2025).
 
 **References**  
-NOAA OceanWatch (2025a):
+NOAA OceanWatch (2026a):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>
-Accessed: 10 April 2025.
+Accessed: 3 April 2026.
 
 Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
 R package version 3.0.0.000.

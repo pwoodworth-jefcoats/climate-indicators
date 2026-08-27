@@ -19,15 +19,16 @@ at 200–300 m below the surface where the bigeye fishery sets their
 hooks. However, this relationship has yet to be established.
 
 **Status of the Indicator**  
-In 2024, 200–300 m temperatures ranged from 11.26–11.4 °C with an
-average value of 11.34 °C. These temperatures are within the range of
+In 2025, 200–300 m temperatures ranged from 11.32–11.48 °C with an
+average value of 11.41 °C. These temperatures are within the range of
 temperatures experienced over the past several decades (10.87–11.59 °C)
 and are within the bounds of bigeye tuna’s preferred deep daytime
-thermal habitat (8–14 °C). Over the period of record (1980–2024),
-200–300 m temperatures have declined by 0.08 °C. The spatial pattern of
-temperature anomalies was mixed with temperatures at depth around the
-main Hawaiian Islands roughly 0.5–1.5 °C below average, and temperatures
-north and west of the Hawaiian Islands 0.5–1.5 °C above average.
+thermal habitat (8–14 °C). Over the period of record (1980–2025),
+200–300 m temperatures have declined by 0.05 °C. The spatial pattern of
+temperature anomalies was mixed with temperatures at depth just north of
+the main Hawaiian Islands roughly 0.5–1.5 °C below average, and
+temperatures north and west of the Hawaiian Islands 0.5–2 °C above
+average.
 
 **Indicator Data**  
 Description: Ocean temperature at 200–300 m depth is averaged across the
@@ -46,19 +47,19 @@ Sourced from: NOAA (2025d) and APDRC (2025). Graphics produced in part
 using Stawitz and Li (2025).
 
 **References**  
-APDRC (2025):
+APDRC (2026):
 <http://apdrc.soest.hawaii.edu:80/dods/public_data/Reanalysis_Data/GODAS/monthly/potmp>
-Accessed 10 April 2025.
+Accessed 6 April 20256
 
 Howell et al. (2010): Howell, E.A., Hawn, D.R., and J.J. Polovina, 2010.
 Spatiotemporal variability in bigeye tuna (Thunnus obesus) dive behavior
 in the central North Pacific Ocean. Progress in Oceanography, 86,
 pp. 81-93. doi: 10.1016/j.pocean.2010.04.013.
 
-NOAA (2025d): NOAA Office of Oceanic and Atmospheric Research’s Earth
+NOAA (2026d): NOAA Office of Oceanic and Atmospheric Research’s Earth
 System Research Laboratories’ Physical Sciences Laboratory,
-<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 10 April
-2025.
+<https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 6 April
+2026.
 
 Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
 R package version 3.0.0.000.

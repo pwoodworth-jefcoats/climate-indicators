@@ -21,16 +21,14 @@ they influence fish abundance and size structure are areas of active
 research.
 
 **Status of the Indicator**  
-The mean monthly phytoplankton cell size was 1.54 *μ*m Equivalent
-Spherical Diameter (ESD) in 2023. Monthly mean cell size ranged from
-1.19–1.88 *μ*m ESD during the year, within the range of values observed
-over the period of record (1.15–1.89 *μ*m ESD). Over the period of
-record, there has been weakly significant decline in monthly median
-phytoplankton size. Over the time series, median phytoplankton size has
-declined by 0.084 *μ*m ESD, or by 5.3%. The monthly anomaly has declined
-as well, by 0.069 *μ*m ESD. Average estimated median phytoplankton size
-was below average across much of the fishing grounds, particularly north
-of about 30°N.
+The mean monthly phytoplankton cell size for 2025 was 1.5 *μ*m
+Equivalent Spherical Diameter (ESD), ranging from 1.19–1.73 *μ*m ESD
+during the year. These values remain within the historical records
+(1.15–1.89 *μ*m ESD). Over the full time series, the median
+phytoplankton size experienced a weakly significant decline of 0.096
+*μ*m ESD (6%), accompanied by a 0.081 *μ*m ESD decrease in the monthly
+mean anomaly. Average estimated median phytoplankton size was below
+average across much of the fishing grounds, particularly north of 30°N.
 
 **Indicator Data**  
 Description: Median phytoplankton cell size can be estimated from
@@ -48,12 +46,12 @@ Region: Hawaiʻi longline region: 15°–45°N, 180°–120°W
 Measurement Platform: Satellite
 
 Data available at:
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp>,
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-1998-2009-clim>,
+&lt;<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025.html>,
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-1998-2009-clim.html>,
 and
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2024-clim>.
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp-2025-clim.html>.
 
-Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2025c). Graphics
+Sourced from: Barnes et al. (2011) and NOAA OceanWatch (2026c). Graphics
 produced in part using Stawitz and Li (2025).
 
 **References**  
@@ -63,9 +61,9 @@ community size structure form empirical relationships with remotely
 sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi:
 10.1093/plankt/fbq088
 
-NOAA OceanWatch (2025c):
-<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp> Accessed: 11
-April 2025.
+NOAA OceanWatch (2026c):
+<https://oceanwatch.pifsc.noaa.gov/erddap/griddap/md50_exp_2025>
+Accessed: 6 April 2026.
 
 Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries.
 R package version 3.0.0.000.

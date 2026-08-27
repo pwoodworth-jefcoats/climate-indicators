@@ -11,7 +11,7 @@ on the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
 **Status of the Indicator**  
-The NPGO was negative in 2024. The index ranged from -2.5 to -1.44 over
+The NPGO was negative in 2025. The index ranged from -2.94 to -0.91 over
 the course of the year. This is within the range of values observed
 previously in the time series.
 

@@ -18,9 +18,10 @@ the ocean, marine ecosystems, and fisheries is an active area of
 research.
 
 **Status of the Indicator**  
-The PDO was negative in 2024. The index ranged from -3.04 to -1.07 over
-the course of the year. This is within the range of values observed
-previously in the time series.
+The PDO was negative in 2025. The index ranged from -3.59 to -0.892 over
+the course of the year. This represents the strongest negative value in
+the time series, with the next two lowest values occurring in 2024 and
+1894.
 
 **Indicator Data**  
 Description: The PDO is often described as a long-lived El Niño-like
@@ -36,7 +37,7 @@ has a positive value. When the climate patterns are reversed, with warm
 SST anomalies in the interior and cool SST anomalies along the North
 American coast, or above average sea level pressures over the North
 Pacific, the PDO has a negative value. Description inserted from NOAA
-(2024b).
+(2026b).
 
 Timeframe: Monthly.
 
@@ -46,12 +47,12 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at: <https://psl.noaa.gov/pdo/>.  
   
-Sourced from NOAA (2025b), Mantua (1997), and Newman (2016). Graphics
+Sourced from NOAA (2026b), Mantua (1997), and Newman (2016). Graphics
 produced in part using Stawitz and Li (2025).
 
 **References**  
-NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal
-Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.
+NOAA (2026b): NOAA Physical Science Laboratory. Pacific Decadal
+Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 3 April 2026.
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R.
 C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with

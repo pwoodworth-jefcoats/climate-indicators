@@ -19,7 +19,7 @@ library(markdown)
 ```{r}
 #| include: false
 # Set report year (RptYr), to make things easier
-RptYr <- 2024
+RptYr <- 2025
 
 # Identify the variable we're focused on
 var <- 'PDO'
@@ -83,8 +83,7 @@ ocean, marine ecosystems, and fisheries is an active area of research.
 
 __Status of the Indicator__  
 The PDO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` 
-to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within 
-the range of values observed previously in the time series.
+to `r signif(monthly_max_RptYr, 3)` over the course of the year. This represents the strongest negative value in the time series, with the next two lowest values occurring in 2024 and 1894.
 
 __Indicator Data__  
 Description: The PDO is often described as a long-lived El Niño-like pattern of 
@@ -98,7 +97,7 @@ coast, and when sea level pressures are below average in the North Pacific, the
 PDO has a positive value. When the climate patterns are reversed, with warm SST 
 anomalies in the interior and cool SST anomalies along the North American coast, 
 or above average sea level pressures over the North Pacific, the PDO has a 
-negative value. Description inserted from NOAA (2024b).
+negative value. Description inserted from NOAA (2026b).
 
 Timeframe: Monthly.
 
@@ -108,10 +107,10 @@ Measurement Platform: *In-situ* station, satellite, model.
 
 Data available at: <https://psl.noaa.gov/pdo/>.  
 \
-Sourced from NOAA (2025b), Mantua (1997), and Newman (2016).  Graphics produced in part using Stawitz and Li (2025).
+Sourced from NOAA (2026b), Mantua (1997), and Newman (2016).  Graphics produced in part using Stawitz and Li (2025).
 
 __References__  
-NOAA (2025b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 1 April 2025.  
+NOAA (2026b): NOAA Physical Science Laboratory. Pacific Decadal Oscillation. <https://psl.noaa.gov/pdo/> Accessed: 3 April 2026.  
 
 Manuta (1997): Mantua, N.J., S. R. Hare, Y. Zhang, J. M. Wallace, and R. C. Francis, 1997: A Pacific Interdecadal Climate Ooscillation with Impacts on Salmon Production. Bull. Amer. Meteor. Soc., 78, 1069-1079.   
 

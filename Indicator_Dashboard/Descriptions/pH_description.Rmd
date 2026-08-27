@@ -20,7 +20,7 @@ library(markdown)
 #| include: false
 # Set report year (RptYr), to make things easier
 # For pH, data aren't available for the most recent year
-RptYr <- 2024 - 1
+RptYr <- 2025 - 1
 
 # Identify the variable we're focused on
 var <- 'pH'
@@ -101,7 +101,8 @@ __Status of the Indicator__
 The ocean is roughly `r signif(delta_pH_pct, 3)`% more acidic than it was 30 
 years ago at the start of this time series. Over this time, pH has declined by 
 `r abs(signif(delta_pH_lm, 2))` at a constant rate. In `r RptYr`, the most recent 
-year for which data are available, the average pH was `r signif(ann_mean_RptYr, 3)`. 
+year for which data are available, the average pH was `r signif(ann_mean_RptYr, 3)`
+and the minimum for the year was `r signif(monthly_min_RptYr, 4)` witch is withing the range of the time series. 
 Additionally, for the `r n_yrs_below`th year, small variations seen over the 
 course of the year are outside the range seen in the first year of the time 
 series. The highest pH value reported for the most recent year (`r signif(ann_max_RptYr, 4)`) 
@@ -110,7 +111,7 @@ is lower than the lowest pH value reported in the first year of the time series 
 __Indicator Data__  
 Description: Trends in surface (5 m) pH at Station ALOHA, north of Oahu (22.75°N, 158°W),
 collected by the Hawaiʻi Ocean Time Series (HOT) from October 1988 to `r RptYr` 
-(`r RptYr` data are not yet available). Oceanic pH is a measure of ocean acidity, 
+(`r RptYr+1` data are not yet available). Oceanic pH is a measure of ocean acidity, 
 which increases as the ocean absorbs carbon dioxide from the atmosphere. Lower pH 
 values represent greater acidity. Oceanic pH is calculated from total alkalinity 
 (TA) and dissolved inorganic carbon (DIC). Total alkalinity represents the 
@@ -130,7 +131,7 @@ Measurement Platform: *In-situ* station.
 
 Data available at: <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>.  
 
-Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi Ocean Time-Series as described in Karl and Lukas (1996) and on its website (HOT 2025) using the methodology provided by Zeebe and Wolf-Gladrow (2001). Graphics produced in part using Stawitz and Li (2025).
+Sourced from: Fabry et al. (2008), Feely et al. (2016), and the Hawaiʻi Ocean Time-Series as described in Karl and Lukas (1996) and on its website (HOT 2026) using the methodology provided by Zeebe and Wolf-Gladrow (2001). Graphics produced in part using Stawitz and Li (2025).
 
 __References__  
 Fabry et al. (2008): Fabry, V.J., Seibel, B.A., Feely, R.A., and J.C. Orr, 2008. Impacts of ocean acidification on marine fauna and ecosystem processes. ICES Journal of Marine Science, 65(3), pp. 414-432.  
@@ -139,7 +140,7 @@ Feely et al. (2016): Feely, R.A., Alin, S.R., Carter, B., Bednarsek, N., Hales, 
 
 Karl, D. and Lukas (1996): Karl, D. M., and R. Lukas, (1996), The Hawaii Ocean Time-series (HOT) program: Background, rationale and field implementation. Deep-Sea Research II, 43(2-3): 129-156.  
 
-HOT 2025: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 1 April 2025.  
+HOT 2026: Hawaii Ocean Time-series Data Organization & Graphical System (HOT-DOGS), <https://hahana.soest.hawaii.edu/hot/hot-dogs/bseries.html>, Accessed: 3 April 2026.  
 
 Stawitz C, Li B (2025). nmfspalette: A Color Palette for NOAA Fisheries. R package version 3.0.0.000. <https://nmfs-fish-tools.github.io/nmfspalette/>
 

@@ -1,35 +1,15 @@
----
-title: "El_Nino_Southern_Oscillation"
-author: "phoebe.woodworth-jefcoats@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
 
 ## EL NIÑO – SOUTHERN OSCILLATION
 
 ```{r}
 #| include: false
-### Load libraries
-# Commenting out the plotly, reticulate, python stuff because it is 
-# inexplicably not working this year
-library(tidyverse)
-library(lubridate)
-library(here)
-library(stringr)
-# remotes::install_github("nmfs-fish-tools/nmfspalette")
-library(nmfspalette)
-# library(plotly)
-# library(reticulate)
-# 
-# reticulate::use_miniconda('r-reticulate')
+
+# This includes all commonly used packages and variables, like RptYr so you only have to change it once. 
+source("_common.R")
 ```
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
-
 # Set path to variable: El_Nino_Southern_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("El_Nino_Southern_Oscillation")
@@ -227,7 +207,7 @@ stem <- function(x, y, stemcol) {
   }
 }
 
-pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
+#pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
 par(mar=c(4.1, 4.1, 2.1, 6.1))
 plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
      type = "l", lwd = 1,
@@ -255,46 +235,25 @@ legend('topright',
        horiz = F,
        inset = c(-0.17,-0.03), xpd=T,
        x.intersp=1.3)
+# 2. Save the displayed plot to an object
+my_plot_object <- recordPlot()
+
+# 3. Clear the current plot window (optional test)
 dev.off()
 
-# Just a note that the plot was sensitive to the xlim values
-# if I used dmy(01011950) as the xlim-min, things did not work
 
-# #color-coded bar chart for ENSO
-# p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
-#               height = plot_height, name = ~ENSO, color = ~ENSO, 
-#               colors = c(coral[2], oceans[2], ann_grey))
-# 
-# #apply same layout parameters for all plots
-# 
-# #custom x axis (min, every decade, report year)
-# all_years <- unique(indicator_data$Year)
-# first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
-# date_axis <- c(first_date, 
-#               all_years[which(all_years %% 10 == 0)], 
-#               RptYr)
-# 
-# p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
-#                    xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90, showgrid = TRUE),
-#                    #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
-#                    yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-3, 3), tickvals = list(-3, -2, -1, 0, 1, 2, 3)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
-#                    paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
-#                    hovermode = "x unified", #show data for all traces simultaneously
-#                    hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
-# 
-# #return plot
-# save_image(p1, paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""))
-# 
-# # Handy reference, in case this doesn't work in the future
-# # from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
-# # install.packages('reticulate')
-# # reticulate::install_miniconda()
-# # reticulate::conda_install('r-reticulate', 'python-kaleido')
-# # reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
-# # reticulate::use_miniconda('r-reticulate')
-# # To export:
-# # library(plotly)
-# # kaleido(FINAL_plot, "FINAL_plot.pdf")
+```
+
+```{r}
+#| echo: false
+#| label: fig-ch3-ENSO
+#| fig.cap: 'Oceanic Niño Index from 1950–2025 El Niño periods in red, La Niña periods in blue, and neutral periods in grey'
+#| fig.align: 'center'
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: "100%"
+
+my_plot_object
 ```
 
 **Rationale:** The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries.   
@@ -311,11 +270,14 @@ dev.off()
 \
 **Data available at:** <https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt>.   
 \
-**Sourced from:** NOAA CPC (2025).  
-Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** @NOAA-CPCUnknown-po. Graphics produced in part using @Stawitz2026-kw.  
 \
+
+<!--
 ## Additional Information
 
 Data were manually copied and pasted into a .csv.  These data have precision to the hundredth of a degree.  They are subsequently rounded in this script to match the data on the more commonly used [CPC site](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php), which are rounded to the tenth of a degree.  
 
 No data are saved for the Council portal because ONI isn't examined as an annual mean.
+
+-->

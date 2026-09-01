@@ -1,10 +1,10 @@
 
-## EL NIÑO – SOUTHERN OSCILLATION
+# El Niño – Southern Oscillation
 
 ```{r}
 #| include: false
 
-# This includes all commonly used packages and variables, like RptYr so you only have to change it once. 
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
 source("_common.R")
 ```
 
@@ -151,7 +151,7 @@ ENSO_dashboard <- ONI_full %>%
   select(Date_Time, Year = YR, Month, Value = ANOM, Anom, ID, Value_lm, Anom_lm, Units) |>
   filter(Year <= RptYr)
 
-write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+#write_csv(ENSO_dashboard, file = here("Indicator_Dashboard", "Data", paste('ENSO_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 ```{r}
@@ -189,58 +189,37 @@ indicator_data <- indicator_data |> mutate(Sign = sign(Value)) |>
 indicator_data[which(indicator_data$Sign == -1 & indicator_data$n >= 5),]$ENSO <- "La Niña"
 indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <- "El Niño"
 
-# Commented out the plotly code because it's not working this year.  So,
-# going with base R, because that's what I'm most familiar with
-# Fair warning, this coding is tedious.
-
 # x axis ticks and grid
 x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'),
             max(indicator_data$Date_Time))
 # x axis limit
 ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
-# Write a function to do the stem plot (we'll call it 'stem' like Matlabl does)
-# Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/
-stem <- function(x, y, stemcol) {
-  for (l in seq(1, length(x), 1)) {
-    lines(c(x[l], x[l]), c(0, y[l]), col = stemcol)
-  }
-}
+# Defining the theme up front so we don't have to repeat it
+plotTheme <- theme_minimal() +
+  theme(panel.border = element_rect(color='#F1F3F3'),
+        panel.grid.major = element_line(color='#F1F3F3'),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        axis.title = element_text(size=14, face="bold"), 
+        axis.text = element_text(size=12),
+        legend.position = 'inside', 
+        legend.position.inside = c(0.95,0.92),
+        legend.text = element_text(size=12), 
+        legend.key.spacing.x = unit(1.5,'cm'),
+        legend.spacing.y = unit(0.1,'cm'))
 
-#pdf(paste(Dir, '/ONI_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
-par(mar=c(4.1, 4.1, 2.1, 6.1))
-plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
-     type = "l", lwd = 1,
-     xlim = ts_x_lim, ylim = c(-3, 3),
-     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-     xaxs = "i", yaxs = "i", # remove the padding R adds
-     bty = "n", # remove box
-     xlab = "Year", ylab = "Oceanic Niño Index (ONI)",
-     # put a grid behind the plot
-     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-                     abline(h = c(seq(-3, 3, 1)), col = "#F1F3F3")),
-     font.lab = 2)
-par(new = TRUE)
-stem(indicator_data$Date_Time[ElNino_idx], indicator_data$Value[ElNino_idx], pal[2])
-stem(indicator_data$Date_Time[LaNina_idx], indicator_data$Value[LaNina_idx], oceans[2])
-stem(indicator_data$Date_Time[Neutral_idx], indicator_data$Value[Neutral_idx], ann_grey)
-axis(1, at = x_grid, label = c(seq(1950, 2025, 10), " "), col = "transparent", col.ticks = "transparent", xpd=T) 
-axis(2, at = c(seq(-3, 3, 1)), las = 1, col = "transparent", col.ticks = "transparent")
-legend('topright',
-       legend=c('El Niño', 'La Niña', 'Neutral'),
-       col=c(pal[2], oceans[2], ann_grey),
-       pch=c(15,15,15),
-       pt.cex = 2,
-       bty='n', 
-       horiz = F,
-       inset = c(-0.17,-0.03), xpd=T,
-       x.intersp=1.3)
-# 2. Save the displayed plot to an object
-my_plot_object <- recordPlot()
-
-# 3. Clear the current plot window (optional test)
-dev.off()
-
+# Make stem type plot using ggplot
+p <- ggplot(indicator_data) + 
+  geom_segment(aes(x = Date_Time, y = 0, xend = Date_Time, yend = Value, colour = ENSO), linewidth = 0.3) + 
+  scale_color_manual(values = c(pal[2], oceans[2], ann_grey), name=NULL) + 
+  scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = expansion(mult = c(0, 0.02))) +
+  ylim(c(-3,3)) +
+  xlab('Year') +
+  ylab('Oceanic Niño Index (ONI)') +
+  plotTheme +
+  guides(color = guide_legend(override.aes = list(linewidth = 3), byrow=T))  # Make the lines in the legend thicker
 
 ```
 
@@ -251,9 +230,9 @@ dev.off()
 #| fig.align: 'center'
 #| fig-width: 8
 #| fig-height: 5
-#| out-width: "100%"
+#| out-width: "90%"
 
-my_plot_object
+p
 ```
 
 **Rationale:** The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries.   

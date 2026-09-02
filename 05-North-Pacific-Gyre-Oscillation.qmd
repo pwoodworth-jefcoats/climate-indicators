@@ -1,37 +1,14 @@
----
-title: "North_Pacific_Gyre_Oscillation"
-author: "phoebe.woodworth-jefcoats@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
-
-## North Pacific Gyre Oscillation
+### North Pacific Gyre Oscillation
 
 ```{r}
 #| include: false
-### Load libraries
-# Commenting out the plotly, reticulate, python stuff because it is 
-# inexplicably not working this year
-library(tidyverse)
-library(lubridate)
-library(here)
-library(stringr)
-# remotes::install_github("nmfs-fish-tools/nmfspalette")
-library(nmfspalette)
-# library(plotly)
-# library(reticulate)
-#devtools::install_github("teunbrand/elementalist")
-library(elementalist)
-# 
-# reticulate::use_miniconda('r-reticulate')
+
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
+source("_common.R")
 ```
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
-
 # Set path to variable: North_Pacific_Gyre_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("North_Pacific_Gyre_Oscillation")
@@ -43,9 +20,31 @@ if (!dir.exists(Dir)) {
 
 ```{r}
 #| include: false
-### Load data
-NPGO_full <- read_csv(file = paste(Dir, '/NPGO_', RptYr, '.csv', sep = ""),
-                      show_col_types = FALSE)
+# Install library
+library(readr)
+
+# Download NPGO data from website and save for the record.
+# Specify the URL
+url <- "https://www.o3d.org/npgo/data/NPGO.txt"
+
+# Read the raw lines to find where the data table actually starts
+raw_lines <- readLines(url)
+
+# Find lines that don't start with '#' or comment markers (the data lines)
+header_lines <- grep("^#", raw_lines)
+data_start_line <- max(header_lines)
+
+# Read the data table into a data frame
+# The file uses whitespace to separate Year, Month, and NPGO index value
+NPGO_full <- read.table(
+  url,
+  skip = data_start_line,
+  col.names = c("YEAR", "MONTH", "NPGO"),
+  stringsAsFactors = FALSE
+)
+
+# Save a copy if you want. We do save a version for the PIFSC dashboard further down in the code though. 
+#write.csv(npgo_data, file = paste(Dir, '/NPGO_', RptYr, '.csv', sep = ""), col.names = F, quote = F)
 ```
 
 ```{r}
@@ -90,7 +89,7 @@ NPGO_dashboard <- NPGO_full %>%
   mutate(Anom = NA, ID = "NPGO", Value_lm = NA, Anom_lm = NA, Units = "North Pacific Gyre Oscillation") |>
   filter(Year <= RptYr) 
 
-write_csv(NPGO_dashboard, file = here("Indicator_Dashboard", "Data", paste('NPGO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+#write_csv(NPGO_dashboard, file = here("Indicator_Dashboard", "Data", paste('NPGO_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 ```{r}
@@ -110,10 +109,7 @@ waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not
 seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-# # Formatting
-# plot_title_font <- list(size = 14)
-# plot_height <- 350 #in pixels
-
+# Formatting
 indicator_data <- indicator_data |>
   mutate(Units = "North Pacific Gyre Oscillation (NPGO)")
 
@@ -127,8 +123,7 @@ x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Ti
 # y-axis limits
 ts_y_lim <-c(-4,4)
 
-# Plot using ggplot this year (2025)
-## Plot using ggplot with legend
+# Plot using ggplot with legend
 # Easier to control the aesthetics and size
 
 # Defining the theme up front so we don't have to repeat it
@@ -160,66 +155,16 @@ p <- ggplot() +
   guides(color = guide_legend(ncol = 2)) +
   plotTheme
 
-ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
-ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.png'), plot=p, width=8, height=5, units='in')
-
-# # The plotly code isn't working this year.  So,
-# # going with base R, because that's what I'm most familiar with
-# # Fair warning, this coding is tedious.
-# 
-# # x axis limit
-# ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
-# 
-# pdf(paste(Dir, '/NPGO_ts_', RptYr, '.pdf', sep = ""), width=9, height=6)
-# par(mar=c(6.6, 5.1, 2.1, 2.1))
-# plot(indicator_data$Date_Time, indicator_data$Value, type = "l", lwd = 2, 
-#      xlim = ts_x_lim, ylim = c(-4, 4), 
-#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-#      xaxs = "i", yaxs = "i", # remove the padding R adds
-#      bty = "n", # remove box
-#      col = pal[1],
-#      xlab = "Year", ylab = "North Pacific Gyre Oscillation (NPGO)",
-#      # put a grid behind the plot
-#      panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-#                      abline(h = c(seq(-4, 4, 1)), col = "#F1F3F3")),
-#      font.lab = 2)
-# par(new = TRUE)
-# plot(given_yr$Date_Time, given_yr$Value, type = "l", lwd = 2, 
-#      xlim = ts_x_lim, ylim = c(-4,4), 
-#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-#      xaxs = "i", yaxs = "i", # remove the padding R adds
-#      bty = "n", # remove box
-#      col = pal[2],
-#      xlab = " ", ylab = " ")
-# par(new = TRUE)
-# plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
-#      type = "l", lwd = 1,
-#      xlim = ts_x_lim, ylim = c(-4, 4),
-#      xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-#      xaxs = "i", yaxs = "i", # remove the padding R adds
-#      bty = "n", # remove box
-#      xlab = " ", ylab = " ")
-# axis(1, at = x_grid, label = c(seq(1950, 2020, 10), " "), col = "transparent", col.ticks = "transparent") 
-# axis(2, at = c(seq(-4, 4, 1)), las = 1, col = "transparent", col.ticks = "transparent")
-# grid.roundrect(x=0.51, y=0.04, width=0.55, height=0.06, 
-#                r=unit(0.3, "snpc"), gp=gpar(fill="gray90", col='gray90'), just='centre')
-# legend('bottom', 
-#        legend=c(paste0('Monthly index, 1950-',RptYr-1), paste0('Monthly index, ',RptYr)), 
-#        col=c(pal[1], pal[2]), 
-#        lty=1, lwd=1.75, 
-#        bg='transparent', 
-#        horiz=T, 
-#        inset = -0.3, xpd=T, 
-#        box.lwd = 0, box.col = 'transparent')
-# dev.off()
+#ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
+#ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.png'), plot=p, width=8, height=5, units='in')
 
 ```
 
 **Rationale:** The North Pacific Gyre Oscillation (NPGO) is related to, but distinct from, the Pacific Decadal Oscillation.  It captures basin-scale processes, making it well suited to capture change across the Hawaiʻi-based longline fishing grounds.    
 \
-**Status:** The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This is within the range of values observed previously in the time series.  
+**Status:** The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year. This is within the range of values observed previously in the time series.  
 \
-**Description:** The NPGO is driven by regional and basin-scale changes in wind patterns.  Changed to the wind field driver changes in ocean circulation that affect nutrients and, in turn, phytoplankton.  Because phytoplankton are the foundational food source for marine ecosystems, the NPGO offers insight into potential ecosystem change.  Description paraphrased from Di Lorenzo et al. (2008).  
+**Description:** The NPGO is driven by regional and basin-scale changes in wind patterns. Changed to the wind field driver changes in ocean circulation that affect nutrients and, in turn, phytoplankton. Because phytoplankton are the foundational food source for marine ecosystems, the NPGO offers insight into potential ecosystem change. Description paraphrased from @Di_Lorenzo2008-sb.  
 \
 **Timeframe:** Monthly.  
 \
@@ -229,12 +174,12 @@ ggsave(paste0(Dir, '/NPGO_ts_', RptYr, '_ggolot.png'), plot=p, width=8, height=5
 \
 **Data available at:** <https://www.o3d.org/npgo/data/NPGO.txt>.  
 \
-Sourced from Di Lorenzo et al. (2008).  
+**Sourced from:** @Di_Lorenzo2008-sb. Graphics produced in part using @Stawitz2026-kw.  
 \
-Graphics produced in part using Stawitz and Li (2025).  
-\
+<!--
 ## Additional Information
 
 Data were manually copied and pasted into a .csv.  Each column was formatted to remove scientific notation which was resulting in rounding errors (data type set to 'numeric').
 
-No data are saved for the Council portal because the NPGO isn't examined as an annual mean.
+No data are saved for the Council portal because the NPGO isn't examined as an annual mean. 
+-->

@@ -9,8 +9,6 @@ source("_common.R")
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-# Note that there's a one year lag for HOT data
 
 # Set path to variable: Oceanic_pH
 # This is where the data are and where the plots will go

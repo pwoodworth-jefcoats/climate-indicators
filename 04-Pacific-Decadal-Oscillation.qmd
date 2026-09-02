@@ -1,35 +1,14 @@
----
-title: "Pacific_Decadal_Oscillation"
-author: "phoebe.woodworth-jefcoats@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
-
-## PACIFIC DECADAL OSCILLATION
+### Pacific Decadal Oscillation
 
 ```{r}
 #| include: false
-### Load libraries
-# Commenting out the plotly, reticulate, python stuff because it is 
-# inexplicably not working this year
-library(tidyverse)
-library(lubridate)
-library(here)
-library(stringr)
-# remotes::install_github("nmfs-fish-tools/nmfspalette")
-library(nmfspalette)
-# library(plotly)
-# library(reticulate)
-# 
-# reticulate::use_miniconda('r-reticulate')
+
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
+source("_common.R")
 ```
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
-
 # Set path to variable: Pacific_Decadal_Oscillation
 # This is where the data are and where the plots will go
 Dir <- here("Pacific_Decadal_Oscillation")
@@ -68,7 +47,7 @@ if (monthly_max_RptYr > monthly_max_PrevYrs) {
   print('The highest monthly value was in the report year.')
 }
 
-if (monthly_max_RptYr > monthly_max_PrevYrs) {
+if (monthly_min_RptYr > monthly_min_PrevYrs) {
   print('The lowest monthly value was in the report year.')
 }
 ```
@@ -89,7 +68,7 @@ PDO_dashboard <- PDO_full %>%
   mutate(Anom = NA, ID = "PDO", Value_lm = NA, Anom_lm = NA, Units = "Pacific Decadal Oscillation") |>
   filter(Year <= RptYr) 
 
-write_csv(PDO_dashboard, file = here("Indicator_Dashboard", "Data", paste('PDO_Dashboard_Data_', RptYr, '.csv', sep = "")))
+#write_csv(PDO_dashboard, file = here("Indicator_Dashboard", "Data", paste('PDO_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 ```{r}
@@ -116,102 +95,65 @@ plot_height <- 350 #in pixels
 indicator_data <- indicator_data |>
   mutate(Units = "Pacific Decadal Oscillation (PDO)")
 
-# Commented out the plotly code because it's not working this year.  So,
-# going with base R, because that's what I'm most familiar with
-# Fair warning, this coding is tedious.
-
 # x axis ticks and grid
 x_grid <- c(min(indicator_data$Date_Time), 
             seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year'),
             max(indicator_data$Date_Time))
+
+x_grid <- seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year')
+
 # x axis limit
 ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
 # Identify positive and negative phases
-Pos_idx <- which(indicator_data$Value > 0)
-Neg_idx <- which(indicator_data$Value < 0)
+indicator_data$Phase <- ifelse(indicator_data$Value > 0, 'Positive PDO', 'Negative PDO')
 
-# Write a function to do the stem plot (we'll call it 'stem' like Matlabl does)
-# Thanks to https://www.r-bloggers.com/2009/11/matlab-style-stem-plot-with-r/
-stem <- function(x, y, stemcol) {
-  for (l in seq(1, length(x), 1)) {
-    lines(c(x[l], x[l]), c(0, y[l]), col = stemcol)
-  }
-}
+# Defining the theme up front so we don't have to repeat it
+plotTheme <- theme_minimal() +
+  theme(panel.border = element_rect(color='#F1F3F3'),
+        panel.grid.major = element_line(color='#F1F3F3'),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        axis.title = element_text(size=14, face="bold"), 
+        axis.text = element_text(size=12),
+        legend.position = 'inside', 
+        legend.position.inside = c(0.9,0.92),
+        legend.text = element_text(size=12), 
+        legend.key.spacing.x = unit(1.5,'cm'),
+        legend.spacing.y = unit(0.1,'cm'))
 
-pdf(paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""), width=8, height=5)
-par(mar=c(4.1, 4.1, 2.1, 2.1))
-plot(c(min(indicator_data$Date_Time), max(indicator_data$Date_Time)), c(0, 0), col = "black", 
-     type = "l", lwd = 1,
-     xlim = ts_x_lim, ylim = c(-5, 5),
-     xaxt = "n", yaxt = "n", # no axes ticks, so we can customize them
-     xaxs = "i", yaxs = "i", # remove the padding R adds
-     bty = "n", # remove box
-     xlab = "Year", ylab = "Pacific Decadal Oscillation (PDO)",
-     # put a grid behind the plot
-     panel.first = c(abline(v = x_grid, col = "#F1F3F3"),
-                     abline(h = c(seq(-5, 5, 1)), col = "#F1F3F3")),
-     font.lab = 2)
-par(new = TRUE)
-stem(indicator_data$Date_Time[Pos_idx], indicator_data$Value[Pos_idx], pal[2])
-stem(indicator_data$Date_Time[Neg_idx], indicator_data$Value[Neg_idx], oceans[2])
-axis(1, at = x_grid, label = c("1854", " ", seq(1880, 2020, 20), " "), col = "transparent", col.ticks = "transparent") 
-axis(2, at = c(seq(-5, 5, 1)), las = 1, col = "transparent", col.ticks = "transparent")
-legend('topright',
-       legend=c('Negative PDO', 'Positive PDO'),
-       col=c(oceans[2], pal[2]),
-       pch=c(15,15),
-       pt.cex = 2,
-       bty='n', 
-       horiz = F,
-       inset = c(0,-0.03),
-       x.intersp=1.3)
-dev.off()
+# Make stem type plot using ggplot
+p <- ggplot(indicator_data) + 
+  geom_segment(aes(x = Date_Time, y = 0, xend = Date_Time, yend = Value, colour = Phase), linewidth = 0.3) + 
+  scale_color_manual(values = c(oceans[2], pal[2]), name=NULL) + 
+  scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = expansion(mult = c(0, 0.02))) +
+   scale_y_continuous(labels = seq(-4,4,by=1), breaks = seq(-4,4,by=1), limits = c(-4,4)) +
+  xlab('Year') +
+  ylab('Pacific Decadal Oscillation (PDO)') +
+  plotTheme +
+  guides(color = guide_legend(override.aes = list(linewidth = 3), byrow=T))  # Make the lines in the legend thicker
 
-      
-# #color-coded bar chart for PDO
-# p1 <- plot_ly(indicator_data, x = dmy_hm(indicator_data$Date_Time), y = ~Value, type = "bar",
-#               height = plot_height,
-#               name = ~ifelse(Value > 0, yes = "Positive PDO", no = "Negative PDO"),
-#               color = ~Value > 0, colors = c(oceans[2], coral[2]))
-# 
-# #apply same layout parameters for all plots
-# 
-# #custom x axis (min, every decade, report year)
-# all_years <- unique(indicator_data$Year)
-# first_date <- as.character(parse_date_time(indicator_data$Date_Time[1], orders = "d-b-Y H:M"))
-# date_axis <- c(first_date, 
-#               all_years[which(all_years %% 10 == 0)], 
-#               RptYr)
-# 
-# p1 <- p1 |> layout(title = list(text = "Indicator Time Series", x = 0.01, font = plot_title_font), #add title
-#                    xaxis = list(type = "date", tickformat = "%Y", tickmode = "array", tickvals = date_axis, tickangle = 90, showgrid = TRUE),
-#                    #xaxis = list(tick0 = min(indicator_data$Date_Time), dtick = "M24"),
-#                    yaxis = list(title = indicator_data$Units[1], hoverformat = '.3f', range = list(-5, 5), tickvals = list(-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)), #add units and round values in hover display; not sure of a better way to set axis limits and ticks...
-#                    paper_bgcolor = 'transparent', plot_bgcolor = 'transparent', #transparent background
-#                    hovermode = "x unified", #show data for all traces simultaneously
-#                    hoverlabel = list(namelength = -1)) #don't cutoff hoverinfo due to length
-# 
-# #return plot 
-# save_image(p1, paste(Dir, '/PDO_ts_', RptYr, '.pdf', sep = ""))
-
-# Handy reference, in case this doesn't work in the future
-# from: https://stackoverflow.com/questions/64028289/export-plot-from-plotly-into-pdf
-# install.packages('reticulate')
-# reticulate::install_miniconda()
-# reticulate::conda_install('r-reticulate', 'python-kaleido')
-# reticulate::conda_install('r-reticulate', 'plotly', channel = 'plotly')
-# reticulate::use_miniconda('r-reticulate')
-# To export:
-# library(plotly)
-# kaleido(FINAL_plot, "FINAL_plot.pdf")
 ```
 
-**Rationale:** The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. Research has shown that during positive phases of the PDO, the Hawaiʻi-based deep-set longline fishery has a greater likelihood of black-footed albatross sightings and interactions (Wren et al. 2019).  
+```{r}
+#| echo: false
+#| label: fig-ch4-PDO
+#| fig.cap: 'Pacific Decadal Oscillation from 1854–2025 with positive warm periods in red and negative cool periods in blue'
+#| fig.align: 'center'
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: "90%"
+
+p
+```
+
+
+**Rationale:** The Pacific Decadal Oscillation (PDO) was initially named by fisheries scientist Steven Hare in 1996 while researching connections between Alaska salmon production cycles and Pacific climate. Like ENSO, the PDO reflects changes between periods of persistently warm or persistently cool ocean temperatures, but over a period of 20 to 30 years (versus six to 18 months for ENSO events). The climatic fingerprints of the PDO are most visible in the Northeastern Pacific, but secondary signatures exist in the tropics. Research has shown that during positive phases of the PDO, the Hawaiʻi-based deep-set longline fishery has a greater likelihood of black-footed albatross sightings and interactions [@Wren2019-ss].  
 \
-**Status:** The PDO was `r ifelse(mean(indicator_data$Value[which(indicator_data$Year == RptYr)]) < 0, 'negative', 'positive')` in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This represents the strongest negative value in the time series, with the next two lowest values occurring in 2024 and 1894.  
+**Status:** The PDO was `r ifelse(mean(indicator_data$Value[which(indicator_data$Year == RptYr)]) < 0, 'negative', 'positive')` in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year.  This represents the strongest negative value in the time series, with the next two lowest values occurring in `r indicator_data$Year[order(indicator_data$Value)[2]]` and `indicator_data$Year[order(indicator_data$Value)[3]]`.  
 \
-**Description:** The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from NOAA (2025b).  
+**Description:** The PDO is often described as a long-lived El Niño-like pattern of Pacific climate variability. As seen with the better-known ENSO, extremes in the PDO pattern are marked by widespread variations in the Pacific Basin and the North American climate. In parallel with the ENSO phenomenon, the extreme cases of the PDO have been classified as either warm or cool, as defined by ocean temperature anomalies in the northeast and tropical Pacific Ocean. When SST is below average in the [central] North Pacific and warm along the North American coast, and when sea level pressures are below average in the North Pacific, the PDO has a positive value. When the climate patterns are reversed, with warm SST anomalies in the interior and cool SST anomalies along the North American coast, or above average sea level pressures over the North Pacific, the PDO has a negative value. Description inserted from @NOAA-PSLUnknown-jd.  
 \
 **Timeframe:** Monthly.  
 \
@@ -221,10 +163,13 @@ dev.off()
 \
 **Data available at:** <https://psl.noaa.gov/pdo/>.  
 \
-**Sourced from:** NOAA (2025b), Mantua (1997), and Newman (2016). Graphics produced in part using Stawitz and Li (2025).  
+**Sourced from:** @NOAA-PSLUnknown-jd, @Mantua1997-na, and @Newman2016-my. Graphics produced in part using @Stawitz2026-kw.  
 \
+<!--
 ## Additional Information
 
 The 'PDO ERSST V5' csv time series data were downloaded and manually renamed to PDO_`r RptYr`.csv.  The original file name is pdo.timeseries.ersstv5.csv.
 
 No data are saved for the Council portal because the PDO isn't examined as an annual mean.
+
+-->

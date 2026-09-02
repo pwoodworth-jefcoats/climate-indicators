@@ -9,9 +9,6 @@ source("_common.R")
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-#RptYr <- 2025
-
 # Set path to variable: Atmospheric_CO2
 # This is where the data are and where the plots will go
 Dir <- here("Atmospheric_CO2")
@@ -39,22 +36,54 @@ if (!dir.exists(Dir_dash)) {
 
 ```{r}
 #| include: false
-### Load data
-# https://gml.noaa.gov/ccgg/trends/data.html
-# Note that the number of lines to skip sometimes changes from year to year, which is frustrating.
-# Monthly CO2 concentration
-atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 40)
+### Download data
+# The following .csv files will be downloaded from <https://gml.noaa.gov/ccgg/trends/data.html>:
+# - Mauna Loa CO2 monthly mean data (co2_mm_mlo.csv)
+# - Mauna Loa CO2 annual mean data  (co2_annmean_mlo.csv)
+# - Mauna Loa CO2 annual mean growth rates  (co2_gr_mlo.csv)
 
+# Set the URLs. (these may change year to year so make sure to double check first)
+# Monthly CO2 Concentration
+url_atm_co2 <- "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.csv"
 # Annual Growth Rates
-ann_gr <- read_csv(file = paste(Dir, '/co2_gr_mlo_', RptYr, '.csv', sep = ""), skip = 45)
-
+url_ann_gr  <- "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_gr_mlo.csv"
 # Annual concentrations, so that we're not providing a potentially different value
-ann_co2 <- read_csv(file = paste(Dir, '/co2_annmean_mlo_', RptYr, '.csv', sep = ""), skip = 43)
+url_ann_co2  <- "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_annmean_mlo.csv"
+
+# Download as tibbles
+atm_co2 <- read_csv(url_atm_co2, comment = '#')
+ann_gr <- read_csv(url_ann_gr, comment = '#')
+ann_co2 <- read_csv(url_ann_co2, comment = '#')
+
+# Save for a complete record if you want. Appending report year to the file name for record keeping. 
+# write.csv(atm_co2, file=paste0(Dir, '/co2_mm_mlo_', RptYr, '.csv'))
+# write.csv(ann_gr, file=paste0(Dir, '/co2_gr_mlo_', RptYr, '.csv'))
+# write.csv(annotation_custom(), file=paste0(Dir, '/co2_annmean_mlo_', RptYr, '.csv'))
 ```
+
+```{r}
+#| include: false
+
+### Uncomment below if you have already downloaded the data and want to read it in instead. 
+
+# ### Load data
+# # https://gml.noaa.gov/ccgg/trends/data.html
+# # Note that the number of lines to skip sometimes changes from year to year, which is frustrating.
+# # Monthly CO2 concentration
+# atm_co2 <- read_csv(file = paste(Dir, '/co2_mm_mlo_', RptYr, '.csv', sep = ""), skip = 40)
+# 
+# # Annual Growth Rates
+# ann_gr <- read_csv(file = paste(Dir, '/co2_gr_mlo_', RptYr, '.csv', sep = ""), skip = 45)
+# 
+# # Annual concentrations, so that we're not providing a potentially different value
+# ann_co2 <- read_csv(file = paste(Dir, '/co2_annmean_mlo_', RptYr, '.csv', sep = ""), skip = 43)
+```
+
 
 ```{r}
 #| echo: false
 # Note that the above needs to be 'echo' and not 'include' so that the error checks print.
+# This section will print out an error check if there is something so that will need to be commented out prior to final rendering (or removed in Word after rendering)
 
 # Pull out the ANNUAL values we need for the report
 ann_mean_idx <- which(ann_co2$year == RptYr) 

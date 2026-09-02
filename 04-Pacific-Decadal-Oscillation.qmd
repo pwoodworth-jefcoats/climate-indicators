@@ -19,15 +19,23 @@ if (!dir.exists(Dir)) {
 ```
 
 ```{r}
-#| include: false
-### Load data
-PDO_full <- read_csv(file = paste(Dir, '/PDO_', RptYr, '.csv', sep = ""))
+# Direct CSV URL
+csv_url <- "https://psl.noaa.gov/pdo/data/pdo.timeseries.ersstv5.csv"
+#Read the CSV file directly into R
+PDO_full <- read.csv(csv_url, stringsAsFactors = FALSE)
+### Rename the PDO column to something reasonable
+names(pdo_raw)[2] <- 'PDO'
+
+# Optional save
+#write.csv(PDO_full, file = paste(Dir, '/PDO_', RptYr, '.csv', sep = ""), quote = F, row.names = F)
 ```
+
 
 ```{r}
 #| include: false
-### Rename the PDO column to something reasonable
-PDO_full <- rename(PDO_full, PDO = `PDO from ERSST V5 https://psl.noaa.gov/pdo/ Using EOF from 1920 to 2014 for N Pacific (see webpage)`)
+# ### Load data
+# # Comment this out if you are running above code to download the data
+# PDO_full <- read_csv(file = paste(Dir, '/PDO_', RptYr, '.csv', sep = ""))
 ```
 
 ```{r}

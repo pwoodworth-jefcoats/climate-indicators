@@ -1,22 +1,15 @@
----
-title: "Tropical_Cyclones"
-author: "phoebe.woodworth-jefcoats@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
-
-## Tropical Cyclones
+### Tropical Cyclones
 
 ```{r}
 #| include: false
-### Load libraries
-library(tidyverse)
-library(lubridate)
-library(here)
-library(stringr)
-# remotes::install_github("nmfs-fish-tools/nmfspalette")
-library(nmfspalette)
+
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
+source("_common.R")
+```
+
+```{r}
+#| include: false
+### Load libraries that are not part of the common suite
 library(sf)
 library(broom)
 library(english)
@@ -24,8 +17,6 @@ library(english)
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
 
 # Set path to variable: Tropical_Cyclones
 # This is where the data are and where the plots will go
@@ -694,8 +685,10 @@ Every cyclone has an ACE Index value, which is a number based on the maximum win
 \
 **Data available at:** <https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/>.  
 \
-**Sourced from:** Knapp et al. (2010), Knapp et al. (2018), and NOAA (2025c).  
+**Sourced from:** @Knapp2010-rc and @Gahtan2024-dr.  
 \
+
+<!--
 ## Additional Information
 
 The ibtracs.since1980.list.v04r00.csv file downloaded and manually renamed to include `r paste(RptYr, 'full', sep ='')`.  All columns except:  
@@ -748,3 +741,5 @@ ACEindex <- cbind(EP_counts[,c(1,5)], CP_counts[,5], WP_counts[,5], SP_counts[,5
 write_csv(Storm_Counts, file = paste(here(), '/PelagicClimate_', RptYr, '/StormCounts_', RptYr, '.csv', sep = ""))
 write_csv(ACEindex, file = paste(here(), '/PelagicClimate_', RptYr, '/ACEindex_', RptYr, '.csv', sep = ""))
 ```
+
+-->

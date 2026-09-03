@@ -27,18 +27,11 @@ library(readr)
 # Specify the URL
 url <- "https://www.o3d.org/npgo/data/NPGO.txt"
 
-# Read the raw lines to find where the data table actually starts
-raw_lines <- readLines(url)
-
-# Find lines that don't start with '#' or comment markers (the data lines)
-header_lines <- grep("^#", raw_lines)
-data_start_line <- max(header_lines)
-
 # Read the data table into a data frame
 # The file uses whitespace to separate Year, Month, and NPGO index value
 NPGO_full <- read.table(
   url,
-  skip = data_start_line,
+  comment.char = '#',
   col.names = c("YEAR", "MONTH", "NPGO"),
   stringsAsFactors = FALSE
 )

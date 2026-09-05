@@ -295,7 +295,7 @@ p_map <- ggplot() +
         legend.text = element_text(size = 10),  #text size for color bar
         plot.title = element_text(hjust = 0.5), 
         plot.margin=unit(c(0,0,0.02,0), "null")) + #centering the plot title. Default is left align
- guides(fill = guide_colorbar(title.position='right', title="Temperature anomaly (°C)",
+ guides(fill = guide_colorbar(title.position='right', title=expression("Chlorophyll-a (mg " * m^-3 * ")"),
                                  title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
            linetype=guide_legend(position = 'bottom', 
                                  title.position='top', 
@@ -304,6 +304,46 @@ p_map <- ggplot() +
   
 # ggsave(filename = paste0(Dir, '/Chl_map_', RptYr, '.pdf'), plot=p_map, width = 7, height = 3.8)
 # ggsave(filename = paste0(Dir, '/Chl_map_', RptYr, '.png'), plot=p_map, width = 7, height = 3.8)
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-ch9-Chlmap
+#| fig.cap: !expr paste0('The difference in chlorophyll concentration in ', RptYr, ' from the 1980-2009 average (shaded) with the chlorophyll concentration as contours where the dashed, solid, and long dashed lines show the 0.1, 0.2, and 0.3 mg m^-3^. The black rectangle identifies the area targeted by Hawaiʻi’s longline fisheries. Chlorophyll is averaged over this area for the time series shown in @fig-ch9-Chl and @fig-ch9-ChlAnom')
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 3
+#| out-width: "95%"
+
+p_map
+
+```
+
+```{r}
+#| echo: false
+#| label: fig-ch9-Chl
+#| fig.cap: 'Time series of monthly average chlorophyll concentration over the longline fishing grounds outlined in @fig-ch9-Chlmap'
+#| fig.align: 'center'
+#| fig-width: 6
+#| fig-height: 4
+#| out-width: "90%"
+
+p
+
+```
+
+```{r}
+#| echo: false
+#| label: fig-ch9-ChlAnom
+#| fig.cap: 'Time series of monthly average chlorophyll concentration anomaly over the longline fishing grounds outlined in @fig-ch9-Chlmap'
+#| fig.align: 'center'
+#| fig-width: 6
+#| fig-height: 4
+#| out-width: "90%"
+
+p_ann
 
 ```
 

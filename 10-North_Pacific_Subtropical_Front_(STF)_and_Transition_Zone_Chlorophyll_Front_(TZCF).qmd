@@ -1,32 +1,25 @@
----
-title: "North_Pacific_Subtropical_Front_(STF)_and_Transition_Zone_Chlorophyll_Front_(TZCF)"
-author: "johanna.wren@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
-
-## North_Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)
+### North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)
 
 ```{r}
+#| message: false
+#| warning: false
 #| include: false
-### Load libraries
-library(tidyverse)
-#library(cmocean)
-library(here)
-library(nmfspalette)
-library(scales)
-library(tidyr)
-library(terra)
-library(tidyterra)
-library(lubridate)
-library(elementalist)  # devtools::install_github("teunbrand/elementalist")
+
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
+source("_common.R")
 ```
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
+### Load libraries
+#library(tidyr)
+library(terra)
+library(tidyterra)
+
+```
+
+```{r}
+#| include: false
 
 # Set path to variable: Fisheries Indicators
 # This is where the data are and where the plots will go
@@ -39,6 +32,7 @@ if (!dir.exists(Dir)) {
 
 ```{r}
 #| include: false
+#| warning: false
 
 #----------------------------------------------------------
 #   STF  
@@ -49,7 +43,7 @@ if (!dir.exists(Dir)) {
 sstRas <- rast(paste0(Dir, '/SAFE_SST_Q1ave_', RptYr, '.nc'))
 sstRas <- rotate(sstRas)  # this changes it from -180 to 360
 # Fix the year indexing and add projection and minmax
-yr <- year(as.Date('1901-01-15') + depth(sstRas)*365.25)
+yr <- year(as.Date('1901-01-15') + time(sstRas)*365.25)
 names(sstRas) <- yr
 crs(sstRas) <- '+proj=longlat +datum=WGS84 +no_defs'
 setMinMax(sstRas)
@@ -113,24 +107,14 @@ xlab("") + ylab("") +
     guides(fill = guide_colorbar(title.position='right', title="Temperature (°C)",
                                  title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)))
   
-  ggsave(filename = paste0(Dir, '/STFfigures/SAFE_STFfigs_', yr[i], '_terra.png'), plot = psst, width=6, height=4, dpi=300, units='in')
+  #ggsave(filename = paste0(Dir, '/STFfigures/SAFE_STFfigs_', yr[i], '_terra.png'), plot = psst, width=6, height=4, dpi=300, units='in')
 }
 
 ```
 
 ```{r}
-#| eval: false
 #| include: false
-
-# Figure caption text
-# Average position of the subtropical front (STF) in 2023 (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–2024; solid grey lines), and ocean temperatures for the first quarter of 2024 (shaded). 
-
-knitr::include_graphics(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'))
-
-```
-
-```{r}
-#| include: false
+#| warning: false
 
 #----------------------------------------------------------
 #   TCZF
@@ -139,7 +123,7 @@ knitr::include_graphics(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'))
 chlRas <- rast(paste0(Dir, '/SAFE_CHL_Q1ave_', RptYr, '.nc'))
 chlRas <- rotate(chlRas)  # this changes it from -180 to 360
 # Fix the year indexing and add projection and minmax
-yr <- year(as.Date('1901-01-15') + depth(chlRas)*365.25)  # the time stamp is saved as depth in this file
+yr <- year(as.Date('1901-01-15') + time(chlRas)*365.25)  # the time stamp is saved as depth in this file
 names(chlRas) <- yr
 crs(chlRas) <- '+proj=longlat +datum=WGS84 +no_defs'
 setMinMax(chlRas)
@@ -189,7 +173,8 @@ TZCFindex <- contourDat %>%
   mutate(front = 'TZCF')
 
 # Start a loop over all the years and make a plot with background chl for that year, the current year contour, the climatological contour, and all previous year contours as lighter 'ghost' lines
-for (i in seq_along(yr)) {
+#for (i in seq_along(yr)) { # Use this if you are making all the figures starting in 1985
+for (i in which(yr==RptYr)) { # Use this if you are only making a figure for the report year
   # Subset by year and rescale the spatraster for better color plotting
   test <- chlRas[[i]]
   test2 <- ifel(test < 1, test*500, test+499)
@@ -233,25 +218,15 @@ for (i in seq_along(yr)) {
     )
   ))
   
-  ggsave(filename = paste0(Dir, '/TZCFfigures/SAFE_TZCFfigs_', yr[i], '_terra.png'), plot = pchl, width=6, height=4, dpi=300, units='in')
+  #ggsave(filename = paste0(Dir, '/TZCFfigures/SAFE_TZCFfigs_', yr[i], '_terra.png'), plot = pchl, width=6, height=4, dpi=300, units='in')
   
 }
 
 ```
 
-
 ```{r}
-#| eval: false
-#| include: false
-
-# Figure caption text
-# Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
-
-knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
-
-```
-
-```{r}
+#| message: false
+#| warning: false
 #| include: false
 
 # Make a plot for both the TZCF and STF index. 
@@ -299,8 +274,8 @@ plotTheme <- theme_minimal() +
 ptrend <- ggplot() +
   geom_line(data = STFindex, aes(x = lyr, y = mean_lat, color='L1'), linewidth=1) +
   geom_line(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L2'), linewidth=1) +
-  geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F) +
-  geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F) +
+  geom_smooth(data = STFindex, aes(x = lyr, y = mean_lat, color='L3'), method='lm', se=F, formula = y ~ x) +
+  geom_smooth(data = TZCFindex, aes(x = lyr, y = mean_lat, color='L4'), method='lm', se=F, formula = y ~ x) +
   geom_line(data = STFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L5"), linewidth=1) +
   geom_line(data = TZCFindex %>% filter(lyr>=(RptYr-1)), aes(x = lyr, y = mean_lat, color="L6"), linewidth=1) +
   scale_color_manual(values = c(
@@ -321,19 +296,64 @@ ptrend <- ggplot() +
   guides(color=guide_legend(title=NULL)) +
   plotTheme
 
-ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.pdf'), plot = ptrend, width=7, height=5, dpi=300, units='in')
+#ggsave(filename = paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.pdf'), plot = ptrend, width=7, height=5, dpi=300, units='in')
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-ch10-STFmap
+#| fig.cap: !expr paste0('Average position of the subtropical front (STF) in ', RptYr, ' (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–', RptYr-1, '; solid grey lines), and ocean temperatures for the first quarter of ', RptYr, ' (shaded).')
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 4
+#| out-width: "95%"
+
+psst
+
+# Figure caption text
+# Average position of the subtropical front (STF) in 2023 (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–2024; solid grey lines), and ocean temperatures for the first quarter of 2024 (shaded). 
+
+#knitr::include_graphics(paste0(Dir, '/SAFE_STFmap_', RptYr, '.png'))
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-ch10-TZCFmap
+#| fig.cap: !expr paste0('Average position of the transition zone chlorophyll front (TZCF) in ', RptYr, ' (solid black line), over the 1985–2009 average (dotted line), locations from previous years (1985–', RptYr-1, '; solid grey lines), and ocean color for the first quarter of ', RptYr, ' (shaded).')
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 4
+#| out-width: "95%"
+
+pchl
+
+# Figure caption text
+# Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
+
+#knitr::include_graphics(paste0(Dir, '/SAFE_TZCFmap_', RptYr, '.png'))
 
 ```
 
 
 ```{r}
-#| eval: false
-#| include: false
+#| echo: false
+#| label: fig-ch10-Front
+#| fig.cap: 'Annual mean latitude for the transition zone chlorophyll front (TZCF) and subtropical front (STF) during January-March, calculated between 180° and 130°W following @Shi2025-ot'
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 4
+#| out-width: "90%"
+
+ptrend
 
 # Figure caption text
 # Average position of the transition zone chlorophyll front (TZCF) in 2023 (solid black line) over the 1998–2009 average (dotted black line) and ocean color for the first quarter of 2023 (shaded).  
 
-knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
+#knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
 
 ```
 
@@ -341,7 +361,7 @@ knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
 \
 **Status:** During the first quarter of `r RptYr`, the STF was north of average across the entirety of the fishing grounds. Though, unlike 2022, it was not near its historical northern limits except east of 140°W. The TZCF was north of average across the entirety of the fishing grounds, and west of 155°W it neared its historical northern limits. The STF and TZCF index both show a significant positive trend with a rate of increase of `r signif(slopeSTF,1)` and `r signif(slopeTZCF,1)` degrees longitude per year respectively. The STF has shifted north by `r signif(STFindex$mean_lat[which(STFindex$lyr == RptYr)]-STFindex$mean_lat[1],3)` degrees since 1985 and the TZCF by `r signif(TZCFindex$mean_lat[which(TZCFindex$lyr == RptYr)]-TZCFindex$mean_lat[1],3)` since 1998. \
 \
-**Description:** The subtropical front (STF) is marked by the 18 °C sea surface temperature (SST) isotherm and the transition zone chlorophyll front (TZCF) by the 0.2 mg/m^3^ chl-a isopleth (Bograd et al. 2004; Polovina et al. 2001). They roughly mark the northern boundary of the North Pacific subtropical gyre as well as the northern extent of the Hawaiʻi-based longline fishery. Both fronts migrate meridionally on a seasonal basis and their positions are impacted by the phase of the El Niño – Southern Oscillation (ENSO). Due to significant seasonal variation, the climatology, anomaly, and trend (`r RptYr`) are presented for the first quarter of the year only. The STF is determined from CoralTemp data (see SST indicator) and the TZCF is determined from ESA CCI data (see Section 0).The STF and TZCF indexes measure the latitudinal shifts of the fronts between 180° and 130°W, following Shi et al., (2025).\
+**Description:** The subtropical front (STF) is marked by the 18 °C sea surface temperature (SST) isotherm and the transition zone chlorophyll front (TZCF) by the 0.2 mg/m^3^ chl-a isopleth [@Bograd2004-vs; @Polovina2001-nk]. They roughly mark the northern boundary of the North Pacific subtropical gyre as well as the northern extent of the Hawaiʻi-based longline fishery. Both fronts migrate meridionally on a seasonal basis and their positions are impacted by the phase of the El Niño – Southern Oscillation (ENSO). Due to significant seasonal variation, the climatology, anomaly, and trend (`r RptYr`) are presented for the first quarter of the year only. The STF is determined from CoralTemp data (see SST indicator) and the TZCF is determined from ESA CCI data (see Section 0).The STF and TZCF indexes measure the latitudinal shifts of the fronts between 180° and 130°W, following @Shi2025-ot.\
 \
 **Timeframe:** Annual, seasonal\
 \
@@ -351,5 +371,5 @@ knitr::include_graphics(paste0(Dir, '/SAFE_FrontTrend_', RptYr, '.png'))
 \
 **Data available at:** https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly and https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0.html.\
 \
-**Sourced from:** Bograd et al. (2004), Polovina et al. (2001), Shi et al. (2025), and NOAA OceanWatch (2026a; 2026b).\
+**Sourced from:** @Bograd2004-vs, @Polovina2001-nk, @Shi2025-ot, @NOAA-OceanWatchUnknown-ie, and @NOAA-OceanWatchUnknown-lk.\
 \

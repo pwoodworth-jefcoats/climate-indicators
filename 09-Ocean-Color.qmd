@@ -264,7 +264,7 @@ ll_rect_color <- "black" #outline for ll fishing grounds box
 fill_scale <- scale_fill_gradientn(
         colors = c("#2166AC", "#4393C3", "#F7F7F7", "#D6604D", "#B2182B"), #c('#00437D', oceans[2], 'white', coral[2], '#A31502'),
         # Linearly space the 5 colors across the [-0.2, 0.2] range
-        values = rescale(c(-0.6, -0.2, 0, 0.2, 0.6)),
+        values = scales::rescale(c(-0.6, -0.2, 0, 0.2, 0.6)),
         limits = c(-0.6, 0.6), # CRITICAL: Sets the color scale endpoints at -0.2 and +0.2
         oob = scales::squish,  # Values < -0.2 and > 0.2 squish directly into darker red
         breaks = c(-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6),

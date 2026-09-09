@@ -236,7 +236,7 @@ maps_anom <- maps |> filter(ID == "TatD_anom")
 waves <- nmfs_palette("waves")(3)
 pal <- rev(waves)
 ll_rect_color <- "black" #outline for ll fishing grounds box
-fill_scale <- scale_fill_gradient2(name='SST', low = oceans[2], mid = "white", high = coral[2], midpoint = 0, na.value = 'gray')
+fill_scale <- scale_fill_gradient2(name='SST', low = oceans[2], mid = "white", high = coral[2], midpoint = 0, na.value = 'gray', oob=scales::squish)
 #fill_scale <- scale_fill_gradientn(name = "TatD", colors = pal, limits = c(0, 31))
 # Contour breaks
 breakInt <- seq(0,20, by=4)

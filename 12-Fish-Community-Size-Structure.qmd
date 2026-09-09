@@ -1,33 +1,26 @@
----
-title: "Fish_Community_Size_Structure"
-author: "johanna.wren@noaa.gov"
-format:
-  docx:
-    reference-doc: SAFE-Reference-Doc.docx
----
+### Fish community size structure
 
-## Fish community size structure
+```{r}
+#| message: false
+#| warning: false
+#| include: false
+
+# This includes all commonly used packages and variables, like RptYr and eliminates the need to change them in every chapter. 
+source("_common.R")
+```
 
 ```{r}
 #| include: false
 ### Load libraries
-library(tidyverse)
-library(lubridate)
-library(scales)
-library(gridExtra)
-library(grid)
 library(png)
-library(here)
 library(purrr)
 library(ggridges)
-library(nmfspalette)
+library(patchwork)
 
 ```
 
 ```{r}
 #| include: false
-# Set report year (RptYr), to make things easier
-RptYr <- 2025
 
 # Set path to variable: Fisheries Indicators
 # This is where the data are and where the plots will go
@@ -45,7 +38,7 @@ setwd(Dir)
 # Import fisheries the data from saved files
 # This dataset was generated from the script SAFE_LogDeal_DataDownload.Rmd which is in the Fisheries_Indicator folder 
 #dealer <- readRDS(paste0('~/Documents/SAFEindicators/RAnalysis_SAFE/Data/SAFE_dealer_', RptYr, '_processed.rds'))
-dealer <- readRDS(paste0(Dir, '/SAFE_dealer_', RptYr, '_processed.rds'))
+dealer <- readRDS(paste0(Dir, '/SAFE_dealer_20May2026_', RptYr, '_processed.rds'))
 
 # Read in images as rasters
 beye <- readPNG("Bigeye_red.png")
@@ -114,9 +107,9 @@ j <- ridgefunc(dealerBE, betColor, BET_L50_kg, L50col='gray', xmax=105, bwidth=2
 k <- ridgefunc(dealerSW, swoColor, c(SW_L50_kg_f, SW_L50_kg_m), 'gray40', xmax=310, xmin=-10, alpha=1, overlap=2, bwidth=10) # try binwidth=10 as well
 
 # Save the plots as individual images
-ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
-ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
-ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgeSWO_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
+#ggsave(plot = i, filename = paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
+#ggsave(plot = j, filename = paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
+#ggsave(plot = k, filename = paste0(Dir, '/SAFEdealerRidgeSWO_', RptYr, '_redux.png'), width = 6, height = 8, dpi=300, units='in')
 ```
 
 ```{r}
@@ -168,66 +161,73 @@ pBE <- histFunc(dealerBEClim, dealerBEYr, betColor, beye, ymin=0.14, ymax=0.165)
 pSW <- histFunc(dealerSWClim, dealerSWYr, swoColor, sword, ymin=0.11, ymax=0.13, xlab='Weight (kg)')
 plotStack <- pAll / pBE / pSW + plot_layout(heights = c(1,1,1.05))
 
-ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_hist.png'), plotStack, width=6, height=7, units = 'in')
+#ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_hist.png'), plotStack, width=6, height=7, units = 'in')
 
 
 # Save individual plots for the presentation 
-ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_All_hist.png'), histFunc(dealerClim, dealerYr, allColor, beye, ymin=0.5, ymax=0.53, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
+#ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_All_hist.png'), histFunc(dealerClim, dealerYr, allColor, beye, ymin=0.5, ymax=0.53, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
 
-ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_BET_hist.png'), histFunc(dealerBEClim, dealerBEYr, betColor, beye, ymin=0.14, ymax=0.165, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
+#ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_BET_hist.png'), histFunc(dealerBEClim, dealerBEYr, betColor, beye, ymin=0.14, ymax=0.165, xlab='Weight (kg)'), width=6.6, height=2.5, units='in')
 
-ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_SWO_hist.png'), pSW, width=6.6, height=2.5, units='in')
+#ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_SWO_hist.png'), pSW, width=6.6, height=2.5, units='in')
 
 ```
 
 \
 
 ```{r}
-#| eval: false
-#| include: false
-# Figure caption info
-# fig-DensDist, fig.cap=paste0('The climatological (2000–2009; grey) and', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)'), fig.align='center', out.width='100%'
+#| echo: false
+#| warning: false
+#| label: fig-ch12-DensDist
+#| fig.cap: !expr paste0('The climatological (2000–2009; grey) and ', RptYr, ' (color) distribution of weights for all fish (top), bigeye tuna from deep sets (middle), and swordfish from shallow sets (bottom)')
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 9
+#| out-width: "90%"
 
-#knitr::include_graphics(paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '.png'))
-
-```
-
-\
-\
-
-```{r}
-#| eval: false
-#| include: false
-# Figure caption info
-# fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', 
-
-#knitr::include_graphics(paste0(Dir, '/SAFEdealerRidgeAllFish_', RptYr, '.png'))
+plotStack
 
 ```
 
-\
-\
-
 ```{r}
-#| eval: false
-#| include: false
-# Figure caption info
-# fig-ViolAll, fig.cap='The annual distribution of weights of all fish, showing the full range of weights (top) and truncated to better demonstrate the distribution of the majority of weights (bottom) with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight.', fig.align='center', 
+#| echo: false
+#| warning: false
+#| label: fig-ch12-RidgeAll
+#| fig.cap: "The annual density distribution of weights of all fish caught in both the deep- and shallow-set longline fishery, with black lines showing the 50th percentiles of the weight distributions (i.e. median weight)."
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 9
+#| out-width: "90%"
 
-#knitr::include_graphics(paste0(Dir, '/SAFEdealerRidgeBET_', RptYr, '.png'))
+i
 
 ```
 
-\
-\
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-ch12-RidgeBET
+#| fig.cap: "The annual density distribution of weights of bigeye tuna from deep sets, with black lines showing median fish weight. Dashed lines denote the weight corresponding to L~50~ for bigeye tuna [17 kg, @Farley2018-ty]"
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 9
+#| out-width: "90%"
+
+j
+
+```
 
 ```{r}
-#| eval: false
-#| include: false
-# Figure caption info
-# fig-ViolBETSWD, fig.cap='The annual distribution of weights of bigeye tuna from deep sets (top) and swordfish from shallow sets (bottom), with large circles denoting median weight, black lines showing the range of the middle 50% of fish, small circles denoting the 20th and 80th percentiles of the weight distributions, and width of shading proportional to the number of fish of a given weight. Horizontal dashed lines denote the weight corresponding to L50 for bigeye tuna (17 kg; Farley et al. 2018), female swordfish (55.5 kg; Kapur et al. 2017), and male swordfish (19.4 kg, Kapur et al. 2017).', fig.align='center', 
+#| echo: false
+#| warning: false
+#| label: fig-ch12-RidgeSWO
+#| fig.cap: "The annual density distribution of weights of swordfish from shallow sets, with black lines showing median fish weight. Dashed lines denote the weight corresponding to L~50~ for female swordfish [55.5 kg, @Kapur2017-ho], and male swordfish [19.4 kg, @Kapur2017-ho]."
+#| fig.align: 'center'
+#| fig-width: 7
+#| fig-height: 9
+#| out-width: "90%"
 
-#knitr::include_graphics(paste0(Dir,'/SAFEdealerRidgeSWO_', RptYr, '.png'))
+k
 
 ```
 
@@ -236,7 +236,7 @@ ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_SWO_hist.pn
 \
 **Status:** For the longline fishery as a whole, fish were larger than average in `r RptYr`, with a lower proportion of fish smaller than about 15 kg. Bigeye tuna were smaller than average in `r RptYr` with a median weight of `r signif(median(dealerBE$WholeWeight[which(dealerBE$Year == RptYr)], na.rm=T),4)` kg, the lowest during the period of record. Swordfish were much smaller than the previous years with a median weight of `r signif(median(dealerSW$WholeWeight[which(dealerSW$Year == RptYr)], na.rm=T),4)` kg, the lowest during the period of record and well below the L~50~ weight of 55.5 kg for female swordfish. The large proportion of small fish and the low median weight in `r RptYr` of both bigeye tuna and swordfish suggest a recruitment pulse into the fishery.\
 \
-**Description:** The weight of individual fish moving through the Honolulu auction is available from 2000 through the present. Using these weights, community size structure is presented. A standardized pooled climatological distribution (2000–2009) is presented, as is the `r RptYr` distribution. Similar distributions for target species (bigeye tuna and swordfish) are also presented. Annual time series of pooled target species weights are presented as ridge plots. Bigeye weights are from deep sets (≥ 15 hooks per float) only. Swordfish weights are from shallow sets (≥ 15 hooks per float) only. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator (Langley et al. 2006).\
+**Description:** The weight of individual fish moving through the Honolulu auction is available from 2000 through the present. Using these weights, community size structure is presented. A standardized pooled climatological distribution (2000–2009) is presented, as is the `r RptYr` distribution. Similar distributions for target species (bigeye tuna and swordfish) are also presented. Annual time series of pooled target species weights are presented as ridge plots. Bigeye weights are from deep sets (≥ 15 hooks per float) only. Swordfish weights are from shallow sets (≥ 15 hooks per float) only. The Honolulu auction reports weights for gilled and gutted fish. A conversion factor is used to calculate the whole fish weights used for this indicator [@Langley2006-if].\
 \
 **Timeframe:** Annual.\
 \
@@ -244,4 +244,4 @@ ggsave(filename = paste0(Dir, '/SAFEdealerWeightDensDist_', RptYr, '_SWO_hist.pn
 \
 **Measurement Platform:** *In-situ* measurement.\
 \
-**Sourced from:** PIFSC (2026a), PIFSC (2026b) and the Hawaiʻi Division of Aquatic Resources, Farley et al. (2018), and Langley et al. (2006).
+**Sourced from:** @PIFSCUnknown-no, @PIFSCUnknown-ke and the Hawaiʻi Division of Aquatic Resources, @Farley2018-ty, @Langley2006-if, and @Kapur2017-ho

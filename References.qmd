@@ -127,6 +127,8 @@ System Research Laboratories’ Physical Sciences Laboratory,
 <https://psl.noaa.gov/data/gridded/data.godas.html> Accessed 6 April
 2026.\
 \
+Behringer, D.W., M. Ji, and A. Leetmaa, 1998: An improved coupled model for ENSO prediction and implications for ocean initialization. Part I: The ocean data assimilation system. Mon. Wea. Rev., 126, 1013-1021.
+\
 **Ocean Color**\
 NOAA OceanWatch (2026b):
 <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0>
@@ -173,7 +175,7 @@ Shi, Hui, Ryan R. Rykaczewski, Johanna L. K. Wren, Phoebe Woodworth-Jefcoats, Ju
 **Estimated Median Phytoplankton Size**\
 Barnes et al. (2011): Barnes, C., Irigoien, X., De Oliveira, J.A.A.,
 Maxwell, D., and S. Jennings, 2011. Predicting marine phytoplankton
-community size structure form empirical relationships with remotely
+community size structure from empirical relationships with remotely
 sensed variables. Journal of Plankton Research, 33(1), pp. 13-24. doi: 10.1016/j.pocean.2025.103537.
 10.1093/plankt/fbq088\
 \

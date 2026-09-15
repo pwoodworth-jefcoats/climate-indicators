@@ -288,6 +288,8 @@ p_map
 
 ```
 
+&nbsp;
+
 ```{r}
 #| echo: false
 #| label: fig-ch8-TatD
@@ -313,7 +315,7 @@ p
 \
 **Measurement Platform:** _In-situ_ sensors, model.  
 \
-**Sourced from:** @NOAAUnknown-ei and @APDRCUnknown-sl.  Graphics produced in part using @Stawitz2026-kw. NCEP Global Ocean Data Assimilation System (GODAS) data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at https://psl.noaa.gov
+**Sourced from:** @NOAA2026-vs and @APDRC2026-ft. Graphics produced in part using @Stawitz2026-kw. NCEP Global Ocean Data Assimilation System (GODAS) data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at https://psl.noaa.gov
 
 <!--
 ## Additional Information

@@ -245,7 +245,7 @@ p <- ggplot(indicator_data) +
 ```{r}
 #| echo: false
 #| label: fig-ch3-ENSO
-#| fig.cap: 'Oceanic Niño Index from 1950–2025 El Niño periods in red, La Niña periods in blue, and neutral periods in grey'
+#| fig.cap: !expr paste0('Oceanic Niño Index from 1950–', RptYr, ' El Niño periods in red, La Niña periods in blue, and neutral periods in grey')
 #| fig.align: 'center'
 #| fig-width: 8
 #| fig-height: 5
@@ -268,7 +268,7 @@ p
 \
 **Data available at:** <https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt>.   
 \
-**Sourced from:** @NOAA-CPCUnknown-po. Graphics produced in part using @Stawitz2026-kw.  
+**Sourced from:** @NOAA-CPC2026-sc. Graphics produced in part using @Stawitz2026-kw.  
 \
 
 <!--

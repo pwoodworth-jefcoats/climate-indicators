@@ -319,6 +319,8 @@ p_map
 
 ```
 
+&nbsp;
+
 ```{r}
 #| echo: false
 #| label: fig-ch7-SST
@@ -331,6 +333,8 @@ p_map
 p
 
 ```
+
+&nbsp;
 
 ```{r}
 #| echo: false
@@ -359,7 +363,7 @@ p_ann
 \
 **Data available at:** <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly>, <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_1985-2009-clim>, and <https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_2024-clim>.   
 \
-**Sourced from:** @NOAA-OceanWatchUnknown-ie. Graphics produced in part using @Stawitz2026-kw.  
+**Sourced from:** @NOAA-OceanWatch2026-jz. Graphics produced in part using @Stawitz2026-kw.  
 \  
  <!--
 ## Additional Information

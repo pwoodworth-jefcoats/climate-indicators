@@ -153,6 +153,18 @@ p <- ggplot() +
 
 ```
 
+```{r}
+#| echo: false
+#| label: fig-ch5-NPGO
+#| fig.cap: !expr paste0('North Pacific Gyre Oscillation from 1950–', RptYr)
+#| fig.align: 'center'
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: "90%"
+
+p
+```
+
 **Rationale:** The North Pacific Gyre Oscillation (NPGO) is related to, but distinct from, the Pacific Decadal Oscillation.  It captures basin-scale processes, making it well suited to capture change across the Hawaiʻi-based longline fishing grounds.    
 \
 **Status:** The NPGO was negative in `r RptYr`. The index ranged from `r signif(monthly_min_RptYr, 3)` to `r signif(monthly_max_RptYr, 3)` over the course of the year. This is within the range of values observed previously in the time series.  

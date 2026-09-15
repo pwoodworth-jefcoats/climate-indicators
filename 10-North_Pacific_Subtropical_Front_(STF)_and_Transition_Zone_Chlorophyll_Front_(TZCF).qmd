@@ -319,6 +319,8 @@ psst
 
 ```
 
+&nbsp;
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -338,6 +340,7 @@ pchl
 
 ```
 
+&nbsp;
 
 ```{r}
 #| echo: false
@@ -371,5 +374,5 @@ ptrend
 \
 **Data available at:** https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1_monthly and https://oceanwatch.pifsc.noaa.gov/erddap/griddap/esa-cci-chla-monthly-v6-0.html.\
 \
-**Sourced from:** @Bograd2004-vs, @Polovina2001-nk, @Shi2025-ot, @NOAA-OceanWatchUnknown-ie, and @NOAA-OceanWatchUnknown-lk.\
+**Sourced from:** @Bograd2004-vs, @Polovina2001-nk, @Shi2025-ot, and @NOAA-OceanWatch2026-hh [-@NOAA-OceanWatch2026-jz].\
 \

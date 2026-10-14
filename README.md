@@ -11,10 +11,24 @@ indicator chapters. **This is where the report year is set and needs to be
 updated each year.**
 - `index.qmd` contains the introductory text in the chapter, and calls all the 
 subsequent indicator chapters. 
-- all the chapter indicator quarto (.qmd) files. These start with a number, e.g.
-`01-Atmospheric-Carbon-Dioxide.qmd`
-- `References.bib` contains the BibTex formatted includes updated references used 
-across all indicators.
+- All the chapter indicator quarto (.qmd) files. The most current indicators are:
+  - `01-Atmospheric-Carbon-Dioxide.qmd` 
+  - `02-Oceanic-pH.qmd`
+  - `03-El-Nino-Southern-Oscillation.qmd`
+  - `04-Pacific-Decadal-Oscillation.qmd`
+  - `05-North-Pacific-Gyre-Oscillation.qmd`
+  - `06-Tropical-Cyclones.qmd`
+  - `07-Sea-Surface-Temperature.qmd`
+  - `08-Temperature-at-Depth.qmd`
+  - `09-Ocean-Color.qmd`
+  - `10-North_Pacific_Subtropical_Front_(STF)_and_Transition_Zone_Chlorophyll_Front_(TZCF).qmd`
+  - `11-Median-Phytoplankton-Size.qmd`
+  - `12-Fish-Community-Size-Structure.qmd`
+  - `13-Bigeye_Weight_per_Unit_Effort.qmd`
+  - `14-Bigeye_recruitment_index.qmd`
+  - `15-Bigeye-Forecast.qmd`
+- `References.bib` contains the BibTex formatted references used across all 
+indicators.
 - `apa.csl` sets the APA formatting style for the references.
 - `SAFE-Reference-Doc-ForBook.docx` serves as the style template for Quarto. 
 

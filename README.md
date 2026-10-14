@@ -7,8 +7,8 @@ a word document. The Quarto book is rendered to a word document for now.
 The files needed to render the quarto book:
 - `_quarto.yaml` is the main configuration file for the quarto book. 
 - `_common.R` contains the packages and variables that are used in all 
-indicator chapters. **This is where the report year is set and needs to be
-updated each year.**
+indicator chapters. *This is where the report year is set and needs to be
+updated each year.*
 - `index.qmd` contains the introductory text in the chapter, and calls all the 
 subsequent indicator chapters. 
 - All the chapter indicator quarto (.qmd) files. The most current indicators are:

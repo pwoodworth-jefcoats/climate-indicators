@@ -23,10 +23,14 @@ subsequent indicator chapters.
   - `09-Ocean-Color.qmd`
   - `10-North_Pacific_Subtropical_Front_(STF)_and_Transition_Zone_Chlorophyll_Front_(TZCF).qmd`
   - `11-Median-Phytoplankton-Size.qmd`
-  - `12-Fish-Community-Size-Structure.qmd`
-  - `13-Bigeye_Weight_per_Unit_Effort.qmd`
-  - `14-Bigeye_recruitment_index.qmd`
-  - `15-Bigeye-Forecast.qmd`
+  - `12-Fish-Community-Size-Structure.qmd` Need to be updated to fit in the Quarto
+  book. Will not render as is. 
+  - `13-Bigeye_Weight_per_Unit_Effort.qmd` Need to be updated to fit in the Quarto
+  book. Will not render as is. 
+  - `14-Bigeye_recruitment_index.qmd` Need to be updated to fit in the Quarto
+  book. Will not render as is. 
+  - `15-Bigeye-Forecast.qmd` Need to be updated to fit in the Quarto book. 
+  Will not render as is. 
 - `References.bib` contains the BibTex formatted references used across all 
 indicators.
 - `apa.csl` sets the APA formatting style for the references.

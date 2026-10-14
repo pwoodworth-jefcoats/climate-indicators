@@ -1,30 +1,39 @@
 # Pelagic ocean and climate indicators
-This repository includes the code used to create the pelagic ocean and
-climate indicators. Each indicator has its own Quarto (.qmd) file which
-includes the following:
+This repository includes the code used to create the Pelagic Ocean and
+Climate Indicators chapter of the SAFE report. In 2026 the code in this repo was
+put into a quarto book for easier rendering and to eliminate the copy-paste into
+a word document. The Quarto book is rendered to a word document for now. 
+
+The files needed to render the quarto book:
+- `_quarto.yaml` is the main configuration file for the quarto book. 
+- `_common.R` contains the packages and variables that are used in all 
+indicator chapters. **This is where the report year is set and needs to be
+updated each year.**
+- `index.qmd` contains the introductory text in the chapter, and calls all the 
+subsequent indicator chapters. 
+- all the chapter indicator quarto (.qmd) files. These start with a number, e.g.
+`01-Atmospheric-Carbon-Dioxide.qmd`
+- `References.bib` contains the BibTex formatted includes updated references used 
+across all indicators.
+- `apa.csl` sets the APA formatting style for the references.
+- `SAFE-Reference-Doc-ForBook.docx` serves as the style template for Quarto. 
+
+Each indicator Quarto (.qmd) file includes the following:
 
 - Information on accessing the data used for the indicator
 - Information on any data wrangling done outside the Quarto file
 - Code used to wrangle data and calculate indicator properties
-- Code used to generate indicator figures.  Note, though, that most
-figures are polished in Adobe Illustrator prior to insertion in the
-final report.
-- Text that will be copied and pasted into the SAFE report document
-  - To the extent possible, this text is formatted to match the SAFE report 
-  document.  It's not pretty here, but it simplifies things down the line.
-  - Mathematical values related to the indicator (e.g., annual maximum) are
-  coded into the text to reduce the risk for failing to update a value.
-
-There's also a `References.qmd` file that includes updated references used 
-across all indicators.  `SAFE-Reference-Doc.docx` serves as the style 
-template for Quarto.
+- Code used to generate indicator text and figures. 
+  - There are some checks coded in when indicators change and the text need to
+  be updated. These will render as code blocks and need to be commented out
+  once the text has been updated. 
 
 Note that an additional script is needed for for the Oceanic pH, Sea Surface
 Temperature, Temperature at Depth, Ocean Color, and Median Phytoplankton
-Size indicators.  The scripts can be found in the eponymous folders.
+Size indicators. The scripts can be found in the eponymous folders.
 
-## Questions?  Comments?  Corrections?
-Please open an issue or email Phoebe.Woodworth-Jefcoats@noaa.gov
+## Questions? Comments? Corrections?
+Please open an issue or email Johanna.Wren@noaa.gov
 
 ---
 

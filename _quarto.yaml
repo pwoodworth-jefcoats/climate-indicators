@@ -1,0 +1,33 @@
+project:
+  type: book
+  output-dir: _build
+
+book:
+  chapters:
+    - index.qmd
+
+number-sections: false
+
+bibliography: References.bib
+csl: apa.csl
+
+crossref:
+  fig-prefix: "Figure 3.4-" # can't get rid of the space between the dash and the number of the figure when it renders. 
+  fig-title: "Figure 3.4-"
+  title-delim: ":"
+  chapters: false
+
+format:
+  docx:
+    reference-doc: SAFE-Reference-Doc-ForBook.docx
+    toc: false
+    fig-format: png
+    pandoc:
+      shift-heading-level-by: 1
+
+
+
+
+
+
+

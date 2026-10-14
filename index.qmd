@@ -1,0 +1,163 @@
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+# Climate and Oceanic Indicators
+
+Over the past few years, the Council has incorporated climate change into the overall management of the fisheries over which it has jurisdiction. This `r RptYr` annual SAFE report includes a now standard section on indicators of climate and oceanic conditions in the Western Pacific Region. These indicators reflect both global climate variability and change, as well as trends in local oceanographic conditions. 
+
+The section begins with a brief summary of the state of the ocean and climate in `r RptYr`. This is followed by a list of all selected indicators. These indicators are then examined through summaries focused on natural climate variability and on anthropogenic climate change. Information on the background of these indicators, their development over time, and ongoing research needs can be found at the end of this section. 
+
+## Indicators at a Glance
+
+Based on the information provided by the indicators in this chapter, long-term climate trends persisted in the Western Pacific region in `r RptYr`. Modes of interannual climate variability were mixed with ENSO neutral conditions prevailing throughout the year, the PDO remaining negative, and the NPGO being negative as well. Hurricane storm energy was near average or below in all Pacific basins. Storm counts were above average in the Eastern and Central Pacific and near average in the Western and Southern Pacific. The atmospheric concentration of carbon dioxide continued to increase, ocean acidification intensified, and sea surface temperatures continued to rise. Chlorophyll concentrations at the ocean’s surface and the median size of phytoplankton has declined slightly over the past `r RptYr-1998` years. The Subtropical Frontal Zone and the Transition Zone Chlorophyll Front were both north of average across the majority of the longline fishing grounds. Temperatures at 200–300 m below the surface were average. Bigeye tuna and swordfish were smaller than average, though no long-term trend is evident. The bigeye tuna recruitment index suggests the beginnings of a pulse of increased recruitment, but the weight-per-unit-effort remains steady. The bigeye tuna catch rate forecast suggests that catch will be fairly steady over the next four years.
+
+```{r}
+#| echo: false
+#| label: fig-indicators-glance
+#| fig.cap: !expr paste("Summary of the trends and status of the ocean and climate indicators in", RptYr)
+#| fig.align: "center"
+#| out-width: "90%"
+#| fig-prefix: "Figure 3.4-"
+
+knitr::include_graphics(here::here("StoryLines_and_Tables", "Indicator-Table-2025_newFont.png"))
+```
+
+## Selected Indicators
+
+The primary goal for selecting the indicators used in this report is to provide fisheries-related communities, resource managers, and businesses with a climate-related situational awareness. In this context, indicators were selected to:
+
+* Be fisheries relevant and informative
+* Build intuition about current conditions in light of a changing climate
+* Provide historical context
+* Allow for recognition of patterns and trends
+
+In this context, this section includes the following climate and oceanic indicators:
+
+* Atmospheric concentration of carbon dioxide (CO2)
+* Oceanic pH at Station ALOHA
+* El Niño – Southern Oscillation (ENSO)
+* Pacific Decadal Oscillation (PDO)
+* North Pacific Gyre Oscillation (NPGO)
+* Tropical cyclones
+* Sea surface temperature (SST)
+* Ocean temperature at 200–300 m depth
+* Ocean color
+* North Pacific Subtropical Front (STF) and Transition Zone Chlorophyll Front (TZCF)
+* Estimated median phytoplankton size
+* Fish community size structure
+* Bigeye tuna weight-per-unit-effort
+* Bigeye tuna recruitment index
+* Bigeye tuna catch rate forecast
+
+### Natural Climate Variability Summary
+
+The ocean and climate indicators described here can be used to understand the effects of natural climate variability. The relationship between these indicators is illustrated in @fig-nat-clim-var. 
+
+```{r}
+#| echo: false
+#| label: fig-nat-clim-var
+#| fig.cap: 'Schematic diagram illustrating the relationships between the ocean and climate indicators from the perspective of natural climate variability'
+#| fig.align: "center"
+#| out-width: "90%"
+#| fig-prefix: "Figure 3.4-"
+
+knitr::include_graphics(here::here("StoryLines_and_Tables", "StoryLines_NaturalVariability_rev.png"))
+```
+
+The El Niño – Southern Oscillation (ENSO), the Pacific Decadal Oscillation (PDO), and the North Pacific Gyre Oscillation (NPGO) are prominent modes of natural climate variability in the North Pacific. ENSO cycles are known to impact Pacific fisheries including tuna fisheries. The Oceanic Niño Index (ONI) is a measure of ENSO phase that focuses on ocean temperature, which has the most direct effect on these fisheries. 
+
+ENSO, the PDO, and the NPGO are all associated with interannual changes in sea surface temperature (SST), which is one of the most directly observable existing measures for tracking ocean temperature. Natural variability in SST impacts the marine ecosystem and pelagic fisheries. For example, higher SSTs can lead to the subtropical front being farther north and vice versa, which in turn affects the distance fishers may need to travel to reach longline fishing grounds. Changes in SST can also influence the number, location, strength, and seasonal timing of tropical cyclones.
+
+ENSO, the PDO, and the NPGO are also associated with interannual changes in phytoplankton abundance, which is observed through ocean color and estimated via chlorophyll-a (chl-a). Phytoplankton are the foundational food source for the species targeted by the region’s longline fishery. Changes in phytoplankton abundance have the potential to impact fish abundance, size, and catch. Increased phytoplankton abundance can lead to the transition zone chlorophyll front (TZCF) being farther south and vice versa, and changes in the location of this front particularly impact Hawaiʻi’s swordfish fishery. 
+
+SST and chl-a can be combined to estimate median phytoplankton size. Changes to median phytoplankton can propagate through the food web and influence fish size structure, weight-per-unit-effort, and the bigeye tuna recruitment index. Furthermore, the recruitment index can be combined with median phytoplankton size to forecast bigeye tuna catch rates up to four years in advance. 
+It is possible that natural climate variability influences temperatures at 200–300 m below the surface where the bigeye fishery sets their hooks. However, this relationship has yet to be established. 
+
+Understanding the effects of natural climate variability, like ENSO, the PDO, and the NPGO, on the ocean, marine ecosystems, and regional fisheries is an active area of research. 
+
+### Anthropogenic Climate Change Summary
+
+The ocean and climate indicators described in this chapter can be used to understand the effects of anthropogenic climate change. The relationship between these indicators is illustrated in @fig-anthro-change.
+
+```{r}
+#| echo: false
+#| label: fig-anthro-change
+#| fig.cap: 'Schematic diagram illustrating the relationships between the ocean and climate indicators from the perspective of anthropogenic climate change'
+#| fig.align: "center"
+#| out-width: "90%"
+#| fig-prefix: "Figure 3.4-"
+
+knitr::include_graphics(here::here("StoryLines_and_Tables", "StoryLines_AnthropogenicChange_rev.png"))
+```
+
+The primary driver of anthropogenic (human-caused) climate change is the increasing concentration of atmospheric carbon dioxide, CO2, due to the burning of fossil fuels. Therefore, atmospheric CO2 serves as a measure of what human activity has already done to affect the climate system through greenhouse gas emissions. The concentration of atmospheric CO2, and, in turn, its warming influence, is increasing more quickly over time. 
+
+Carbon dioxide in the atmosphere is absorbed by the ocean. This leads to ocean acidification, which is measured via pH. Therefore, oceanic pH is a measure of how greenhouse gas emissions have already affected the ocean. Increasing ocean acidification limits the ability of marine organisms to build shells and other hard structures. Prey for commercially valuable fish are already being negatively affected by increasing ocean acidification. 
+
+Increasing carbon dioxide concentrations cause the atmosphere to warm. Much of this heat is then absorbed by the ocean, raising sea surface temperature (SST). SST is another measure of how greenhouse gas emissions are already affecting the ocean. 
+
+Rising sea surface temperatures may affect the number, strength, duration, track, and seasonal timing of tropical cyclones. The Accumulated Cyclone Energy index, or ACE Index, accounts for both the strength and duration of storms. 
+
+Over time, rising sea surface temperatures will warm deeper ocean waters. Changes in ocean temperature will affect tuna, and in turn, potentially their catchability. For example, fish may move to deeper waters or their habitat could be compressed geographically or vertically. Temperatures at 200–300 meters below the ocean’s surface reflect those at the mid-range of depths targeted by the deep-set bigeye tuna fishery. Bigeye tuna have preferred thermal habitat, generally staying within waters between 8–14 ºC while they are at depth. 
+
+Rising ocean temperatures are projected to lead to lower phytoplankton abundance, which is observed through ocean color and estimated via chlorophyll-a (chl-a). Combined, rising ocean temperatures and lower phytoplankton abundance may lead to smaller median phytoplankton sizes. Smaller phytoplankton may alter fish size structure, weight-per-unit-effort, and the bigeye tuna recruitment index. Median phytoplankton size can be combined with the bigeye recruitment index to forecast catch rates. 
+
+Understanding the effects of anthropogenic climate change on the ocean, marine ecosystems, and regional fisheries is an active area of research.
+
+<!-- Adding the chapters here to get around Quarto's insistance of making the first heading in a new chapter in the yaml a level 1 heading.  -->
+{{< include 01-Atmospheric-Carbon-Dioxide.qmd >}}
+{{< include 02-Oceanic-pH.qmd >}}
+{{< include 03-El-Nino-Southern-Oscillation.qmd >}}
+{{< include 04-Pacific-Decadal-Oscillation.qmd >}}
+{{< include 05-North-Pacific-Gyre-Oscillation.qmd >}}
+{{< include 06-Tropical-Cyclones.qmd >}}
+{{< include 07-Sea-Surface-Temperature.qmd >}}
+{{< include 08-Temperature-at-Depth.qmd >}}
+{{< include 09-Ocean-Color.qmd >}}
+{{< include 10-North_Pacific_Subtropical_Front_(STF)_and_Transition_Zone_Chlorophyll_Front_(TZCF).qmd >}}
+{{< include 11-Median-Phytoplankton-Size.qmd >}}
+<!-- {{< include 12-Fish-Community-Size-Structure.qmd >}} -->
+<!-- {{< include 13-Bigeye_Weight_per_Unit_Effort.qmd >}} -->
+<!-- {{< include 14-Bigeye_recruitment_index.qmd >}} -->
+<!-- {{< include 15-Bigeye-Forecast.qmd >}} -->
+
+## Response to Previous Council Recommendations 
+
+For Thomas Remmington to complete
+
+## Observation and Research Needs
+
+Through preparation of this and previous pelagic annual SAFE reports, the Council has identified a number of observational and research needs that, if addressed, could improve the information content of future Climate and Oceanic Indicators section. This information could provide fishery managers, the fishing industry, and the community with better understanding and predictive capacity that is vital to sustaining a resilient and vibrant fishery in the Western Pacific. These observational and research needs are to:
+
+* Emphasize the importance of continuing the climate and ocean indicators used in this report so that a consistent, long-term record can be maintained and interpreted;
+* Develop agreements among constituents and research partners to ensure the sustainability, availability, and accessibility of climate and ocean indicators, associated datasets, and analytical methods used in this and future reports;
+* Improve monitoring and understanding of the impacts of changes in ocean temperature, pH and ocean acidity, ocean oxygen content and hypoxia, and sea level rise through active collaboration by all fishery constituents and research partners;
+* Develop, test, and provide access to additional climate and ocean indicators;
+* Investigate the connections between climate variables and indicators to improve understanding of changes in physical, chemical, biological, and socio-economic processes and their interactions in the regional ecosystem;
+* Develop predictive models that can be used for scenario planning to account for unexpected changes and uncertainties in the regional ecosystem and fisheries;
+* Foster applied research in ecosystem modeling to better describe current conditions and to better anticipate the future under alternative projections of climate and ocean change including changes in expected human benefits and their variability;
+* Improve understanding of the connections between the PDO and fisheries ecosystems beyond the North Pacific;
+* Improve understanding of mahimahi and swordfish size in relation to the location and orientation of the TZCF;
+* Explore the connections between sea surface conditions, stratification, and mixing;
+* Identify the biological implications of tropical cyclones; 
+* Research cultural knowledge and practices for adapting to past climate changes and investigate how they might contribute to future climate adaptation; and
+* Explore additional and/or alternative climate and ocean indicators that may have important effects of pelagic fisheries systems including:
+  * Ocean currents and anomalies;
+  * Eddy kinetic energy (EKE);
+  * Near-surface wind velocity and anomalies;
+  * Wave forcing and anomalies;
+  * Oceanic nutrient concentration;
+  * outh Pacific convergence zones targeted by swordfish;
+  * tandardized fish community size structure data for gear types, including the troll fishery for yellowfin and blue marlin;
+  * Additional spatial coverage for the international purse seine fishery; 
+  * Time series of species richness and diversity from catch data that could provide insight into how the ecosystem is responding to physical climate influences; and
+  * Socioeconomic indicators of climate impacts on fishing communities and businesses.
+
+## Acknowledgements
+
+Johanna Wren and Phoebe Woodworth-Jefcoats led the production and compilation of this chapter. Emily Conklin contributed code. Hui Daisy Shi contributed data products. The NOAA Fisheries Northeast Fisheries Science Center contributed the template used for the *Indicators at a Glance* figure.
+
+## References

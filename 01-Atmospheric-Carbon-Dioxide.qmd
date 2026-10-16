@@ -120,23 +120,6 @@ if (ann_co2$year[pass_400[1]] != 2015) {
 
 ```{r}
 #| include: false
-# ### Create growth rate plot for reference
-# 2024: spudkgray --> whale_gray
-seasonadj <- nmfspalette::nmfs_cols("whale_gray") # seasonally adj
-pdf(paste(Dir, '/AtmosphericCO2growth_ts_', RptYr, '.pdf', sep = ""), width = 5, height = 3.5)
-plot(ann_gr$year, ann_gr$`ann inc`, type = "l", lwd = 2, col = seasonadj,
-     xlim = c(min(ann_gr$year), RptYr), ylim = c(0, 3.5),
-     xlab = "Year", ylab = "Parts per Million (ppm)",
-     xaxt = "n", yaxt = "n", xaxs = "i", yaxs = "i")
-axis((1), at = seq(1960, 2020, 5), tck = 0.025)
-axis((2), at = seq(0, 3.5, 0.5), tck = 0.025, las = 1)
-axis((3), at = seq(1960, 2020, 5), tck = 0.025, labels = FALSE)
-axis((4), at = seq(0, 3.5, 0.5), tck = 0.025, labels = FALSE)
-dev.off()
-```
-
-```{r}
-#| include: false
 # Write csv for portal
 # Renaming 'mean' to 'ppm'
 # Note that output csvs go in their own folder
@@ -173,17 +156,8 @@ indicator_data <- CO2_dashboard |>
   mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
+# the base color palettes (e.g. oceans, waves) are defined in the _common.r file
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
-
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
 
 # Calculate annual means 
 ann_vals <- indicator_data |>
@@ -199,20 +173,23 @@ given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
 
 ## For 2025, figures were updated to using ggplot and the legend was added to the graph to eliminate the need for illustrator post processing. 
 # Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
-        legend.position = 'bottom', 
-        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
-        legend.text = element_text(size=11), legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(1.5,'cm'))
+# plotTheme <- theme_minimal() +
+#   theme(panel.border = element_rect(color='#F1F3F3'),
+#         panel.grid.major = element_line(color='#F1F3F3'),
+#         panel.grid.minor = element_blank(),
+#         panel.background = element_blank(),
+#         plot.background = element_blank(),
+#         axis.title = element_text(size=14, face="bold"), 
+#         axis.text = element_text(size=12),
+#         legend.position = 'bottom', 
+#         legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
+#         legend.text = element_text(size=11), legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(1.5,'cm'))
 
 # Legend info up front
-legendInfo <- as.factor(c(paste0('Mothly average, 1958-', RptYr-1), paste0('Annual average, 1958-', RptYr-1), paste0('Mothly average, ', RptYr), paste0('Annual average, ', RptYr)))
+legendInfo <- as.factor(c(paste0('Mothly average, 1958-', RptYr-1), 
+                          paste0('Annual average, 1958-', RptYr-1), 
+                          paste0('Mothly average, ', RptYr), 
+                          paste0('Annual average, ', RptYr)))
 levels(legendInfo) <- levels(legendInfo)[c(3,4,1,2)]
 dmy_hm(paste0('01-01-',ann_vals$Year,' 00:00'))
 

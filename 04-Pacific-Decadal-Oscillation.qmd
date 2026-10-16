@@ -86,50 +86,26 @@ PDO_dashboard <- PDO_full %>%
 # so that figures look the same across products
 indicator_data <- PDO_dashboard |>
   filter(Year <= RptYr) %>% 
-  mutate(Date_Time=dmy_hm(Date_Time))
+  mutate(Date_Time=dmy_hm(Date_Time), 
+         Units = "Pacific Decadal Oscillation (PDO)",
+         Phase = ifelse(Value > 0, 'Positive PDO', 'Negative PDO')) # Identify positive and negative phases
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = Negative PDO, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 2 = Positive PDO,  3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide but not in package
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
-
-indicator_data <- indicator_data |>
-  mutate(Units = "Pacific Decadal Oscillation (PDO)")
-
 # x axis ticks and grid
-x_grid <- c(min(indicator_data$Date_Time), 
-            seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year'),
-            max(indicator_data$Date_Time))
+# x_grid <- c(min(indicator_data$Date_Time), 
+#             seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year'),
+#             max(indicator_data$Date_Time))
 
 x_grid <- seq.POSIXt(dmy_hm(010118600000), max(indicator_data$Date_Time), by='20 year')
 
-# x axis limit
-ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
-
-# Identify positive and negative phases
-indicator_data$Phase <- ifelse(indicator_data$Value > 0, 'Positive PDO', 'Negative PDO')
-
-# Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
+# DAdding custom theme elements to the pre-defined theme in _common.R
+plotTheme <- plotTheme +
+  theme(legend.background = element_blank(),
         legend.position = 'inside', 
         legend.position.inside = c(0.9,0.92),
         legend.text = element_text(size=12), 
-        legend.key.spacing.x = unit(1.5,'cm'),
         legend.spacing.y = unit(0.1,'cm'))
 
 # Make stem type plot using ggplot
@@ -152,7 +128,7 @@ p <- ggplot(indicator_data) +
 #| fig.align: 'center'
 #| fig-width: 8
 #| fig-height: 5
-#| out-width: "90%"
+#| out-width: "100%"
 
 p
 ```

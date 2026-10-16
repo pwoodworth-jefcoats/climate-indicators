@@ -108,7 +108,8 @@ if (n_txt > 0 & n_txt < 4) {
 # Thanks to Johanna Wren for the code! https://github.com/pwoodworth-jefcoats/climate-indicators/issues/29
 ann_pH <- rename(ann_pH, year = Year)
 ann_pH$pH <- format(round(ann_pH$pH, digits=2), nsmall = 2)
-write_csv(ann_pH, file = paste(here(), '/PelagicClimate_', RptYr, '/pH_', RptYr, '.csv', sep = ""))
+
+#write_csv(ann_pH, file = paste(here(), '/PelagicClimate_', RptYr, '/pH_', RptYr, '.csv', sep = ""))
 ```
 
 ```{r}
@@ -129,7 +130,7 @@ pH_dashboard <- pH_dates %>%
   select(Date_Time, Year, Month, Value = pH, Anom, ID, Value_lm, Anom_lm, Units)
 
 
-write_csv(pH_dashboard, file = here("Indicator_Dashboard", "Data", paste('pH_Dashboard_Data_', RptYr, '.csv', sep = "")))
+#write_csv(pH_dashboard, file = here("Indicator_Dashboard", "Data", paste('pH_Dashboard_Data_', RptYr, '.csv', sep = "")))
 ```
 
 ```{r}
@@ -141,12 +142,6 @@ indicator_data <- pH_dashboard |>
   mutate(Date_Time = dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
 # Calculate annual means 
@@ -166,24 +161,10 @@ x_grid <- c(min(indicator_data$Date_Time),
                 seq.POSIXt(dmy_hm(010119900000),max(indicator_data$Date_Time),'5 years'))
 
 # Set x-axis limits
-ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
+#ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
 ## Plot using ggplot with legend
 # Easier to control the aesthetics and size
-
-# Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
-        legend.position = 'bottom', 
-        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
-        legend.text = element_text(size=11), legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(1.5,'cm'))
-
 # Legend info
 legendInfo <- as.factor(c(paste0('Mothly average, 1989-', RptYr-2), 
                           paste0('Annual average, 1989-', RptYr-2), 
@@ -204,7 +185,7 @@ p <- ggplot() +
   ylab('pH') +
   xlab('Year') +
   guides(color = guide_legend(ncol = 2)) +
-  plotTheme
+  plotTheme # this is defined in the _common.R file
 
 #ggsave(paste0(Dir, '/Oceanic_pH_ts_', RptYr, '_ggolot.pdf'), plot=p, width=6, height=5, units='in')
 

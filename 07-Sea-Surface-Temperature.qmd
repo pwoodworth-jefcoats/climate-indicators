@@ -155,12 +155,6 @@ indicator_data <- SST_dashboard |>
   filter(Year <= RptYr)
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
 # Calculate annual means 
@@ -182,19 +176,6 @@ x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Ti
 # y-axis limits
 ts_y_lim <-c(17, 25)
 anom_y_lim <- c(-1.5, 1.5)
-
-# Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
-        legend.position = 'bottom', 
-        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
-        legend.text = element_text(size=12),legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(1.5,'cm'))
 
 # Plot using ggplot
 legendInfo <- as.factor(c(paste0('Mothly average, 1985-', RptYr-1), 
@@ -287,17 +268,21 @@ p_map <- ggplot() +
   xlab("") + ylab("") +
   theme_bw() +
   theme(panel.grid = element_line(color = "black", linewidth = 0.1),
-        legend.background = element_rect(fill = 'transparent'), legend.key.height = unit(1, "null"),
+        legend.background = element_rect(fill = 'transparent'),
+        legend.key.height = unit(1, "null"),
         legend.key.width = unit(0.5, 'cm'),  #scales color bar to height of the plot
         legend.margin = margin(0, 0, 0, 0),  #fixing margins on color bar
         legend.text = element_text(size = 10),  #text size for color bar
-        plot.title = element_text(hjust = 0.5), 
-        plot.margin=unit(c(0,0,0.02,0), "null")) + #centering the plot title. Default is left align
- guides(fill = guide_colorbar(title.position='right', title="Temperature anomaly (°C)",
-                                 title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
-           linetype=guide_legend(position = 'bottom', 
-                                 title.position='top', 
-                                 title.theme=element_text(hjust=0.5, vjust=1))) #+  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
+        plot.title = element_text(hjust = 0.5),
+        plot.margin=unit(c(0,0,0.02,0), "null"), #centering the plot title. Default is left align
+        axis.text = element_text(size = 12, color = "black") # Increases the degree tick mark text (120°E, 15°N, etc.)
+        ) + 
+ guides(fill = guide_colorbar(title.position='right', 
+                              title="Temperature anomaly (°C)", 
+                              title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
+        linetype=guide_legend(position = 'bottom',
+                              title.position='top', 
+                              title.theme=element_text(hjust=0.5, vjust=1))) #+  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
   #labs(title = paste(RptYr, 'anomaly (shaded) and average (contours)'))  #add figure title
 
 #ggsave(filename = paste0(Dir, '/SST_map_', RptYr, '.pdf'), plot=p_map, width = 7, height = 3.8)
@@ -311,9 +296,9 @@ p_map <- ggplot() +
 #| label: fig-ch7-SSTmap
 #| fig.cap:  !expr paste('Average', RptYr, 'sea surface temperature difference from the 1985–2009 average (shaded) and sea surface temperature (contoured). The black rectangle identifies the area targeted by Hawaiʻi’s longline fisheries. SST is averaged over this area for the time series shown in @fig-ch7-SST and @fig-ch7-SSTanom')
 #| fig.align: 'center'
-#| fig-width: 7
-#| fig-height: 3
-#| out-width: "95%"
+#| fig-width: 8
+#| fig-height: 3.6
+#| out-width: "100%"
 
 p_map
 

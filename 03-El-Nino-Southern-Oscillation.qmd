@@ -51,87 +51,6 @@ RONI_rounded <- round(RONI_full$ANOM, digits = 1)
 ```
 
 ```{r}
-#| include: false
-### Identifying El Niños and La Niñas, based on the criterion that they persist for at least 5 consecutive seasons
-# First, identify values that are above or below the appropriate threshold
-ElNino_idx = which(RONI_rounded >= 0.5);
-LaNina_idx = which(RONI_rounded <= -0.5);
-Neutral_idx = which(RONI_rounded > -0.5 & RONI_rounded < 0.5);
-
-# Create empty arrays of the correct size
-ElNino <- array(0, dim = c(length(RONI_rounded), 3))
-LaNina <- array(0, dim = c(length(RONI_rounded), 3))
-Neutral <- array(0, dim = c(length(RONI_rounded), 3))
-Neutral[,1] <- NA
-
-# Fill each phase's array with values that pass the appropriate threshold
-ElNino[ElNino_idx] = RONI_rounded[ElNino_idx]
-LaNina[LaNina_idx] = RONI_rounded[LaNina_idx]
-Neutral[Neutral_idx] = RONI_rounded[Neutral_idx]
-
-# This next part is a counter.  Fill the first row first, 
-# flagging with a 1 values at meet that phase's threshold
-if (ElNino[1,1] > 0) {
-  ElNino[1,2] = 1
-  ElNino[1,3] = 1
-}
-
-if (LaNina[1,1] < 0) {
-  LaNina[1,2] = 1
-  LaNina[1,3] = 1
-}
-    
-if (!is.na(Neutral[1,1])) {
-  Neutral[1,2] = 1
-  Neutral[1,3] = 1
-}
-
-# Loop through the remaining rows
-# Column 2 is a yes/no flag (1 if true)
-# Column 3 is a counter
-for (r in seq(2, length(RONI_rounded), 1)) {
-  if (ElNino[r,1] > 0) {
-    ElNino[r,2] = 1
-    ElNino[r,3] = ElNino[r,2] + ElNino[r - 1,3]
-  }
-  
-  if (LaNina[r,1] < 0) {
-    LaNina[r,2] = 1
-    LaNina[r,3] = LaNina[r,2] + LaNina[r - 1,3]
-  }
-  
-  if (!is.na(Neutral[r,1])) {
-    Neutral[r,2] = 1
-    Neutral[r,3] = Neutral[r,2] + Neutral[r - 1,3]
-  }
-}
-
-# For months where the counter maxes out at <5 sequential seasons
-# set the counter to 0
-for (l in seq(4, 1, -1)) {
-  for (r in seq(2, length(RONI_rounded), 1)) {
-   if (ElNino[r,3] == 0 && ElNino[r - 1,3] <= l) {
-     ElNino[r - 1,3] = 0
-   }
-   if (LaNina[r,3] == 0 && LaNina[r - 1,3] <= l) {
-      LaNina[r - 1,3] = 0
-   }
-   if (Neutral[r,3] == 0 && Neutral[r - 1,3] <= l) {
-      Neutral[r - 1,3] = 0
-   }
-  }
-}
-
-# Identify only months that meet the >= 5 season criterion
-pos_idx = which(ElNino[,3] == 0)
-ElNino[pos_idx,1] = NA
-neg_idx = which(LaNina[,3] == 0)
-LaNina[neg_idx,1] = NA
-neu_idx = which(Neutral[,3] == 0)
-Neutral[neu_idx,1] = NA
-```
-
-```{r}
 #| echo: false
 # Note that the above needs to be 'echo' and not 'include' so that the error checks print.
 
@@ -182,47 +101,29 @@ indicator_data <- ENSO_dashboard |>
   mutate(Date_Time=dmy_hm(Date_Time))
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 2 = La Niña, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 2 = El Niño,  3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
-pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
+pal <- c(coral[2], oceans[2], ann_grey)
 
-# Formatting
-plot_title_font <- list(size = 14)
-plot_height <- 350 #in pixels
-
-#calculate pos/neg/neutral ENSO values 
-#needs to be greater than 0.5 or less than -0.5 for at least five consecutive seasons
+# Calculate pos/neg/neutral ENSO values 
+# Needs to be greater than 0.5 or less than -0.5 for at least five consecutive seasons
 indicator_data <- indicator_data |> mutate(Sign = sign(Value)) |>
-  mutate(Sign = ifelse(test = (Value < 0.5 & Value > -0.5), yes = 0, no = Sign)) |> #positive or negative?
-  group_by(Sign, Group = with(rle(Sign), rep(seq_along(lengths), lengths))) |> #how many seasons in a row?
+  mutate(Sign = ifelse(test = (Value < 0.5 & Value > -0.5), yes = 0, no = Sign)) |> # positive or negative?
+  group_by(Sign, Group = with(rle(Sign), rep(seq_along(lengths), lengths))) |> # how many seasons in a row?
   ungroup() |>
   add_count(Group) |>
-  mutate(ENSO = "Neutral") |>
+  mutate(ENSO = ifelse(Sign == -1 & n >= 5, 
+                       yes = 'La Niña', 
+                       no = ifelse(Sign == 1 & n >= 5, 
+                                   yes = 'El Niño', 
+                                   no = 'Neutral'))) |> 
   mutate(Units = "Relative Oceanic Niño Index (RONI)")
-    
-#add ENSO category
-indicator_data[which(indicator_data$Sign == -1 & indicator_data$n >= 5),]$ENSO <- "La Niña"
-indicator_data[which(indicator_data$Sign == 1 & indicator_data$n >= 5),]$ENSO <- "El Niño"
 
 # x axis ticks and grid
 x_grid <- c(seq.POSIXt(min(indicator_data$Date_Time), max(indicator_data$Date_Time), by='10 year'),
             max(indicator_data$Date_Time))
-# x axis limit
-ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
-# Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
+# Adding figure specific looks to the base theme listed in _common.R 
+plotTheme <- plotTheme + 
+  theme(legend.background = element_blank(),
         legend.position = 'inside', 
         legend.position.inside = c(0.95,0.92),
         legend.text = element_text(size=12), 
@@ -232,7 +133,7 @@ plotTheme <- theme_minimal() +
 # Make stem type plot using ggplot
 p <- ggplot(indicator_data) + 
   geom_segment(aes(x = Date_Time, y = 0, xend = Date_Time, yend = Value, colour = ENSO), linewidth = 0.3) + 
-  scale_color_manual(values = c(pal[2], oceans[2], ann_grey), name=NULL) + 
+  scale_color_manual(values = pal, name=NULL) + 
   scale_x_datetime(breaks = x_grid, date_labels = '%Y', expand = expansion(mult = c(0, 0.02))) +
   ylim(c(-3,3)) +
   xlab('Year') +
@@ -245,7 +146,7 @@ p <- ggplot(indicator_data) +
 ```{r}
 #| echo: false
 #| label: fig-ch3-ENSO
-#| fig.cap: !expr paste0('Oceanic Niño Index from 1950–', RptYr, ' El Niño periods in red, La Niña periods in blue, and neutral periods in grey')
+#| fig.cap: !expr paste0('Relative Oceanic Niño Index from 1950–', RptYr, ' El Niño periods in red, La Niña periods in blue, and neutral periods in grey')
 #| fig.align: 'center'
 #| fig-width: 8
 #| fig-height: 5
@@ -256,9 +157,9 @@ p
 
 **Rationale:** The El Niño – Southern Oscillation (ENSO) cycle is known to have impacts on Pacific fisheries including tuna fisheries. The ONI focuses on ocean temperature, which has the most direct effect on these fisheries.   
 \
-**Status:** The Oceanic Niño Index (ONI) remained in largely neutral conditions in `r RptYr`. In `r RptYr`, the ONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.  
+**Status:** The Relative Oceanic Niño Index (RONI) remained in largely neutral conditions in `r RptYr`. In `r RptYr`, the RONI ranged from `r monthly_min_RptYr` to `r monthly_max_RptYr`.  This is within the range of values observed previously in the time series.  
 \
-**Description:** The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Oceanic Niño Index (ONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an ONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index.  
+**Description:** The three-month running mean (referred to as a season) of satellite remotely-sensed sea surface temperature (SST) anomalies in the Niño 3.4 region (5°S – 5°N, 120° – 170°W). The Relative Oceanic Niño Index (RONI) is a measure of the El Niño – Southern Oscillation (ENSO) phase. Warm and cool phases, termed El Niño and La Niña respectively, are based in part on an RONI threshold of ± 0.5 °C being met for a minimum of five consecutive overlapping seasons. Additional atmospheric indices are needed to confirm an El Niño or La Niña event, as the ENSO is a coupled ocean-atmosphere phenomenon. The atmospheric half of ENSO is measured using the Southern Oscillation Index. **NOTE: In February 2026 the Oceanic Niño Index (ONI) was replaced by the Relative Oceanic Niño Index (RONI) as NOAAs official index to track ENSO. ONI measures temperature departures (SST anomalies) in one Pacific region (Niño‑3.4). RONI measures those departures relative to the departures across the broader tropical oceans, which better represents the physics that drive ENSO impacts. 2026 is the first year RONI is being used in the SAFE report.**
 \
 **Timeframe:** Three-month running average.  
 \

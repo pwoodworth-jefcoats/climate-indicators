@@ -230,6 +230,7 @@ p_ann <- ggplot() +
 ```
 
 ```{r}
+#| eval: false
 #| warning: false
 #| include: false
 # # After running the chunks above and prepping the map data, you can uncomment and run this chunk.
@@ -291,13 +292,200 @@ p_map <- ggplot() +
 ```
 
 ```{r}
+#| warning: false
+#| include: false
+# 
+# 
+# library(rnaturalearth)
+# library(terra)
+# library(tidyterra)
+# library(sf)
+# library(metR)
+# 
+# 
+# # Or use spatial data to plot so you can change the projection 
+# # For this you have to use the original ncdf files that are used in map_data_for_dashboard.R file
+# currYr <- rast(file.path(Dir, paste0('sst_yr', RptYr, '.nc')))
+# climo <- rast(file.path(Dir, 'sst_climo.nc'))
+# anom <- currYr - climo
+# # Make it an eckert IV projection centered on 180 long
+# eckert_iv <- "+proj=eck4 +lon_0=180 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+# # Transform the chl anomaly to eckert IV
+# anom_eckert <- project(anom, eckert_iv)
+# curr_eckert <- project(currYr, eckert_iv)
+# 
+# # Make the longline box. This will automatically project as eckert on the plot
+# box_sf <- st_polygon(list(matrix(c(180, 15,  # Bottom-left
+#                                    240, 15,  # Bottom-right
+#                                    240, 45,  # Top-right
+#                                    180, 45,  # Top-left
+#                                    180, 15   # Close back at start
+#                                    ), ncol = 2, byrow = TRUE))) %>%
+#   st_sfc(crs = 4326)
+# # Segmentize it so it can curve
+# LLbox <- box_sf %>%
+#   st_set_crs(NA) %>%
+#   st_segmentize(dfMaxLength = 0.5) %>%
+#   st_set_crs(4326) %>%
+#   st_sf()
+# 
+# # Get land
+# world_land <- ne_countries(scale = "medium", returnclass = "sf") %>% 
+#   st_break_antimeridian(lon_0 = 180) %>%  # This splits land geometries at the map's 180-degree boundary split
+#   st_make_valid()
+# # Create a curved map outline polygon (WGS84) for the tapering map border
+# map_outline_sf <- st_polygon(list(matrix(c(
+#     119.75, -0.25,  
+#     260.25, -0.25,  
+#     260.25, 55.25,  
+#     119.75, 55.25,  
+#     119.75, -0.25   
+#   ), ncol = 2, byrow = TRUE))) %>% 
+#   st_sfc(crs = 4326) %>% 
+#   st_set_crs(NA) %>% 
+#   st_segmentize(dfMaxLength = 0.5) %>% 
+#   st_set_crs(4326) %>% 
+#   st_sf()
+# # Transform both land and map border to Eckert IV and slice the land cleanly
+# map_outline_projected <- st_transform(map_outline_sf, eckert_iv)
+# world_land_projected  <- st_transform(world_land, eckert_iv)
+# # This physically cuts the land boundaries to match the curved outline frame
+# world_land_clipped <- st_intersection(world_land_projected, map_outline_projected)
+# # Create custom dataframes for the labels, shifted slightly outward in degrees
+# # Left side labels (at Lon 119.75, shifted slightly West to ~116.5)
+# labels_left <- st_as_sf(data.frame(
+#     lon = 116.5, 
+#     lat = c(0, 10, 20, 30, 40, 50), 
+#     text = c("0°", "10°N", "20°N", "30°N", "40°N", "50°N")
+# ), coords = c("lon", "lat"), crs = 4326)
+# # Bottom labels (at Lat -0.25, shifted slightly South to ~ -2.5)
+# labels_bottom <- st_as_sf(data.frame(
+#     lon = c(120, 150, 180, 210, 240), 
+#     lat = -2.5, 
+#     text = c("120°E","150°E", "180°", "150°W", "120°W")
+# ), coords = c("lon", "lat"), crs = 4326)
+# # Convert raster to data frame for contour labeling
+# curr_df <- as_tibble(curr_eckert, xy = TRUE)
+# 
+# # Make the plot
+# p_map <- ggplot() +
+#   # Raster Background
+#   geom_spatraster(data = anom_eckert) +
+#   geom_spatraster_contour(data= curr_eckert, color = "gray30", breaks = seq(10,30,by=5), show.legend=F, linewidth=0.5, linetype='dashed') +
+#   geom_text_contour(
+#         data = curr_df,
+#         aes(x = x, y = y, z = SST_2025),
+#         breaks = seq(10, 30, by = 5),
+#         color = "gray30",
+#         size = 5,
+#         min.size = 200,   # Increase this threshold to drop short island contours
+#         skip = 0,         # Draw labels on all remaining long lines
+#         label.placer = label_placer_fraction(frac = 0.5) # Place label in the middle of long lines
+#     ) +
+#   # Colorbar configured for top placement with labels on top
+#   scale_fill_gradient2(low = oceans[2], mid = "white", high = coral[2], 
+#                        midpoint = 0, 
+#                        limits=c(-4,4), 
+#                        oob=scales::squish,
+#         name = "SST Anomaly (°C)",
+#         na.value = 'transparent',
+#         guide = guide_colorbar(
+#           direction = "horizontal",    # Forces horizontal bar layout
+#           barwidth = unit(0.7, "npc"), # Spans width of map
+#           barheight = unit(10, "pt"),  # Controls the thickness of the bar
+#           title.position = "top",      # Positions "CHL" above the scale
+#           title.hjust = 0.5,           # Centers the title text
+#           label.position = "top",      # Forces the numeric values (0.0, 0.1, etc.) ABOVE the bar
+#           label.hjust = 0.5),
+#         ) +
+#   # Clipped Land & Boxes
+#   geom_sf(data = world_land_clipped, fill = "gray80", color = "gray50", linewidth = 0.2) +
+#   geom_sf(data = map_outline_projected, fill = NA, color = "gray50", linewidth = 0.5) +
+#   geom_sf(data = LLbox, fill = NA, color = "black", linewidth = 0.75) + # longline area box
+#   
+#   # Add longline text box
+#   geom_sf_text(
+#     data = st_as_sf(data.frame(lon = 180, lat = 45), coords = c("lon", "lat"), crs = 4326),
+#     aes(label = "Longline fishing grounds"),
+#     size = 6,
+#     vjust = -0.5,       # Pushes the text slightly ABOVE the top line of the box
+#     hjust = 0,          # Left-aligns the text starting from the 180° corner
+#     fontface = "bold",  # Makes it look clean and distinct from coordinate labels
+#     color = "black"
+#   ) +
+#   # Manual curved labels to follow the map shape
+#   geom_sf_text(data = labels_left, aes(label = text), size = 5, hjust = 1, color = "gray30") +
+#   geom_sf_text(data = labels_bottom, aes(label = text), size = 5, vjust = 1, color = "gray30") +
+#   
+#   coord_sf(
+#     crs = eckert_iv,
+#     xlim = c(ext(curr_eckert)[1], ext(curr_eckert)[2]),
+#     ylim = c(ext(curr_eckert)[3], ext(curr_eckert)[4]), 
+#     expand = FALSE, 
+#     clip = "off" # clip = "off" tells ggplot to render text that sits outside the map boundary box
+#     ) + 
+#   theme_minimal() + 
+#   theme(
+#     panel.background = element_blank(),
+#     plot.background = element_blank(),
+#     # Remove square plot border
+#     panel.border = element_blank(),
+#     panel.grid=element_blank(), 
+#     # Remove grid lines
+#     axis.line = element_blank(),
+#     axis.ticks = element_blank(),
+#     axis.text = element_blank(), # Turn off the default rectangular system text labels completely
+#     # Relocate legend above the figure
+#     legend.title = element_text(size = 16, face = "bold"), # Font size/style for "Chl Anomaly..."
+#     legend.text = element_text(size = 14),                 # Font size for "-0.6", "0", "0.6", etc.
+#     legend.position = "top",          # Relocates the whole legend unit below the map
+#     legend.justification = c(0.42,0.5),     # Centers it perfectly underneath
+#     legend.box.margin = margin(b = 0.5),  # Adds clean padding between the bottom map labels and the color bar
+#     # Buffer the margins a little for the custom labels
+#     plot.margin = margin(10, 10, 30, 40)) +
+#   xlab(NULL) + 
+#   ylab(NULL)
+
+```
+```{r}
+#| echo: false
+#| warning: false
+
+
+# Make the map. 
+# This uses the function defined in the _common.r file
+
+# define your color scale
+my_diverging_scale <- scale_fill_gradient2(
+    low = oceans[2], mid = "white", high = coral[2], 
+    midpoint = 0,
+    limits=c(-4,4),
+    name = "SST Anomaly (°C)",
+    na.value = "transparent"
+)
+
+# Make the map
+p_map <- plot_chl_map(
+  currYr_file = rast(file.path(Dir, paste0('SST_yr', RptYr, '.nc'))),
+  climo_file = rast(file.path(Dir, 'SST_climo.nc')),
+  fill_scale = my_diverging_scale,
+  show_llbox = FALSE,
+  contour_breaks = seq(10,30,by=5),
+  min_contour_length = 200,
+  proj_crs = "+proj=eck4 +lon_0=180 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+)
+
+```
+
+
+```{r}
 #| echo: false
 #| warning: false
 #| label: fig-ch7-SSTmap
 #| fig.cap:  !expr paste('Average', RptYr, 'sea surface temperature difference from the 1985–2009 average (shaded) and sea surface temperature (contoured). The black rectangle identifies the area targeted by Hawaiʻi’s longline fisheries. SST is averaged over this area for the time series shown in @fig-ch7-SST and @fig-ch7-SSTanom')
 #| fig.align: 'center'
-#| fig-width: 8
-#| fig-height: 3.6
+#| fig-width: 10
+#| fig-height: 6
 #| out-width: "100%"
 
 p_map

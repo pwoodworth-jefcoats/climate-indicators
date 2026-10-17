@@ -150,12 +150,6 @@ indicator_data <- Chl_dashboard |>
   filter(Year <= RptYr)
 
 # Create color palette for easy reference 
-oceans <- nmfs_palette("oceans")(3) # 1 = report_year, 3 = previous years
-crustacean <- nmfs_palette("crustacean")(4) # 1 = linear trend
-coral <- nmfs_palette("coral")(3) # 3 = annual average for Rpt Yr
-ann_grey <- "#A5AAAF" # annual means; in NMFS branding guide as dove gray tint 1
-waves <- nmfs_palette("waves")(3) # annual means; in NMFS branding guide but not in package
-seagrass <- nmfs_palette("seagrass")(3)
 pal <- c(oceans[3], coral[2], waves[2], coral[3], crustacean[2])
 
 # Calculate annual means 
@@ -173,25 +167,10 @@ given_yr_ann <- bind_cols(Value = rep(ann_vals$Value[dim(ann_vals)[1]]),
 
 # x axis ticks and grid
 x_grid <- c(seq.POSIXt(dmy_hm(010120000000), max(indicator_data$Date_Time), by='5 year'))
-# x-axis limits
-ts_x_lim <- c(min(indicator_data$Date_Time), max(indicator_data$Date_Time))
 
 # y-axis limits
 ts_y_lim <-c(0.07, 0.19)
 anom_y_lim <- c(-0.035, 0.035)
-
-# Defining the theme up front so we don't have to repeat it
-plotTheme <- theme_minimal() +
-  theme(panel.border = element_rect(color='#F1F3F3'),
-        panel.grid.major = element_line(color='#F1F3F3'),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        plot.background = element_blank(),
-        axis.title = element_text(size=14, face="bold"), 
-        axis.text = element_text(size=12),
-        legend.position = 'bottom', 
-        legend.background = element_rect_round(fill = 'gray90', color='transparent', radius = 0.3),
-        legend.text = element_text(size=11), legend.key.spacing.y = unit(-0.13,'cm'), legend.key.spacing.x = unit(1.5,'cm'))
 
 # Plot using ggplot
 legendInfo <- as.factor(c(paste0('Mothly average, 1998-', RptYr-1), 
@@ -247,75 +226,268 @@ p_ann <- ggplot() +
 ```
 
 ```{r}
-#| include: FALSE
-# # After running the chunks above and prepping the map data, you can uncomment and run this chunk.
+#| eval: false
+#| include: false
+# # After prepping the map data you can run this chunk.
 # 
 # Load data
-maps <- read.csv(paste(Dir, '/Chl_map_data_', RptYr, '.csv', sep = ""))
-
-# Filter to the given year and the anomaly
-maps_RptYr <- maps |> filter(ID == "Chl")
-maps_anom <- maps |> filter(ID == "Chl_anom")
- 
-# Map elements and aesthetics
-seagrass <- nmfs_palette("seagrass")(3)
-pal <- seagrass
-ll_rect_color <- "black" #outline for ll fishing grounds box
-fill_scale <- scale_fill_gradientn(
-        colors = c("#2166AC", "#4393C3", "#F7F7F7", "#D6604D", "#B2182B"), #c('#00437D', oceans[2], 'white', coral[2], '#A31502'),
-        # Linearly space the 5 colors across the [-0.2, 0.2] range
-        values = scales::rescale(c(-0.6, -0.2, 0, 0.2, 0.6)),
-        limits = c(-0.6, 0.6), # CRITICAL: Sets the color scale endpoints at -0.2 and +0.2
-        oob = scales::squish,  # Values < -0.2 and > 0.2 squish directly into darker red
-        breaks = c(-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6),
-        labels = c("≤ -0.6", "-0.4", "-0.2", "0", "0.2", "0.4", "≥ 0.6"),
-        name = expression(paste("Chl Anomaly (mg m"^"-3", ")"))
-    )
-#fill_scale <- scale_fill_gradientn(name = "Chl", trans = "log10", colors = pal, limits = c(0.01, 10), oob = squish) #log scale
-breakInt <- seq(0,1,by=0.1)
-
-# Create map
-p_map <- ggplot() +
-  geom_raster(data = maps_anom, mapping = aes(x = x_disp, y = y, fill = layer)) + #data as raster
-  geom_contour(data=maps_RptYr, aes(x = x_disp, y = y, z = layer, linetype = factor(after_stat(level))), breaks = c(0.1, 0.2, 0.3), color = "black", alpha=0.4, linewidth = 0.5, show.legend = F) +
-  scale_linetype_manual(values = c("0.1" = "dashed", "0.2" = "solid", "0.3" = "longdash"), guide='none') + # Map contour values to specific line styles
-  annotation_borders('world2', fill='#A5AAAF', colour='gray40', linewidth=0.2) + #add land to the map
-  geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5) + #ll fishing grounds box
-  annotate("text", x = 210, y = 48, label = "Longline fishing grounds", size = 3.7, color = 'black') +
-  fill_scale + #indicator-dependent color and scale from above
-  coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
-  scale_x_continuous(breaks=seq(120,260,30), labels = paste0(c(seq(120,180,30), seq(150,100,-30)), c(rep('°E',2),"",rep('°W',2)))) + # adding degrees to the breaks
-  scale_y_continuous(breaks=seq(0,55,15), labels = paste0(seq(0,55,15), c('',rep('°N',3)))) + # adding degrees to the breaks
-  xlab("") + ylab("") +
-  theme_bw() +
-  theme(panel.grid = element_line(color = "black", linewidth = 0.1),
-        legend.background = element_rect(fill = 'transparent'), legend.key.height = unit(1, "null"),
-        legend.key.width = unit(0.5, 'cm'),  #scales color bar to height of the plot
-        legend.margin = margin(0, 0, 0, 0),  #fixing margins on color bar
-        legend.text = element_text(size = 10),  #text size for color bar
-        plot.title = element_text(hjust = 0.5), 
-        plot.margin=unit(c(0,0,0.02,0), "null")) + #centering the plot title. Default is left align
- guides(fill = guide_colorbar(title.position='right', title=expression("Chlorophyll-a (mg " * m^-3 * ")"),
-                                 title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
-           linetype=guide_legend(position = 'bottom', 
-                                 title.position='top', 
-                                 title.theme=element_text(hjust=0.5, vjust=1))) #+  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
-  #labs(title = paste(RptYr, 'anomaly (shaded) and average (contours)'))  #add figure title
+# maps <- read.csv(paste(Dir, '/Chl_map_data_', RptYr, '.csv', sep = ""))
+# 
+# # Filter to the given year and the anomaly
+# maps_RptYr <- maps |> filter(ID == "Chl")
+# maps_anom <- maps |> filter(ID == "Chl_anom")
+#  
+# # Map elements and aesthetics
+# seagrass <- nmfs_palette("seagrass")(3)
+# pal <- seagrass
+# ll_rect_color <- "black" #outline for ll fishing grounds box
+# fill_scale <- scale_fill_gradientn(
+#         colors = c("#2166AC", "#4393C3", "#F7F7F7", "#D6604D", "#B2182B"), #c('#00437D', oceans[2], 'white', coral[2], '#A31502'),
+#         # Linearly space the 5 colors across the [-0.2, 0.2] range
+#         values = scales::rescale(c(-0.6, -0.2, 0, 0.2, 0.6)),
+#         limits = c(-0.6, 0.6), # CRITICAL: Sets the color scale endpoints at -0.2 and +0.2
+#         oob = scales::squish,  # Values < -0.2 and > 0.2 squish directly into darker red
+#         breaks = c(-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6),
+#         labels = c("≤ -0.6", "-0.4", "-0.2", "0", "0.2", "0.4", "≥ 0.6"),
+#         name = expression(paste("Chl Anomaly (mg m"^"-3", ")"))
+#     )
+# #fill_scale <- scale_fill_gradientn(name = "Chl", trans = "log10", colors = pal, limits = c(0.01, 10), oob = squish) #log scale
+# breakInt <- seq(0,1,by=0.1)
+# 
+# # Create map
+# p_map <- ggplot() +
+#   geom_raster(data = maps_anom, mapping = aes(x = x_disp, y = y, fill = layer)) + #data as raster
+#   geom_contour(data=maps_RptYr, aes(x = x_disp, y = y, z = layer, linetype = factor(after_stat(level))), breaks = c(0.1, 0.2, 0.3), color = "black", alpha=0.4, linewidth = 0.5, show.legend = F) +
+#   scale_linetype_manual(values = c("0.1" = "dashed", "0.2" = "solid", "0.3" = "longdash"), guide='none') + # Map contour values to specific line styles
+#   annotation_borders('world2', fill='#A5AAAF', colour='gray40', linewidth=0.2) + #add land to the map
+#   geom_rect(aes(xmin = 180, xmax = 240, ymin = 15, ymax = 45), color = ll_rect_color, fill = NA, linewidth = 0.5) + #ll fishing grounds box
+#   annotate("text", x = 210, y = 48, label = "Longline fishing grounds", size = 3.7, color = 'black') +
+#   fill_scale + #indicator-dependent color and scale from above
+#   coord_quickmap(expand = F, xlim=c(120,260), ylim=c(0,55)) + #don't expand past x/y limits
+#   scale_x_continuous(breaks=seq(120,260,30), labels = paste0(c(seq(120,180,30), seq(150,100,-30)), c(rep('°E',2),"",rep('°W',2)))) + # adding degrees to the breaks
+#   scale_y_continuous(breaks=seq(0,55,15), labels = paste0(seq(0,55,15), c('',rep('°N',3)))) + # adding degrees to the breaks
+#   xlab("") + ylab("") +
+#   theme_bw() +
+#   theme(panel.grid = element_line(color = "black", linewidth = 0.1),
+#         legend.background = element_rect(fill = 'transparent'), legend.key.height = unit(1, "null"),
+#         legend.key.width = unit(0.5, 'cm'),  #scales color bar to height of the plot
+#         legend.margin = margin(0, 0, 0, 0),  #fixing margins on color bar
+#         legend.text = element_text(size = 10),  #text size for color bar
+#         plot.title = element_text(hjust = 0.5), 
+#         plot.margin=unit(c(0,0,0.02,0), "null"), #centering the plot title. Default is left align
+#         axis.text = element_text(size = 12, color = "black") # Increases the degree tick mark text (120°E, 15°N, etc.)
+#         ) + 
+#  guides(fill = guide_colorbar(title.position='right', title=expression("Chlorophyll-a (mg " * m^-3 * ")"),
+#                                  title.theme=element_text(angle=270, hjust=0.5, vjust=0.5)),
+#            linetype=guide_legend(position = 'bottom', 
+#                                  title.position='top', 
+#                                  title.theme=element_text(hjust=0.5, vjust=1))) #+  #this bit of code gives different aesthetics to the colorbar on the left and legend on the bottom.
+#   #labs(title = paste(RptYr, 'anomaly (shaded) and average (contours)'))  #add figure title
   
 # ggsave(filename = paste0(Dir, '/Chl_map_', RptYr, '.pdf'), plot=p_map, width = 7, height = 3.8)
 # ggsave(filename = paste0(Dir, '/Chl_map_', RptYr, '.png'), plot=p_map, width = 7, height = 3.8)
+
+# 
+# library(rnaturalearth)
+# library(terra)
+# library(tidyterra)
+# library(sf)
+# library(metR)
+# 
+# 
+# # Or use spatial data to plot so you can change the projection 
+# # For this you have to use the original ncdf files that are used in map_data_for_dashboard.R file
+# currYr <- rast(file.path(Dir, paste0('chl_yr', RptYr, '.nc')))
+# climo <- rast(file.path(Dir, 'chl_climo.nc'))
+# anom <- currYr - climo
+# # Make it an eckert IV projection centered on 180 long
+# eckert_iv <- "+proj=eck4 +lon_0=180 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+# # Transform the chl anomaly to eckert IV
+# anom_eckert <- project(anom, eckert_iv)
+# curr_eckert <- project(currYr, eckert_iv)
+# 
+# # Make the longline box. This will automatically project as eckert on the plot
+# box_sf <- st_polygon(list(matrix(c(180, 15,  # Bottom-left
+#                                    240, 15,  # Bottom-right
+#                                    240, 45,  # Top-right
+#                                    180, 45,  # Top-left
+#                                    180, 15   # Close back at start
+#                                    ), ncol = 2, byrow = TRUE))) %>%
+#   st_sfc(crs = 4326)
+# # Segmentize it so it can curve
+# LLbox <- box_sf %>%
+#   st_set_crs(NA) %>%
+#   st_segmentize(dfMaxLength = 0.5) %>%
+#   st_set_crs(4326) %>%
+#   st_sf()
+# 
+# # Get land
+# world_land <- ne_countries(scale = "medium", returnclass = "sf") %>% 
+#   st_break_antimeridian(lon_0 = 180) %>%  # This splits land geometries at the map's 180-degree boundary split
+#   st_make_valid()
+# # Create a curved map outline polygon (WGS84) for the tapering map border
+# map_outline_sf <- st_polygon(list(matrix(c(
+#     119.75, -0.25,  
+#     260.25, -0.25,  
+#     260.25, 55.25,  
+#     119.75, 55.25,  
+#     119.75, -0.25   
+#   ), ncol = 2, byrow = TRUE))) %>% 
+#   st_sfc(crs = 4326) %>% 
+#   st_set_crs(NA) %>% 
+#   st_segmentize(dfMaxLength = 0.5) %>% 
+#   st_set_crs(4326) %>% 
+#   st_sf()
+# # Transform both land and map border to Eckert IV and slice the land cleanly
+# map_outline_projected <- st_transform(map_outline_sf, eckert_iv)
+# world_land_projected  <- st_transform(world_land, eckert_iv)
+# # This physically cuts the land boundaries to match the curved outline frame
+# world_land_clipped <- st_intersection(world_land_projected, map_outline_projected)
+# # Create custom dataframes for the labels, shifted slightly outward in degrees
+# # Left side labels (at Lon 119.75, shifted slightly West to ~116.5)
+# labels_left <- st_as_sf(data.frame(
+#     lon = 116.5, 
+#     lat = c(0, 10, 20, 30, 40, 50), 
+#     text = c("0°", "10°N", "20°N", "30°N", "40°N", "50°N")
+# ), coords = c("lon", "lat"), crs = 4326)
+# # Bottom labels (at Lat -0.25, shifted slightly South to ~ -2.5)
+# labels_bottom <- st_as_sf(data.frame(
+#     lon = c(120, 150, 180, 210, 240), 
+#     lat = -2.5, 
+#     text = c("120°E","150°E", "180°", "150°W", "120°W")
+# ), coords = c("lon", "lat"), crs = 4326)
+# # Convert raster to data frame for contour labeling
+# curr_df <- as_tibble(curr_eckert, xy = TRUE)
+# 
+# # Make the plot
+# p_map <- ggplot() +
+#   # Raster Background
+#   geom_spatraster(data = anom_eckert) +
+#   geom_spatraster_contour(data= curr_eckert, breaks = c(0.1,0.2), show.legend=F, linewidth=0.5, linetype='dashed') +   
+#    geom_text_contour(
+#         data = curr_df,
+#         aes(x = x, y = y, z = CHL_2025),
+#         breaks = c(0.1, 0.2),
+#         color = "gray20",
+#         size = 5,
+#         min.size = 150,   # Increase this threshold to drop short island contours
+#         skip = 0,         # Draw labels on all remaining long lines
+#         label.placer = label_placer_fraction(frac = 0.5) # Place label in the middle of long lines
+#     ) +
+#   # Colorbar configured for top placement with labels on top
+#   scale_fill_gradientn(
+#         colors = c("#2166AC", "#4393C3", "#F7F7F7", "#D6604D", "#B2182B"),
+#         # Linearly space the 5 colors across the [-0.2, 0.2] range
+#         values = scales::rescale(c(-0.5, -0.2, 0, 0.2, 0.5)),
+#         limits = c(-0.5, 0.5), # Sets the color scale endpoints at -0.2 and +0.2
+#         oob = scales::squish,  # Values < -0.2 and > 0.2 squish directly into darker red
+#         breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5),
+#         labels = c("≤ -0.5", "-0.3", "-0.1", "0", "0.1", "0.3", "≥ 0.5"),
+#         name = expression(paste("Chlorophyll Anomaly (mg m"^"-3", ")")),
+#         na.value = 'transparent',
+#         guide = guide_colorbar(
+#           direction = "horizontal",    # Forces horizontal bar layout
+#           barwidth = unit(0.7, "npc"), # Spans width of map
+#           barheight = unit(10, "pt"),  # Controls the thickness of the bar
+#           title.position = "top",      # Positions "CHL" above the scale
+#           title.hjust = 0.5,           # Centers the title text
+#           label.position = "top",      # Forces the numeric values (0.0, 0.1, etc.) ABOVE the bar
+#           label.hjust = 0.5),
+#         ) +
+#   # Clipped Land & Boxes
+#   geom_sf(data = world_land_clipped, fill = "gray80", color = "gray50", linewidth = 0.2) +
+#   geom_sf(data = map_outline_projected, fill = NA, color = "gray50", linewidth = 0.5) +
+#   geom_sf(data = LLbox, fill = NA, color = "black", linewidth = 0.75) + # longline area box
+#   
+#   # Add longline text box
+#   geom_sf_text(
+#     data = st_as_sf(data.frame(lon = 180, lat = 45), coords = c("lon", "lat"), crs = 4326),
+#     aes(label = "Longline fishing grounds"),
+#     size = 6,
+#     vjust = -0.5,       # Pushes the text slightly ABOVE the top line of the box
+#     hjust = 0,          # Left-aligns the text starting from the 180° corner
+#     fontface = "bold",  # Makes it look clean and distinct from coordinate labels
+#     color = "black"
+#   ) +
+#   # Manual curved labels to follow the map shape
+#   geom_sf_text(data = labels_left, aes(label = text), size = 5, hjust = 1, color = "gray30") +
+#   geom_sf_text(data = labels_bottom, aes(label = text), size = 5, vjust = 1, color = "gray30") +
+#   
+#   coord_sf(
+#     crs = eckert_iv,
+#     xlim = c(ext(curr_eckert)[1], ext(curr_eckert)[2]),
+#     ylim = c(ext(curr_eckert)[3], ext(curr_eckert)[4]), 
+#     expand = FALSE, 
+#     clip = "off" # clip = "off" tells ggplot to render text that sits outside the map boundary box
+#     ) + 
+#   theme_minimal() + 
+#   theme(
+#     panel.background = element_blank(),
+#     plot.background = element_blank(),
+#     # Remove square plot border
+#     panel.border = element_blank(),
+#     panel.grid=element_blank(), 
+#     # Remove grid lines
+#     axis.line = element_blank(),
+#     axis.ticks = element_blank(),
+#     axis.text = element_blank(), # Turn off the default rectangular system text labels completely
+#     # Relocate legend above the figure
+#     legend.title = element_text(size = 16, face = "bold"), # Font size/style for "Chl Anomaly..."
+#     legend.text = element_text(size = 14),                 # Font size for "-0.6", "0", "0.6", etc.
+#     legend.position = "top",          # Relocates the whole legend unit below the map
+#     legend.justification = c(0.42,0.5),     # Centers it perfectly underneath
+#     legend.box.margin = margin(b = 0.5),  # Adds clean padding between the bottom map labels and the color bar
+#     # Buffer the margins a little for the custom labels
+#     plot.margin = margin(10, 10, 30, 40)) +
+#   xlab(NULL) + 
+#   ylab(NULL)
 
 ```
 
 ```{r}
 #| echo: false
 #| warning: false
+
+
+# Make the map. 
+# This uses the function defined in the _common.r file
+
+# define your color scale
+chl_anom_scale <- scale_fill_gradientn(
+        colors = c("#2166AC", "#4393C3", "#F7F7F7", "#D6604D", "#B2182B"),
+        # Linearly space the 5 colors across the [-0.2, 0.2] range
+        values = scales::rescale(c(-0.5, -0.2, 0, 0.2, 0.5)),
+        limits = c(-0.5, 0.5), # Sets the color scale endpoints at -0.5 and +0.5
+        oob = scales::squish,  # Values < -0.5 and > 0.5 squish directly into darker red
+        breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5),
+        labels = c("≤ -0.5", "-0.3", "-0.1", "0", "0.1", "0.3", "≥ 0.5"),
+        name = expression(paste("Chlorophyll Anomaly (mg m"^"-3", ")")),
+        na.value = 'transparent'
+)
+
+# Make the map
+p_map <- plot_chl_map(
+  currYr_file = rast(file.path(Dir, paste0('chl_yr', RptYr, '.nc'))),
+  climo_file = rast(file.path(Dir, 'chl_climo.nc')),
+  fill_scale = chl_anom_scale,
+  show_llbox = FALSE,
+  contour_breaks = c(0.1, 0.2),
+  min_contour_length = 150,
+  proj_crs = "+proj=eck4 +lon_0=180 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+)
+
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
 #| label: fig-ch9-Chlmap
-#| fig.cap: !expr paste0('The difference in chlorophyll concentration in ', RptYr, ' from the 1980-2009 average (shaded) with the chlorophyll concentration as contours where the dashed, solid, and long dashed lines show the 0.1, 0.2, and 0.3 mg m^-3^. The black rectangle identifies the area targeted by Hawaiʻi’s longline fisheries. Chlorophyll is averaged over this area for the time series shown in @fig-ch9-Chl and @fig-ch9-ChlAnom')
+#| fig.cap: !expr paste0('The difference in chlorophyll concentration in ', RptYr, ' from the 1980-2009 average (shaded) with the chlorophyll concentration drawn as dashed contours. The black rectangle identifies the area targeted by Hawaiʻi’s longline fisheries. Chlorophyll is averaged over this area for the time series shown in @fig-ch9-Chl and @fig-ch9-ChlAnom')
 #| fig.align: 'center'
-#| fig-width: 7
-#| fig-height: 3
-#| out-width: "95%"
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
 
 p_map
 
